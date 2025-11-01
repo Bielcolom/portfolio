@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./page.module.css";
+import styles from "./page.module.scss";
 
 export default function Home() {
   return (
@@ -37,7 +37,7 @@ export default function Home() {
         </div>
         <div className={styles.ctas}>
           <a
-            className={styles.primary}
+            className="button"
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"
@@ -52,7 +52,7 @@ export default function Home() {
             Deploy Now
           </a>
           <a
-            className={styles.secondary}
+            className="button transparent"
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
             target="_blank"
             rel="noopener noreferrer"

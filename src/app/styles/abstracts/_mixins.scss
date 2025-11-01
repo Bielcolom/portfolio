@@ -1,0 +1,25 @@
+@use "sass:map";
+@use "./variables" as vars;
+
+@mixin respond($bp) {
+    @media (max-width: map.get(vars.$breakpoints, $bp)) {
+        @content;
+    }
+}
+
+@mixin flex-center($direction: row, $gap: null) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: center;
+    align-items: center;
+
+    @if $gap !=null {
+        gap: $gap;
+    }
+}
+
+@mixin hover-supported {
+    @media (hover: hover) and (pointer: fine) {
+        @content;
+    }
+}

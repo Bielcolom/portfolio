@@ -1,0 +1,61 @@
+@use "sass:map";
+@use "./variables" as vars;
+
+$themes: (
+    light: (background: map.get(vars.$colors, background-light),
+        foreground: map.get(vars.$colors, foreground-light),
+        text-primary: map.get(vars.$colors, text-light-primary),
+        text-secondary: map.get(vars.$colors, secondary-light),
+        primary: map.get(vars.$colors, primary),
+        primary-hover: map.get(vars.$colors, primary-hover),
+        primary-light: map.get(vars.$colors, primary-light),
+        primary-dark: map.get(vars.$colors, primary-dark),
+        secondary: map.get(vars.$colors, secondary),
+        secondary-hover: map.get(vars.$colors, secondary-hover),
+        secondary-light: map.get(vars.$colors, secondary-light),
+    ),
+    dark: (background: map.get(vars.$colors, background-dark),
+        foreground: map.get(vars.$colors, foreground-dark),
+        text-primary: map.get(vars.$colors, text-dark-primary),
+        text-secondary: map.get(vars.$colors, secondary-light),
+        primary: map.get(vars.$colors, primary),
+        primary-hover: map.get(vars.$colors, primary-hover),
+        primary-light: map.get(vars.$colors, primary-light),
+        primary-dark: map.get(vars.$colors, primary-dark),
+        secondary: map.get(vars.$colors, secondary),
+        secondary-hover: map.get(vars.$colors, secondary-hover),
+        secondary-light: map.get(vars.$colors, secondary-light),
+    )
+);
+
+@mixin theme-vars($map) {
+    --background: #{map.get($map, background)};
+    --foreground: #{map.get($map, foreground)};
+    --text-primary: #{map.get($map, text-primary)};
+    --text-secondary: #{map.get($map, text-secondary)};
+    --primary: #{map.get($map, primary)};
+    --primary-hover: #{map.get($map, primary-hover)};
+    --secondary: #{map.get($map, secondary)};
+    --secondary-hover: #{map.get($map, secondary-hover)};
+    --primary-light: #{map.get($map, primary-light)};
+    --primary-dark: #{map.get($map, primary-dark)};
+    --secondary-light: #{map.get($map, secondary-light)};
+}
+
+:root {
+    @include theme-vars(map.get($themes, light));
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        @include theme-vars(map.get($themes, dark));
+    }
+}
+
+.theme-dark {
+    @include theme-vars(map.get($themes, dark));
+}
+
+.theme-light {
+    @include theme-vars(map.get($themes, light));
+}

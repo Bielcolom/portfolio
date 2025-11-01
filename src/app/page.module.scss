@@ -1,0 +1,68 @@
+@use "./styles/abstracts/mixins" as *;
+@use "./styles/abstracts/variables" as vars;
+@use "sass:map";
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-geist-sans);
+  background-color: var(--background);
+
+  .main {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: var(--foreground);
+    padding: map.get(vars.$size, xxxl);
+
+    .intro {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      gap: map.get(vars.$size, lg);
+    }
+
+    .ctas {
+      display: flex;
+      flex-direction: row;
+      max-width: 440px;
+      gap: map.get(vars.$size, md);
+      font-size: 14px;
+    }
+
+
+    @include respond(md) {
+      padding: map.get(vars.$size, xl);
+
+      .intro h1 {
+        font-size: map.get(vars.$font-sizes, xlg);
+        line-height: map.get(vars.$line-heights, xlg);
+      }
+    }
+
+    @include respond(sm) {
+
+      .intro {
+        gap: map.get(vars.$size, md);
+
+        h1 {
+          font-size: map.get(vars.$font-sizes, lg);
+          line-height: map.get(vars.$line-heights, lg);
+          letter-spacing: -1.92px;
+        }
+      }
+    }
+  }
+
+  .logo {
+    @media (prefers-color-scheme: dark) {
+      /* CSS filter invert necesita porcentaje o factor (1 = 100%). Evita conflicto con función Sass invert($color). */
+      filter: invert(1);
+    }
+  }
+}

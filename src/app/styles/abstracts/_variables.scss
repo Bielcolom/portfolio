@@ -1,0 +1,65 @@
+// Design tokens & scales
+$colors: (
+    background-light: #ffffff,
+    foreground-light: #171717,
+    background-dark: #0a0a0a,
+    foreground-dark: #000000,
+    text-light-primary: #000000,
+    // Removed neutral grays for a brighter palette
+    text-light-secondary: #0b7e89,
+    text-dark-secondary: #0b7e89,
+    accent-yellow: #ffd447,
+    accent-pink: #ff4fa3,
+    accent-purple: #7f6cff,
+    // Brand colors
+    primary: #0b8a96,
+    primary-hover: #1fb6c7,
+    primary-light: #4fc8d4,
+    primary-dark: #064e56,
+    secondary: #0b7e89,
+    secondary-hover: #0e939f,
+    secondary-light: #5ac2cc
+);
+
+$size: (
+    xs: 4px,
+    sm: 8px,
+    md: 16px,
+    lg: 24px,
+    xl: 32px,
+    xxl: 48px,
+    xxxl: 64px,
+    mega: 80px,
+    giga: 96px,
+    ultra: 120px
+);
+
+$font-sizes: (
+    sm: 14px,
+    base: 16px,
+    md: 18px,
+    lg: 32px,
+    xlg: 36px,
+    xl: 40px
+);
+
+$line-heights: (
+    sm: 20px,
+    base: 24px,
+    md: 32px,
+    lg: 40px,
+    xlg: 44px,
+    xl: 48px
+);
+
+$radii: (
+    pill: 128px,
+    sm: 4px,
+    md: 8px
+);
+
+$breakpoints: (
+    sm: 600px,
+    md: 900px,
+    lg: 1200px
+);

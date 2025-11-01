@@ -1,0 +1,10 @@
+// Helper functions
+@use "sass:map";
+
+@function token($map, $key) {
+    @return map.get($map, $key);
+}
+
+@function color($key) {
+    @return token($colors, $key);
+}
