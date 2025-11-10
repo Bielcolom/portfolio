@@ -1,0 +1,78 @@
+.root {
+    position: relative
+}
+
+.keyboardSvg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible
+}
+
+.plate {
+    fill: url(#plate);
+    stroke: #252a32;
+    stroke-width: 1.4;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .55))
+}
+
+.keycap {
+    fill: #181b21;
+    stroke: #262c33;
+    stroke-width: .8;
+    rx: 4;
+    transition: transform .25s, filter .35s
+}
+
+.keyGlow {
+    pointer-events: none;
+    mix-blend-mode: screen;
+    filter: blur(6px) brightness(1.15);
+    animation: hueShift 5.2s linear infinite;
+    opacity: .85
+}
+
+.keycapAnimated {
+    animation: breatheKey 3.6s ease-in-out infinite
+}
+
+@keyframes hueShift {
+    0% {
+        filter: blur(6px) brightness(1.15) hue-rotate(0deg)
+    }
+
+    50% {
+        filter: blur(6px) brightness(1.2) hue-rotate(180deg)
+    }
+
+    100% {
+        filter: blur(6px) brightness(1.15) hue-rotate(360deg)
+    }
+}
+
+@keyframes breatheKey {
+
+    0%,
+    100% {
+        transform: translateY(0);
+        filter: brightness(1)
+    }
+
+    50% {
+        transform: translateY(-1.5px);
+        filter: brightness(1.35)
+    }
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+    .keyGlow,
+    .keycapAnimated {
+        animation: none !important
+    }
+}
+
+.keycap:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.25) drop-shadow(0 0 4px #3ddcff)
+}

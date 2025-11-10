@@ -1,0 +1,24 @@
+.monitorRoot {
+    position: relative;
+    --glow-color: #3ddcff;
+    --glow-color-alt: #ff3df5
+}
+
+.monitorSvg {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .55)) drop-shadow(0 2px 4px rgba(0, 0, 0, .7));
+    overflow: visible
+}
+
+.bezelGlow {
+    stroke: url(#bezelStrokeGradient);
+    stroke-width: 3.2;
+    fill: none;
+    filter: drop-shadow(0 0 6px var(--glow-color)) drop-shadow(0 0 14px var(--glow-color-alt))
+}
+
+.standShadow {
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .6))
+}
