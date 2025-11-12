@@ -78,7 +78,13 @@ export default function HeroFaceLanding({
         animate={{ opacity: 1, scale: 1, rotateX: 0 }}
         transition={{ duration: 0 }}
       >
-        <div className={styles.monitorWrapper} style={{ width: `${monitorWidthVW}vw` }}>
+        <div
+          className={styles.monitorWrapper}
+          style={{
+            // En desktop mantiene el ancho basado en vw, en móviles asegura mínimo legible
+            width: `clamp(300px, ${monitorWidthVW}vw, 860px)`,
+          }}
+        >
           <Monitor durationMs={durationMs} reducedMotion={reduced}>
             {/* Ventana de pantalla del monitor (clip del media) */}
             <div className={styles.screenWindow}>

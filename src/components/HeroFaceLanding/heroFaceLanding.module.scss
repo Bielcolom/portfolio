@@ -92,3 +92,31 @@
     letter-spacing: -0.015em;
     line-height: 1.18;
 }
+
+/* Ajustes responsive para pantallas pequeñas */
+@media (max-width: 680px) {
+    .monitorWrapper {
+        /* Ocupa más ancho en móvil manteniendo límites razonables */
+        width: min(88vw, 560px);
+    }
+
+    .cta {
+        margin-top: 18px;
+        padding: 4px 12px 0;
+    }
+
+    .title {
+        /* Más pequeño y equilibrado en móviles */
+        font-size: clamp(1.48rem, 4vw + 0.8rem, 2rem);
+        line-height: 1.18;
+        letter-spacing: -0.02em;
+    }
+
+    .screenWindow {
+        /* Ajusta el área visible para aprovechar mejor el nuevo ancho */
+        left: 6%;
+        top: 8%;
+        width: 88%;
+        height: 80%;
+    }
+}
