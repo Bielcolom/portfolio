@@ -21,7 +21,7 @@ import KeyBoard from "./Keyboard";
 export default function HeroFaceLanding({
   mediaSrc = "/face.mp4", // o "/face.jpg"
   durationMs = 1800, // más rápido
-  monitorWidthVW = 52, // tamaño del monitor (responsive)
+  monitorWidthVW = 46, // tamaño del monitor (responsive) reducido para dejar espacio al título
 }: {
   mediaSrc?: string;
   durationMs?: number;
@@ -54,7 +54,7 @@ export default function HeroFaceLanding({
 
   return (
     <div className={styles.container}>
-      {/* Monitor + teclado único con el video/foto */}
+      {/* Monitor + teclado + CTA en columna */}
       <motion.div
         className={styles.overlay}
         initial={{ opacity: 1, scale: 1, rotateX: 0 }}
@@ -100,21 +100,20 @@ export default function HeroFaceLanding({
               </motion.div>
             </div>
           </Monitor>
-          {/* Separación aumentada para compensar nuevo pie del monitor */}
-          <div style={{ marginTop: "42px" }}>
+          {/* Espacio para teclado */}
+          <div style={{ marginTop: "34px" }}>
             <KeyBoard />
           </div>
         </div>
-      </motion.div>
-
-      {/* CTA opcional al final de la secuencia */}
-      <motion.div
-        className={styles.cta}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: phaseEnd / 1200, duration: 0.6 }}
-      >
-        <h1 className={styles.title}>Hola, soy Biel — Full‑stack dev</h1>
+        {/* CTA ahora justo debajo del teclado */}
+        <motion.div
+          className={styles.cta}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: phaseEnd / 1400, duration: 0.55 }}
+        >
+          <h1 className={styles.title}>Hola, soy Biel — Full‑stack dev</h1>
+        </motion.div>
       </motion.div>
     </div>
   );
