@@ -46,14 +46,52 @@ export default function Monitor({ children, durationMs = 1800, reducedMotion }: 
             <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0" />
             <feBlend in="SourceGraphic" mode="normal" />
           </filter>
+          <linearGradient id="standNeck" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#20252b" />
+            <stop offset="60%" stopColor="#14171a" />
+            <stop offset="100%" stopColor="#0c0e10" />
+          </linearGradient>
+          <linearGradient id="standEdge" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stopColor="#2ddcff" />
+            <stop offset="50%" stopColor="#835bff" />
+            <stop offset="100%" stopColor="#ff5fb1" />
+          </linearGradient>
+          <radialGradient id="standBase" cx="50%" cy="50%" r="65%">
+            <stop offset="0%" stopColor="#181b20" />
+            <stop offset="70%" stopColor="#101214" />
+            <stop offset="100%" stopColor="#0a0c0e" />
+          </radialGradient>
+          <filter id="standShadowFilter" x="-40%" y="-40%" width="180%" height="220%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="shadow" />
+            <feOffset dx="0" dy="6" result="shadowOffset" />
+            <feMerge>
+              <feMergeNode in="shadowOffset" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
         <rect x="60" y="40" width="1080" height="660" rx="22" fill="url(#bezelFill)" filter="url(#innerShadow)" />
         <rect x="90" y="70" width="1020" height="600" rx="12" fill="#0b0d10" />
         <rect x="90" y="70" width="1020" height="600" rx="12" fill="url(#screenGlow)" />
         <rect x="60" y="40" width="1080" height="660" rx="22" className={styles.bezelGlow} />
-        <g className={styles.standShadow}>
-          <rect x="550" y="700" width="100" height="40" rx="8" fill="#101317" />
-          <rect x="480" y="740" width="240" height="24" rx="12" fill="#0d1013" />
+        <g className={styles.standGroup}>
+          {/* Cuello del monitor (trapezoidal ampliado) */}
+          <path
+            d="M565 698 L635 698 L665 736 L535 736 Z"
+            fill="url(#standNeck)"
+            stroke="url(#standEdge)"
+            strokeWidth="2.4"
+          />
+          {/* Base curva más amplia y profunda */}
+          <path
+            d="M460 736 Q600 762 740 736 L740 766 Q600 786 460 766 Z"
+            fill="url(#standBase)"
+            stroke="url(#standEdge)"
+            strokeWidth="2.6"
+            filter="url(#standShadowFilter)"
+          />
+          {/* Sombra suave ajustada al nuevo tamaño */}
+          <ellipse cx="600" cy="770" rx="230" ry="18" fill="rgba(0,0,0,0.55)" />
         </g>
       </svg>
       {children}

@@ -100,7 +100,8 @@ export default function HeroFaceLanding({
               </motion.div>
             </div>
           </Monitor>
-          <div style={{ marginTop: "14px" }}>
+          {/* Separación aumentada para compensar nuevo pie del monitor */}
+          <div style={{ marginTop: "42px" }}>
             <KeyBoard />
           </div>
         </div>
