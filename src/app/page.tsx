@@ -9,9 +9,7 @@ export default function Home() {
           <span></span>
         </div>
       <main className={styles.main}>
-        {/* Hero ocupa toda la primera vista */}
         <HeroFaceLanding />
-        {/* Bloque inferior opcional (logo + CTAs) fuera del hero para no empujar el monitor */}
       </main>
     </div>
   );
