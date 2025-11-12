@@ -1,14 +1,28 @@
 import React from "react";
+import { motion } from "framer-motion";
 import styles from "./monitor.module.scss";
 
 interface MonitorProps {
   children?: React.ReactNode;
+  durationMs?: number; // duración total para sincronizar con la animación del video
+  reducedMotion?: boolean | null; // respetar prefers-reduced-motion pasado desde arriba (puede ser null en framer-motion)
 }
 
 /** Monitor: solo bezel + pantalla + soporte. Envuelve children dentro de un slot absoluto sobre la pantalla. */
-export default function Monitor({ children }: MonitorProps) {
+export default function Monitor({ children, durationMs = 1800, reducedMotion }: MonitorProps) {
+  const commonTransition = {
+    duration: durationMs / 1000,
+    ease: [0.16, 0.84, 0.39, 1],
+  } as const;
+
   return (
-    <div className={styles.monitorRoot}>
+    <motion.div
+      className={styles.monitorRoot}
+      data-anim="enter"
+      initial={reducedMotion ? false : { z: -220, scale: 0.92, opacity: 0.9 }}
+      animate={reducedMotion ? {} : { z: 0, scale: 1, opacity: 1 }}
+      transition={commonTransition}
+    >
       <svg viewBox="0 0 1200 760" className={styles.monitorSvg} aria-hidden>
         <defs>
           <linearGradient id="bezelFill" x1="0" x2="0" y1="0" y2="1">
@@ -43,6 +57,6 @@ export default function Monitor({ children }: MonitorProps) {
         </g>
       </svg>
       {children}
-    </div>
+    </motion.div>
   );
 }

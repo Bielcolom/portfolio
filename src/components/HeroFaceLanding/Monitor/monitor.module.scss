@@ -1,7 +1,10 @@
 .monitorRoot {
     position: relative;
     --glow-color: #3ddcff;
-    --glow-color-alt: #ff3df5
+    --glow-color-alt: #ff3df5;
+    transform-style: preserve-3d;
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
 }
 
 .monitorSvg {
@@ -21,4 +24,28 @@
 
 .standShadow {
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .6))
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .monitorRoot[data-anim="enter"] {
+        animation: monitorEnter var(--monitor-duration, 1.8s) cubic-bezier(.16, .84, .39, 1) forwards;
+    }
+}
+
+@keyframes monitorEnter {
+    0% {
+        transform: translateZ(-220px) scale(.92);
+        filter: blur(2px) brightness(.85);
+        opacity: .9;
+    }
+
+    55% {
+        filter: blur(0.4px) brightness(1);
+    }
+
+    100% {
+        transform: translateZ(0) scale(1);
+        filter: blur(0) brightness(1);
+        opacity: 1;
+    }
 }

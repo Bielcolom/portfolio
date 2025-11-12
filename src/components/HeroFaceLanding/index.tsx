@@ -62,22 +62,16 @@ export default function HeroFaceLanding({
         transition={{ duration: 0 }}
       >
         <div className={styles.monitorWrapper} style={{ width: `${monitorWidthVW}vw` }}>
-          <Monitor>
+          <Monitor durationMs={durationMs} reducedMotion={reduced}>
             {/* Ventana de pantalla del monitor (clip del media) */}
             <div className={styles.screenWindow}>
               <motion.div
                 className={styles.screenInner}
-                initial={{ scale: 1.35, }}
-                animate={
-                  reduced
-                    ? { scale: 1, }
-                    : {
-                        scale: 1,
-                      }
-                }
+                initial={reduced ? false : { scale: 1.35, z: 160, filter: 'blur(3px) brightness(1.08)' }}
+                animate={reduced ? { scale: 1 } : { scale: 1, z: 0, filter: 'blur(0px) brightness(1)' }}
                 transition={{
                   duration: phaseEnd / 1000,
-                  ease: [0.16, 0.84, 0.39, 1], /* curva suave aceleración y desaceleración */
+                  ease: [0.16, 0.84, 0.39, 1],
                   filter: { duration: phaseEnd / 1400 },
                 }}
               >
