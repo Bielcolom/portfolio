@@ -3,13 +3,12 @@
     height: 100svh;
     width: 100%;
     background: #000;
-    perspective: 1400px;
-    perspective-origin: 50% 40%;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 0;
-    /* Asegura que navbar con z-index alto se muestre encima */
+    /* navbar encima */
+    /* Quitamos perspective aquí para evitar stacking context global problemático en móviles */
 }
 
 /* backdrop eliminado (evitaba duplicado de video) */
@@ -43,6 +42,10 @@
     transform-style: preserve-3d;
     transform-origin: center bottom;
     will-change: transform, opacity;
+    /* Movemos perspective solo al bloque que necesita profundidad */
+    perspective: 1400px;
+    perspective-origin: 50% 40%;
+    z-index: 1;
 }
 
 
@@ -84,6 +87,8 @@
     text-align: center;
     color: #e5e5e5;
     pointer-events: none;
+    z-index: 2;
+    /* Asegura título por encima del monitor/video en móviles */
 }
 
 .title {

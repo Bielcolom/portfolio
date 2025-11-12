@@ -32,6 +32,9 @@
     z-index: 120;
     /* Elevar sobre stacking context creado por perspectiva del hero */
     color: var(--text-primary);
+    /* Workaround Safari/iOS + Android Chrome compositing con padres que usan 3D/perspective */
+    transform: translateZ(0);
+    will-change: transform;
   }
 
 
