@@ -24,6 +24,21 @@
     transition: transform .25s, filter .35s
 }
 
+/* Borde arcoiris completo con desplazamiento de color */
+.keyRainbow {
+    fill: none;
+    stroke: url(#keyRainbow);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    rx: 4;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, .15));
+    /* Ya no se modifica el hue, el movimiento viene de la rotación del gradiente SVG */
+    opacity: .9;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+
 .keyGlow {
     pointer-events: none;
     mix-blend-mode: screen;
@@ -50,24 +65,12 @@
     }
 }
 
-@keyframes breatheKey {
-
-    0%,
-    100% {
-        transform: translateY(0);
-        filter: brightness(1)
-    }
-
-    50% {
-        transform: translateY(-1.5px);
-        filter: brightness(1.35)
-    }
-}
 
 @media (prefers-reduced-motion:reduce) {
 
     .keyGlow,
-    .keycapAnimated {
+    .keycapAnimated,
+    .keyRainbow {
         animation: none !important
     }
 }
@@ -76,3 +79,5 @@
     transform: translateY(-3px);
     filter: brightness(1.25) drop-shadow(0 0 4px #3ddcff)
 }
+
+/* Se eliminó la animación CSS rainbowHue; la rotación ahora está dentro del SVG */

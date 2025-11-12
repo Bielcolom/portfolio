@@ -44,6 +44,15 @@ export default function Keyboard({
             <stop offset="0%" stopColor="#16181c" />
             <stop offset="100%" stopColor="#0c0d10" />
           </linearGradient>
+          {/* Gradiente multicolor con rotación continua (colores fijos que recorren el perímetro) */}
+          <linearGradient id="keyRainbow" x1="0" x2="1" y1="0" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0%" stopColor="#2ddcff" />
+            <stop offset="25%" stopColor="#835bff" />
+            <stop offset="50%" stopColor="#ff5fb1" />
+            <stop offset="75%" stopColor="#ffaa3d" />
+            <stop offset="100%" stopColor="#2ddcff" />
+            <animateTransform attributeName="gradientTransform" type="rotate" from="0 .5 .5" to="360 .5 .5" dur="8s" repeatCount="indefinite" />
+          </linearGradient>
         </defs>
         <rect width={plateWidth} height={plateHeight} rx={14} className={styles.plate} />
         {rows.map((cols, rowIdx) => {
@@ -54,6 +63,14 @@ export default function Keyboard({
             const animDelay = rowIdx * 400 + i * baseDelayMs;
             return (
               <g key={`r${rowIdx}-${i}`} transform={`translate(${x},${y})`}>
+                {/* Borde arcoiris completo */}
+                <rect
+                  width={keyWidth}
+                  height={keyHeight}
+                  className={styles.keyRainbow}
+                  rx={4}
+                  style={{ animationDelay: `${(rowIdx * 233 + i * 157) % 5000}ms` }}
+                />
                 <rect
                   width={keyWidth}
                   height={keyHeight}
