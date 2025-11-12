@@ -5,6 +5,8 @@ $colors: (
     background-dark: #0a0a0a,
     foreground-dark: #000000,
     text-light-primary: #000000,
+    // Color primario para texto en modo oscuro (faltaba, causaba color nulo)
+    text-dark-primary: #ffffff,
     // Removed neutral grays for a brighter palette
     text-light-secondary: #0b7e89,
     text-dark-secondary: #0b7e89,
