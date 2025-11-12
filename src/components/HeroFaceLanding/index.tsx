@@ -20,12 +20,16 @@ import KeyBoard from "./Keyboard";
  */
 export default function HeroFaceLanding({
   mediaSrc = "/face.mp4", // o "/face.jpg"
-  durationMs = 1800, // más rápido
+  durationMs = 2400, // transición más lenta (antes 1800)
   monitorWidthVW = 46, // tamaño del monitor (responsive) reducido para dejar espacio al título
+  startScale = 1.4, // escala inicial (más cerca)
+  startZ = 170, // z inicial (más cerca de cámara)
 }: {
   mediaSrc?: string;
   durationMs?: number;
   monitorWidthVW?: number;
+  startScale?: number;
+  startZ?: number;
 }) {
   const isVideo = mediaSrc.toLowerCase().endsWith(".mp4");
   // Solo una transición: cara grande -> cara encaja dentro del monitor.
@@ -52,6 +56,19 @@ export default function HeroFaceLanding({
     }
   }, [isVideo]);
 
+  useEffect(() => {
+    // Pausa el vídeo al terminar la animación principal (faseEnd)
+    if (isVideo && screenMedia.current instanceof HTMLVideoElement) {
+      const v = screenMedia.current;
+      const timeoutId = window.setTimeout(() => {
+        try {
+          if (!v.paused) v.pause();
+        } catch {}
+      }, phaseEnd);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isVideo, phaseEnd]);
+
   return (
     <div className={styles.container}>
       {/* Monitor + teclado + CTA en columna */}
@@ -67,12 +84,12 @@ export default function HeroFaceLanding({
             <div className={styles.screenWindow}>
               <motion.div
                 className={styles.screenInner}
-                initial={reduced ? false : { scale: 1.35, z: 160, filter: 'blur(3px) brightness(1.08)' }}
-                animate={reduced ? { scale: 1 } : { scale: 1, z: 0, filter: 'blur(0px) brightness(1)' }}
+                initial={reduced ? false : { scale: startScale, z: startZ, filter: 'brightness(1.08)' }}
+                animate={reduced ? { scale: 1 } : { scale: 1, z: 0, filter: 'brightness(1)' }}
                 transition={{
                   duration: phaseEnd / 1000,
                   ease: [0.16, 0.84, 0.39, 1],
-                  filter: { duration: phaseEnd / 1400 },
+                  filter: { duration: phaseEnd / 1300 },
                 }}
               >
                 {isVideo ? (
@@ -80,7 +97,6 @@ export default function HeroFaceLanding({
                     ref={setVideoRef}
                     className={styles.media}
                     src={mediaSrc}
-                    loop
                     muted
                     playsInline
                     autoPlay
