@@ -20,6 +20,19 @@
     flex-direction: column;
   }
 
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 10;
+  }
+
 
   .logo {
     @media (prefers-color-scheme: dark) {
