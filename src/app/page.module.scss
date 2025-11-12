@@ -28,7 +28,6 @@
     padding: 16px 32px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
     z-index: 10;
   }
@@ -39,5 +38,11 @@
       /* CSS filter invert necesita porcentaje o factor (1 = 100%). Evita conflicto con función Sass invert($color). */
       filter: invert(1);
     }
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    justify-content: center;
   }
 }
