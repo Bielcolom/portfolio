@@ -7,17 +7,21 @@
   min-height: 100vh;
   width: 100%;
   font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  background: var(--background);
+  /* Unifica fondo con hero para evitar banda inferior distinta en móviles */
 
   .main {
     position: relative;
     min-height: 100vh;
     width: 100%;
-    background-color: var(--foreground);
+    background: var(--background);
+    /* Evita contraste grisáceo con container negro */
     padding: 0;
     /* El padding grande desplazaba el monitor */
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    /* Previene scroll mínimo que revela fondo distinto */
   }
 
   .navbar {

@@ -81,10 +81,15 @@
 
 .cta {
     position: relative;
-    margin-top: 12px;
-    max-width: 60rem;
+    height: 100dvh;
+    /* viewport dinámico moderno */
+    height: 100svh;
+    /* fallback Safari iOS 15+ */
+    min-height: 100vh;
+    /* fallback universal */
     padding: 8px 16px 0;
-    text-align: center;
+    background: var(--background);
+    /* Igual que page para evitar diferencia de tonalidad */
     color: #e5e5e5;
     pointer-events: none;
     z-index: 2;
@@ -98,6 +103,8 @@
     font-size: clamp(1.4rem, 1.6vw + 0.95rem, 2.1rem);
     letter-spacing: -0.015em;
     line-height: 1.18;
+    z-index: 0;
+    /* capa base */
 }
 
 /* Ajustes responsive para pantallas pequeñas */
