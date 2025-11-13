@@ -69,9 +69,6 @@ export default function HeroFaceLanding({
     }
   }, [isVideo, phaseEnd]);
 
-  // Detecta pantalla pequeña para suavizar animación problemática en móviles
-  const isSmallScreen = typeof window !== 'undefined' && window.matchMedia('(max-width: 680px)').matches;
-
   return (
     <div className={styles.container}>
       {/* Monitor + teclado + CTA en columna */}
@@ -93,25 +90,13 @@ export default function HeroFaceLanding({
             <div className={styles.screenWindow}>
               <motion.div
                 className={styles.screenInner}
-                initial={
-                  reduced || isSmallScreen
-                    ? { scale: 1 }
-                    : { scale: startScale, z: startZ, filter: 'brightness(1.08)' }
-                }
-                animate={
-                  reduced || isSmallScreen
-                    ? { scale: 1 }
-                    : { scale: 1, z: 0, filter: 'brightness(1)' }
-                }
-                transition={
-                  reduced || isSmallScreen
-                    ? { duration: 0 }
-                    : {
-                        duration: phaseEnd / 1000,
-                        ease: [0.16, 0.84, 0.39, 1],
-                        filter: { duration: phaseEnd / 1300 },
-                      }
-                }
+                initial={reduced ? false : { scale: startScale, z: startZ, filter: 'brightness(1.08)' }}
+                animate={reduced ? { scale: 1 } : { scale: 1, z: 0, filter: 'brightness(1)' }}
+                transition={{
+                  duration: phaseEnd / 1000,
+                  ease: [0.16, 0.84, 0.39, 1],
+                  filter: { duration: phaseEnd / 1300 },
+                }}
               >
                 {isVideo ? (
                   <video
@@ -145,13 +130,9 @@ export default function HeroFaceLanding({
         {/* CTA ahora justo debajo del teclado */}
         <motion.div
           className={styles.cta}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: reduced || isSmallScreen ? 0.15 : phaseEnd / 2000,
-            duration: 0.45,
-            ease: 'easeOut',
-          }}
+          transition={{ delay: phaseEnd / 1400, duration: 0.55 }}
         >
           <h1 className={styles.title}>Hola, soy Biel — Full‑stack dev</h1>
         </motion.div>

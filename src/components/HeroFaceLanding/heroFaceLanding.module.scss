@@ -1,8 +1,6 @@
 .container {
     position: relative;
     height: 100svh;
-    min-height: 100vh;
-    /* fallback navegadores sin svh */
     width: 100%;
     background: #000;
     display: flex;
@@ -37,8 +35,6 @@
     justify-content: center;
     transform-style: preserve-3d;
     will-change: transform, opacity;
-    isolation: isolate;
-    /* evita mezcla de capas que puede tapar título en móviles */
 }
 
 .monitorWrapper {
@@ -64,7 +60,6 @@
     box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.4);
     transform-style: preserve-3d;
     will-change: transform, filter;
-    z-index: 1;
 }
 
 .screenInner {
@@ -72,7 +67,6 @@
     height: 100%;
     will-change: transform, filter;
     transform-style: preserve-3d;
-    z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -131,25 +125,5 @@
         top: 8%;
         width: 88%;
         height: 80%;
-    }
-
-    /* Flatten 3D en móviles para evitar bugs de composición y clipping */
-    .overlay,
-    .screenInner {
-        transform-style: flat;
-    }
-
-    .screenInner {
-        filter: none !important;
-        /* elimina transición de brillo que puede causar flicker */
-    }
-}
-
-/* Safe-area notch padding dinámico */
-@supports (padding-top: env(safe-area-inset-top)) {
-
-    .page .navbar,
-    .navbar {
-        padding-top: calc(16px + env(safe-area-inset-top));
     }
 }
