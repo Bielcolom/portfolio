@@ -1,29 +1,31 @@
 .container {
     position: relative;
+    height: 100dvh;
+    /* viewport dinámico moderno */
     height: 100svh;
+    /* fallback Safari iOS */
+    min-height: 100vh;
+    /* fallback universal */
     width: 100%;
-    background: #000;
+    background: var(--background);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 0;
-    /* navbar encima */
-    /* Quitamos perspective aquí para evitar stacking context global problemático en móviles */
+    /* base */
 }
 
 /* backdrop eliminado (evitaba duplicado de video) */
 
 .media {
     position: absolute;
-    /* ⬅️ Añade esto */
     top: 0;
-    /* ⬅️ Añade esto */
     left: 0;
-    /* ⬅️ Añade esto */
     width: 100%;
     height: 100%;
     object-fit: cover;
-
+    z-index: 0;
+    /* debajo de todo lo demás */
 }
 
 .overlay {
@@ -35,6 +37,8 @@
     justify-content: center;
     transform-style: preserve-3d;
     will-change: transform, opacity;
+    z-index: 1;
+    /* sobre media */
 }
 
 .monitorWrapper {
@@ -42,10 +46,10 @@
     transform-style: preserve-3d;
     transform-origin: center bottom;
     will-change: transform, opacity;
-    /* Movemos perspective solo al bloque que necesita profundidad */
     perspective: 1400px;
     perspective-origin: 50% 40%;
-    z-index: 1;
+    z-index: 2;
+    /* encima overlay base */
 }
 
 
@@ -55,11 +59,11 @@
     top: 9%;
     width: 84%;
     height: 79%;
-    // overflow: hidden;
     border-radius: 6px;
     box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.4);
     transform-style: preserve-3d;
     will-change: transform, filter;
+    z-index: 2;
 }
 
 .screenInner {
@@ -67,6 +71,7 @@
     height: 100%;
     will-change: transform, filter;
     transform-style: preserve-3d;
+    z-index: 2;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -81,19 +86,13 @@
 
 .cta {
     position: relative;
-    height: 100dvh;
-    /* viewport dinámico moderno */
-    height: 100svh;
-    /* fallback Safari iOS 15+ */
-    min-height: 100vh;
-    /* fallback universal */
+    margin-top: 12px;
     padding: 8px 16px 0;
-    background: var(--background);
-    /* Igual que page para evitar diferencia de tonalidad */
+    text-align: center;
     color: #e5e5e5;
     pointer-events: none;
-    z-index: 2;
-    /* Asegura título por encima del monitor/video en móviles */
+    z-index: 3;
+    /* por encima monitor */
 }
 
 .title {
@@ -103,8 +102,8 @@
     font-size: clamp(1.4rem, 1.6vw + 0.95rem, 2.1rem);
     letter-spacing: -0.015em;
     line-height: 1.18;
-    z-index: 0;
-    /* capa base */
+    z-index: 3;
+    /* acompaña CTA */
 }
 
 /* Ajustes responsive para pantallas pequeñas */
@@ -127,7 +126,6 @@
     }
 
     .screenWindow {
-        /* Ajusta el área visible para aprovechar mejor el nuevo ancho */
         left: 6%;
         top: 8%;
         width: 88%;
