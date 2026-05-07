@@ -37,6 +37,7 @@ const HeroFaceLanding = ({
   const isMobile = useIsMobile(768);
   const [phase, setPhase] = useState(-1);
   const [query, setQuery] = useState("");
+  const [viewportWidth, setViewportWidth] = useState(0);
 
   useEffect(() => {
     let complete = 0;
@@ -51,6 +52,13 @@ const HeroFaceLanding = ({
       window.clearTimeout(complete);
     };
   }, [replayKey, duration]);
+
+  useEffect(() => {
+    const syncViewport = () => setViewportWidth(window.innerWidth);
+    syncViewport();
+    window.addEventListener("resize", syncViewport);
+    return () => window.removeEventListener("resize", syncViewport);
+  }, []);
 
   const interactive = phase >= 2;
 
@@ -174,6 +182,14 @@ const HeroFaceLanding = ({
   const closeEditor = closeAndReset;
 
   const monitorReveal = phase >= 1 ? 1 : 0;
+  const desktopStageWidth = Math.min(monitorWidth + 12, 76);
+  const desktopMaxWidth = viewportWidth > 0 ? Math.min(900, viewportWidth - 64) : 980;
+  const stageWidthPx = viewportWidth > 0
+    ? Math.min((desktopStageWidth / 100) * viewportWidth, desktopMaxWidth)
+    : desktopMaxWidth;
+  const keyboardScale = isMobile
+    ? 1
+    : Math.max(1, Math.min(1.32, (stageWidthPx - 24) / 580));
 
   return (
     <div className={styles.root}>
@@ -191,8 +207,8 @@ const HeroFaceLanding = ({
       <div
         className={styles.stage}
         style={{
-          width: isMobile ? "94%" : `${monitorWidth}%`,
-          maxWidth: isMobile ? 520 : 720,
+          width: isMobile ? "94%" : `${desktopStageWidth}%`,
+          maxWidth: isMobile ? 560 : desktopMaxWidth,
           opacity: monitorReveal,
           transform: `scale(${monitorReveal ? 1 : 0.92}) translateY(${monitorReveal ? 0 : 24}px)`,
           transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
@@ -233,6 +249,7 @@ const HeroFaceLanding = ({
             <MagicKeyboard
               accent={accent}
               active={interactive}
+              scale={keyboardScale}
               onType={handleType}
               onCommand={handleCommand}
             />

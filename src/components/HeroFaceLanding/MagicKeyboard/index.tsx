@@ -15,6 +15,7 @@ type Cmd =
 interface Props {
   accent?: string;
   active?: boolean;
+  scale?: number;
   onType?: (ch: string) => void;
   onCommand?: (cmd: Cmd) => void;
 }
@@ -61,9 +62,9 @@ const KB_ROWS: Key[][] = [
     { k: "fn", w: 1, label: "fn", sm: true, deco: true },
     { k: "ctrl", w: 1, label: "control", sm: true, deco: true },
     { k: "alt", w: 1, label: "option", sm: true, deco: true },
-    { k: "cmd", w: 1.25, label: "⌘", deco: true },
+    { k: "cmd", w: 1.25, label: "cmd", deco: true },
     { k: " ", w: 5, label: "" },
-    { k: "cmd2", w: 1.25, label: "⌘", deco: true },
+    { k: "cmd2", w: 1.25, label: "cmd", deco: true },
     { k: "alt2", w: 1, label: "option", sm: true, deco: true },
     { k: "arrows", w: 3, special: "arrows" },
   ],
@@ -71,12 +72,24 @@ const KB_ROWS: Key[][] = [
 
 const SPECIAL = ["delete", "tab", "caps", "enter", "shift", "shift2", "fn", "ctrl", "alt", "alt2", "cmd", "cmd2"];
 const ROW_HUES = [-40, -15, 10, 35, 60];
+const BASE_UNIT = 32;
+const BASE_GAP = 6;
 
-const UNIT = 32;
-const GAP = 6;
-
-const MagicKeyboard = ({ accent = "#3ddcff", onType, onCommand, active = true }: Props) => {
+const MagicKeyboard = ({
+  accent = "#3ddcff",
+  onType,
+  onCommand,
+  active = true,
+  scale = 1,
+}: Props) => {
   const [pressed, setPressed] = useState<Set<string>>(new Set());
+  const unit = BASE_UNIT * scale;
+  const gap = BASE_GAP * scale;
+  const padding = 12 * scale;
+  const keyFont = 10.5 * scale;
+  const smallKeyFont = 8 * scale;
+  const smallPaddingLeft = 6 * scale;
+  const smallPaddingTop = 3 * scale;
 
   const flash = useCallback((key: string) => {
     setPressed((prev) => {
@@ -84,7 +97,7 @@ const MagicKeyboard = ({ accent = "#3ddcff", onType, onCommand, active = true }:
       next.add(key);
       return next;
     });
-    setTimeout(() => {
+    window.setTimeout(() => {
       setPressed((prev) => {
         const next = new Set(prev);
         next.delete(key);
@@ -95,39 +108,53 @@ const MagicKeyboard = ({ accent = "#3ddcff", onType, onCommand, active = true }:
 
   useEffect(() => {
     if (!active) return;
+
     const handler = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) return;
+
       const k = e.key;
-      if (k === "Enter")      { e.preventDefault(); flash("enter");      onCommand?.("enter");      return; }
-      if (k === "Backspace")  { e.preventDefault(); flash("delete");     onCommand?.("backspace");  return; }
-      if (k === "Tab")        { e.preventDefault(); flash("tab");        onCommand?.("tab");        return; }
-      if (k === "Escape")     {                                          onCommand?.("esc");        return; }
-      if (k === "ArrowUp")    { e.preventDefault(); flash("arrowup");    onCommand?.("arrowup");    return; }
-      if (k === "ArrowDown")  { e.preventDefault(); flash("arrowdown");  onCommand?.("arrowdown");  return; }
-      if (k === "ArrowLeft")  { e.preventDefault(); flash("arrowleft");  onCommand?.("arrowleft");  return; }
+      if (k === "Enter") { e.preventDefault(); flash("enter"); onCommand?.("enter"); return; }
+      if (k === "Backspace") { e.preventDefault(); flash("delete"); onCommand?.("backspace"); return; }
+      if (k === "Tab") { e.preventDefault(); flash("tab"); onCommand?.("tab"); return; }
+      if (k === "Escape") { onCommand?.("esc"); return; }
+      if (k === "ArrowUp") { e.preventDefault(); flash("arrowup"); onCommand?.("arrowup"); return; }
+      if (k === "ArrowDown") { e.preventDefault(); flash("arrowdown"); onCommand?.("arrowdown"); return; }
+      if (k === "ArrowLeft") { e.preventDefault(); flash("arrowleft"); onCommand?.("arrowleft"); return; }
       if (k === "ArrowRight") { e.preventDefault(); flash("arrowright"); onCommand?.("arrowright"); return; }
       if (k === " ") { e.preventDefault(); flash(" "); onType?.(" "); return; }
       if (k === "Shift") { flash("shift"); flash("shift2"); return; }
+
       if (k.length === 1) {
         flash(k.toLowerCase());
         onType?.(k);
       }
     };
+
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [active, onType, onCommand, flash]);
+  }, [active, flash, onCommand, onType]);
 
   const handleClick = (id: string, ch: string) => {
     flash(id);
+
     if (SPECIAL.includes(id)) {
       if (id === "enter") onCommand?.("enter");
       else if (id === "delete") onCommand?.("backspace");
       else if (id === "tab") onCommand?.("tab");
-    } else if (id.startsWith("arrow")) {
+      return;
+    }
+
+    if (id.startsWith("arrow")) {
       onCommand?.(id as Cmd);
-    } else if (ch === " ") {
+      return;
+    }
+
+    if (ch === " ") {
       onType?.(" ");
-    } else if (ch.length === 1) {
+      return;
+    }
+
+    if (ch.length === 1) {
       onType?.(ch);
     }
   };
@@ -137,6 +164,7 @@ const MagicKeyboard = ({ accent = "#3ddcff", onType, onCommand, active = true }:
       className={styles.root}
       style={{
         ["--accent" as string]: accent,
+        padding,
         border: `1px solid color-mix(in oklch, ${accent} 22%, transparent)`,
         background: `linear-gradient(180deg,
           color-mix(in oklch, ${accent} 5%, transparent) 0%,
@@ -148,29 +176,39 @@ const MagicKeyboard = ({ accent = "#3ddcff", onType, onCommand, active = true }:
         `,
       }}
     >
-      <div className={styles.rows}>
+      <div className={styles.rows} style={{ gap }}>
         {KB_ROWS.map((row, ri) => {
           const rowAccent = `oklch(from ${accent} l c calc(h + ${ROW_HUES[ri] || 0}))`;
+
           return (
-            <div key={ri} className={styles.row}>
+            <div key={ri} className={styles.row} style={{ gap }}>
               {row.map((key, ki) => {
                 if (key.special === "arrows") {
                   return (
                     <ArrowCluster
                       key={`${ri}-${ki}`}
                       accent={rowAccent}
+                      unit={unit}
+                      gap={gap}
+                      fontSize={smallKeyFont}
+                      smallPaddingLeft={smallPaddingLeft}
+                      smallPaddingTop={smallPaddingTop}
                       pressed={pressed}
                       onClick={handleClick}
                     />
                   );
                 }
+
                 return (
                   <Keycap
                     key={`${ri}-${ki}`}
-                    width={key.w * UNIT + (key.w - 1) * GAP}
-                    height={UNIT}
+                    width={key.w * unit + (key.w - 1) * gap}
+                    height={unit}
                     label={key.label !== undefined ? key.label : key.k}
                     smallLabel={key.sm}
+                    fontSize={key.sm ? smallKeyFont : keyFont}
+                    smallPaddingLeft={smallPaddingLeft}
+                    smallPaddingTop={smallPaddingTop}
                     decorative={key.deco}
                     pressed={pressed.has(key.k)}
                     accent={rowAccent}
@@ -191,13 +229,28 @@ interface KeycapProps {
   height: number;
   label?: string;
   smallLabel?: boolean;
+  fontSize: number;
+  smallPaddingLeft: number;
+  smallPaddingTop: number;
   decorative?: boolean;
   pressed?: boolean;
   accent: string;
   onClick?: () => void;
 }
 
-const Keycap = ({ width, height, label, smallLabel, decorative, pressed, accent, onClick }: KeycapProps) => {
+const Keycap = ({
+  width,
+  height,
+  label,
+  smallLabel,
+  fontSize,
+  smallPaddingLeft,
+  smallPaddingTop,
+  decorative,
+  pressed,
+  accent,
+  onClick,
+}: KeycapProps) => {
   const isUpper = !smallLabel && label && label.length === 1 && /[a-z]/i.test(label);
   const display = isUpper ? label!.toUpperCase() : label;
 
@@ -207,7 +260,8 @@ const Keycap = ({ width, height, label, smallLabel, decorative, pressed, accent,
       onClick={onClick}
       className={styles.keycap}
       style={{
-        width, height,
+        width,
+        height,
         background: pressed
           ? `color-mix(in oklch, ${accent} 75%, transparent)`
           : `color-mix(in oklch, ${accent} 12%, transparent)`,
@@ -219,14 +273,14 @@ const Keycap = ({ width, height, label, smallLabel, decorative, pressed, accent,
           : decorative
             ? `color-mix(in oklch, ${accent} 55%, white 15%)`
             : `color-mix(in oklch, ${accent} 75%, white 22%)`,
-        fontSize: smallLabel ? 8 : 10.5,
+        fontSize,
         fontWeight: pressed ? 600 : 400,
         letterSpacing: smallLabel ? "0.08em" : 0,
         textTransform: smallLabel ? "uppercase" : "none",
         transform: pressed ? "scale(1.06)" : "scale(1)",
         textAlign: smallLabel ? "left" : "center",
-        paddingLeft: smallLabel ? 6 : 0,
-        paddingTop: smallLabel ? 3 : 0,
+        paddingLeft: smallLabel ? smallPaddingLeft : 0,
+        paddingTop: smallLabel ? smallPaddingTop : 0,
         alignItems: smallLabel ? "flex-start" : "center",
         justifyContent: smallLabel ? "flex-start" : "center",
       }}
@@ -238,27 +292,83 @@ const Keycap = ({ width, height, label, smallLabel, decorative, pressed, accent,
 
 interface ArrowsProps {
   accent: string;
+  unit: number;
+  gap: number;
+  fontSize: number;
+  smallPaddingLeft: number;
+  smallPaddingTop: number;
   pressed: Set<string>;
   onClick: (id: string, ch: string) => void;
 }
 
-const ArrowCluster = ({ accent, pressed, onClick }: ArrowsProps) => {
-  const halfH = UNIT / 2 - 2.5;
+const ArrowCluster = ({
+  accent,
+  unit,
+  gap,
+  fontSize,
+  smallPaddingLeft,
+  smallPaddingTop,
+  pressed,
+  onClick,
+}: ArrowsProps) => {
+  const halfHeight = unit / 2 - (2.5 * unit) / BASE_UNIT;
+  const clusterGap = Math.max(3, gap - 1);
+
   return (
-    <div className={styles.arrows}>
-      <div className={styles.arrowsTop}>
-        <div style={{ width: UNIT }} />
-        <Keycap width={UNIT} height={halfH} label="▲" smallLabel pressed={pressed.has("arrowup")} accent={accent}
-          onClick={() => onClick("arrowup", "arrowup")} />
-        <div style={{ width: UNIT }} />
+    <div className={styles.arrows} style={{ width: unit * 3 + clusterGap * 2, gap: clusterGap }}>
+      <div className={styles.arrowsTop} style={{ gap: clusterGap }}>
+        <div style={{ width: unit }} />
+        <Keycap
+          width={unit}
+          height={halfHeight}
+          label="^"
+          smallLabel
+          fontSize={fontSize}
+          smallPaddingLeft={smallPaddingLeft}
+          smallPaddingTop={smallPaddingTop}
+          pressed={pressed.has("arrowup")}
+          accent={accent}
+          onClick={() => onClick("arrowup", "arrowup")}
+        />
+        <div style={{ width: unit }} />
       </div>
-      <div className={styles.arrowsBottom}>
-        <Keycap width={UNIT} height={halfH} label="◀" smallLabel pressed={pressed.has("arrowleft")} accent={accent}
-          onClick={() => onClick("arrowleft", "arrowleft")} />
-        <Keycap width={UNIT} height={halfH} label="▼" smallLabel pressed={pressed.has("arrowdown")} accent={accent}
-          onClick={() => onClick("arrowdown", "arrowdown")} />
-        <Keycap width={UNIT} height={halfH} label="▶" smallLabel pressed={pressed.has("arrowright")} accent={accent}
-          onClick={() => onClick("arrowright", "arrowright")} />
+      <div className={styles.arrowsBottom} style={{ gap: clusterGap }}>
+        <Keycap
+          width={unit}
+          height={halfHeight}
+          label="<"
+          smallLabel
+          fontSize={fontSize}
+          smallPaddingLeft={smallPaddingLeft}
+          smallPaddingTop={smallPaddingTop}
+          pressed={pressed.has("arrowleft")}
+          accent={accent}
+          onClick={() => onClick("arrowleft", "arrowleft")}
+        />
+        <Keycap
+          width={unit}
+          height={halfHeight}
+          label="v"
+          smallLabel
+          fontSize={fontSize}
+          smallPaddingLeft={smallPaddingLeft}
+          smallPaddingTop={smallPaddingTop}
+          pressed={pressed.has("arrowdown")}
+          accent={accent}
+          onClick={() => onClick("arrowdown", "arrowdown")}
+        />
+        <Keycap
+          width={unit}
+          height={halfHeight}
+          label=">"
+          smallLabel
+          fontSize={fontSize}
+          smallPaddingLeft={smallPaddingLeft}
+          smallPaddingTop={smallPaddingTop}
+          pressed={pressed.has("arrowright")}
+          accent={accent}
+          onClick={() => onClick("arrowright", "arrowright")}
+        />
       </div>
     </div>
   );
