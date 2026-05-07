@@ -25,7 +25,7 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen }: Props
         {">"}
       </span>
       <span className={styles.commandValue} data-empty={!query || undefined}>
-        {query || "search sections"}
+        {query}
       </span>
       <span className={styles.commandCursor} style={{ background: accent }} />
     </div>
