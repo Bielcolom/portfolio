@@ -91,7 +91,7 @@ a:focus-visible::after {
   transition: background-color .3s, color .3s, border-color .3s;
   text-decoration: none;
 
-  //quitar subrayado dinamico
+  /* prevent the animated underline pseudo-element from showing on .button */
   position: relative;
   overflow: hidden;
 }

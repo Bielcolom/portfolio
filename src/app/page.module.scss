@@ -3,25 +3,25 @@
 @use "sass:map";
 
 .page {
-  /* Quitamos centrado externo que fuerza layout y dejamos que el Hero se encargue */
+  /* Remove outer centering so the Hero handles its own layout */
   min-height: 100vh;
   width: 100%;
   font-family: var(--font-geist-sans);
   background: var(--background);
-  /* Unifica fondo con hero para evitar banda inferior distinta en móviles */
+  /* Unify background with the hero to avoid a different-color band at the bottom on mobile */
 
   .main {
     position: relative;
     min-height: 100vh;
     width: 100%;
     background: var(--background);
-    /* Evita contraste grisáceo con container negro */
+    /* Prevents grayish contrast with the black container */
     padding: 0;
-    /* El padding grande desplazaba el monitor */
+    /* Large padding was pushing the monitor off-center */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Previene scroll mínimo que revela fondo distinto */
+    /* Prevents minimal scroll from revealing a different background */
   }
 
   .navbar {
@@ -35,9 +35,9 @@
     justify-content: space-between;
     gap: 16px;
     z-index: 120;
-    /* Elevar sobre stacking context creado por perspectiva del hero */
+    /* Elevate above the stacking context created by the hero's perspective transform */
     color: var(--text-primary);
-    /* Workaround Safari/iOS + Android Chrome compositing con padres que usan 3D/perspective */
+    /* Workaround for Safari/iOS + Android Chrome compositing issues when parents use 3D/perspective */
     transform: translateZ(0);
     will-change: transform;
   }
@@ -45,7 +45,7 @@
 
   .logo {
     @media (prefers-color-scheme: dark) {
-      /* CSS filter invert necesita porcentaje o factor (1 = 100%). Evita conflicto con función Sass invert($color). */
+      /* CSS filter invert needs a unitless factor (1 = 100%). Avoids conflict with Sass's invert($color) function. */
       filter: invert(1);
     }
   }
