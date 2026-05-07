@@ -9,14 +9,14 @@ $z-navbar: map.get(vars.$z-indexes, navbar);
   min-height: 100vh;
   width: 100%;
   font-family: var(--font-geist-sans);
-  background: var(--background);
+  background: transparent;
   /* Unify background with the hero to avoid a different-color band at the bottom on mobile */
 
   .main {
     position: relative;
     min-height: 100vh;
     width: 100%;
-    background: var(--background);
+    background: transparent;
     /* Prevents grayish contrast with the black container */
     padding: 0;
     /* Large padding was pushing the monitor off-center */
