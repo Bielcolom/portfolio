@@ -62,7 +62,7 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen }: Props
               data-selected={selected || undefined}
               data-mobile={isMobile || undefined}
               style={{
-                background: selected ? `color-mix(in oklch, ${accent} 18%, transparent)` : "transparent",
+                background: selected ? `color-mix(in oklch, ${accent} 18%, transparent)` : undefined,
                 borderLeft: `2px solid ${selected ? accent : "transparent"}`,
               }}
             >
