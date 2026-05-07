@@ -7,6 +7,7 @@ import MagicKeyboard from "./MagicKeyboard";
 import CodeOverlay, { EditorView } from "./CodeOverlay";
 import styles from "./heroFaceLanding.module.scss";
 import { useIsMobile } from "./useIsMobile";
+import { useLanguage } from "@/i18n/context";
 
 interface Props {
   /** Path to the face media — `.mp4` autoplays as video, otherwise treated as image. */
@@ -35,6 +36,7 @@ const HeroFaceLanding = ({
   monitorWidth = 60,
 }: Props) => {
   const isMobile = useIsMobile(768);
+  const { t } = useLanguage();
   const [phase, setPhase] = useState(-1);
   const [query, setQuery] = useState("");
   const [viewportWidth, setViewportWidth] = useState(0);
@@ -68,7 +70,12 @@ const HeroFaceLanding = ({
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
   const deferredQuery = useDeferredValue(query);
 
-  const filteredItems = MENU_ITEMS.filter((item) => {
+  const localizedItems = MENU_ITEMS.map((item) => ({
+    ...item,
+    desc: t.items[item.id as keyof typeof t.items] ?? item.desc,
+  }));
+
+  const filteredItems = localizedItems.filter((item) => {
     const needle = deferredQuery.trim().toLowerCase();
     if (!needle) return true;
 
@@ -259,9 +266,9 @@ const HeroFaceLanding = ({
 
       {/* Bottom meta line */}
       <div className={styles.meta} data-visible={phase >= 2 || undefined} data-mobile={isMobile || undefined}>
-        <span>Full-stack dev</span>
+        <span>{t.meta.role}</span>
         <span style={{ color: accent }}>● GABRIEL COLOM MOLL</span>
-        {!isMobile && <span>Portfolio / 01</span>}
+        {!isMobile && <span>{t.meta.portfolio}</span>}
       </div>
     </div>
   );

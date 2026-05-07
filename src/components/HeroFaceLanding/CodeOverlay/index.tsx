@@ -3,6 +3,7 @@ import { MenuItem } from "../data";
 import MenuList from "./MenuList";
 import CodeView from "./CodeView";
 import styles from "./codeOverlay.module.scss";
+import { useLanguage } from "@/i18n/context";
 
 export type EditorView = "closed" | "menu" | "viewing";
 
@@ -37,6 +38,10 @@ const CodeOverlay = ({
   onBack,
   onClose,
 }: Props) => {
+  const { t } = useLanguage();
+  const hm = t.overlay.hintMenu;
+  const hv = t.overlay.hintViewing;
+
   if (view === "closed") {
     return (
       <div
@@ -52,7 +57,7 @@ const CodeOverlay = ({
             className={styles.pillDot}
             style={{ background: accent, boxShadow: `0 0 10px ${accent}` }}
           />
-          {isMobile ? "Tap to start" : "Type to search..."}
+          {isMobile ? t.overlay.closed.mobile : t.overlay.closed.desktop}
         </div>
       </div>
     );
@@ -68,7 +73,7 @@ const CodeOverlay = ({
             className={styles.backBtn}
             style={{ color: accent }}
           >
-            {"<-"} <span>back</span>
+            {"<-"} <span>{t.overlay.back}</span>
           </button>
         ) : (
           <>
@@ -86,13 +91,13 @@ const CodeOverlay = ({
           <span className={styles.hint}>
             {view === "menu" ? (
               <>
-                type to filter · <Key>up</Key><Key>down</Key> nav · <Key>enter</Key> open ·{" "}
-                <Key>del</Key> erase · <Key>esc</Key> close
+                {hm.typeToFilter} · <Key>up</Key><Key>down</Key> {hm.nav} · <Key>enter</Key> {hm.open} ·{" "}
+                <Key>del</Key> {hm.erase} · <Key>esc</Key> {hm.close}
               </>
             ) : (
               <>
-                <Key>enter</Key> back · <Key>up</Key><Key>down</Key> next · type to search ·{" "}
-                <Key>esc</Key> close
+                <Key>enter</Key> {hv.back} · <Key>up</Key><Key>down</Key> {hv.next} · {hv.typeToSearch} ·{" "}
+                <Key>esc</Key> {hv.close}
               </>
             )}
           </span>

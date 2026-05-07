@@ -32,6 +32,7 @@
     padding: 16px 32px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     z-index: 120;
     /* Elevar sobre stacking context creado por perspectiva del hero */
@@ -52,6 +53,6 @@
 
 @media (max-width: 600px) {
   .navbar {
-    justify-content: center;
+    padding: 14px 20px;
   }
 }
