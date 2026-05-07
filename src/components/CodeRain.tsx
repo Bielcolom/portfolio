@@ -115,6 +115,13 @@ export default function CodeRain() {
     };
 
     init();
+
+    if (mobile) {
+      // On real mobile devices the canvas animation tanks CPU and kills video autoplay.
+      // The dark body background already covers the page — no animation needed.
+      return;
+    }
+
     schedule();
 
     const onResize = () => { init(); };
