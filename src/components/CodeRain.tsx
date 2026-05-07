@@ -95,7 +95,7 @@ export default function CodeRain() {
           const ch = col.stream[((row % sLen) + sLen) % sLen];
           if (ch === " ") continue;
 
-          const alpha = Math.max(0, (1 - t / TRAIL) * 0.7);
+          const alpha = Math.max(0, (1 - t / TRAIL) * 0.28);
           ctx.fillStyle = `rgba(61,220,255,${alpha})`;
 
           ctx.fillText(ch, px, py);
@@ -126,7 +126,7 @@ export default function CodeRain() {
         inset: 0,
         zIndex: 0,
         pointerEvents: "none",
-        opacity: 0.4,
+        opacity: 1,
       }}
     />
   );
