@@ -1,0 +1,51 @@
+.root {
+  padding: 12px;
+  border-radius: 10px;
+  display: inline-block;
+  user-select: none;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+}
+
+.keycap {
+  position: relative;
+  border: none;
+  border-radius: 3px;
+  padding: 0;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  display: flex;
+  outline: none;
+  transition:
+    transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 200ms ease-out,
+    box-shadow 200ms ease-out,
+    color 160ms ease-out;
+}
+
+.arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: calc(32px * 3 + 10px);
+}
+
+.arrowsTop {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.arrowsBottom {
+  display: flex;
+  gap: 5px;
+}

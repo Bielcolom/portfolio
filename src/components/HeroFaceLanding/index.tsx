@@ -1,145 +1,224 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import Image from "next/image";
-import styles from "./heroFaceLanding.module.scss"; // <-- Sass (CSS Modules)
+import { useEffect, useState } from "react";
+import { MENU_ITEMS, MenuItem } from "./data";
+import FaceMedia from "./FaceMedia";
 import Monitor from "./Monitor";
-import KeyBoard from "./Keyboard";
+import MagicKeyboard from "./MagicKeyboard";
+import CodeOverlay, { EditorView } from "./CodeOverlay";
+import styles from "./heroFaceLanding.module.scss";
+import { useIsMobile } from "./useIsMobile";
 
-/**
- * HeroFaceLanding (Sass version, no Tailwind)
- *
- * Qué hace
- *  - Al cargar: pantalla negra → aumenta la luminancia del media (vídeo o foto)
- *  - Efecto de alejamiento (dolly-out) mientras aparece un monitor con teclado
- *  - Termina con la cara encapsulada dentro del monitor
- *
- * Requisitos
- *  - npm i framer-motion sass
- *  - Coloca /face.mp4 o /face.jpg en /public
- */
-export default function HeroFaceLanding({
-  mediaSrc = "/face.mp4", // o "/face.jpg"
-  durationMs = 2400, // transición más lenta (antes 1800)
-  monitorWidthVW = 46, // tamaño del monitor (responsive) reducido para dejar espacio al título
-  startScale = 1.4, // escala inicial (más cerca)
-  startZ = 170, // z inicial (más cerca de cámara)
-}: {
-  mediaSrc?: string;
-  durationMs?: number;
-  monitorWidthVW?: number;
-  startScale?: number;
-  startZ?: number;
-}) {
-  const isVideo = mediaSrc.toLowerCase().endsWith(".mp4");
-  // Solo una transición: cara grande -> cara encaja dentro del monitor.
-  const phaseEnd = durationMs; // fin de la animación (shrink total)
-
-  const reduced = useReducedMotion();
-  const screenMedia = useRef<HTMLVideoElement | HTMLImageElement | null>(null);
-  // Typed callback refs to avoid `any` casts when assigning conditionally to video or image
-  const setVideoRef = (node: HTMLVideoElement | null) => {
-    screenMedia.current = node;
-  };
-  const setImageRef = (node: HTMLImageElement | null) => {
-    screenMedia.current = node;
-  };
-
-  useEffect(() => {
-    // Reproducción del video sin animaciones compuestas.
-    if (isVideo && screenMedia.current instanceof HTMLVideoElement) {
-      const v = screenMedia.current;
-      v.muted = true;
-      v.playsInline = true;
-      v.autoplay = true;
-      void v.play().catch(() => {});
-    }
-  }, [isVideo]);
-
-  useEffect(() => {
-    // Pausa el vídeo al terminar la animación principal (faseEnd)
-    if (isVideo && screenMedia.current instanceof HTMLVideoElement) {
-      const v = screenMedia.current;
-      const timeoutId = window.setTimeout(() => {
-        try {
-          if (!v.paused) v.pause();
-        } catch {}
-      }, phaseEnd);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [isVideo, phaseEnd]);
-
-  return (
-    <div className={styles.container}>
-      {/* Monitor + teclado + CTA en columna */}
-      <motion.div
-        className={styles.overlay}
-        initial={{ opacity: 1, scale: 1, rotateX: 0 }}
-        animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-        transition={{ duration: 0 }}
-      >
-        <div
-          className={styles.monitorWrapper}
-          style={{
-            // En desktop mantiene el ancho basado en vw, en móviles asegura mínimo legible
-            width: `clamp(300px, ${monitorWidthVW}vw, 860px)`,
-          }}
-        >
-          <Monitor durationMs={durationMs} reducedMotion={reduced}>
-            {/* Ventana de pantalla del monitor (clip del media) */}
-            <div className={styles.screenWindow}>
-              <motion.div
-                className={styles.screenInner}
-                initial={reduced ? false : { scale: startScale, z: startZ, filter: 'brightness(1.08)' }}
-                animate={reduced ? { scale: 1 } : { scale: 1, z: 0, filter: 'brightness(1)' }}
-                transition={{
-                  duration: phaseEnd / 1000,
-                  ease: [0.16, 0.84, 0.39, 1],
-                  filter: { duration: phaseEnd / 1300 },
-                }}
-              >
-                {isVideo ? (
-                  <video
-                    ref={setVideoRef}
-                    className={styles.media}
-                    src={mediaSrc}
-                    muted
-                    playsInline
-                    autoPlay
-                    preload="metadata"
-                  />
-                ) : (
-                  <Image
-                    ref={setImageRef}
-                    src={mediaSrc}
-                    alt="Tu rostro en monitor"
-                    fill
-                    sizes="84vw"
-                    className={styles.media}
-                    priority
-                  />
-                )}
-              </motion.div>
-            </div>
-          </Monitor>
-          {/* Espacio para teclado */}
-          <div style={{ marginTop: "34px" }}>
-            <KeyBoard />
-          </div>
-        </div>
-        {/* CTA ahora justo debajo del teclado */}
-        <motion.div
-          className={styles.cta}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: phaseEnd / 1400, duration: 0.55 }}
-        >
-          <h1 className={styles.title}>Hola, soy Biel — Full‑stack dev</h1>
-        </motion.div>
-      </motion.div>
-    </div>
-  );
+interface Props {
+  /** Path to the face media — `.mp4` autoplays as video, otherwise treated as image. */
+  faceSrc?: string;
+  /** Accent color (hex / oklch). Default electric blue. */
+  accent?: string;
+  /** ms for the zoom-out + reveal transition. */
+  duration?: number;
+  /** 0..1 — bezel + screen accent glow strength. */
+  glowIntensity?: number;
+  /** Bumping this restarts the animation. */
+  replayKey?: number;
+  /** Show CRT scanlines on the monitor screen. */
+  showScanlines?: boolean;
+  /** Bigger = wider monitor on desktop (% of viewport width). */
+  monitorWidth?: number;
 }
 
-// MonitorWithKeyboard extraído a su propio componente.
+const HeroFaceLanding = ({
+  faceSrc = "/face.mp4",
+  accent = "#3ddcff",
+  duration = 1400,
+  glowIntensity = 0.6,
+  replayKey = 0,
+  showScanlines = true,
+  monitorWidth = 60,
+}: Props) => {
+  const isMobile = useIsMobile(768);
+  const [phase, setPhase] = useState(0);
 
+  useEffect(() => {
+    setPhase(0);
+    const ts = [
+      window.setTimeout(() => setPhase(1), 50),
+      window.setTimeout(() => setPhase(2), duration + 100),
+    ];
+    return () => ts.forEach((t) => window.clearTimeout(t));
+  }, [replayKey, duration]);
+
+  const interactive = phase >= 2;
+
+  // Editor state machine
+  const [editorView, setEditorView] = useState<EditorView>("closed");
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
+
+  useEffect(() => {
+    setEditorView("closed");
+    setSelectedIdx(0);
+    setActiveItem(null);
+  }, [replayKey]);
+
+  // Keyboard input — only meaningful on desktop, but harmless on mobile
+  const handleType = () => {
+    if (editorView === "closed") {
+      setEditorView("menu");
+      setSelectedIdx(0);
+    }
+  };
+
+  const handleCommand = (cmd: string) => {
+    if (editorView === "closed") {
+      if (cmd === "enter" || cmd === "arrowdown" || cmd === "arrowup") {
+        setEditorView("menu");
+        setSelectedIdx(0);
+      }
+      return;
+    }
+    if (editorView === "menu") {
+      if (cmd === "arrowdown") {
+        setSelectedIdx((i) => (i + 1) % MENU_ITEMS.length);
+      } else if (cmd === "arrowup") {
+        setSelectedIdx((i) => (i - 1 + MENU_ITEMS.length) % MENU_ITEMS.length);
+      } else if (cmd === "enter") {
+        setActiveItem(MENU_ITEMS[selectedIdx]);
+        setEditorView("viewing");
+      } else if (cmd === "esc") {
+        setEditorView("closed");
+      }
+      return;
+    }
+    // viewing
+    if (cmd === "enter" || cmd === "backspace" || cmd === "arrowleft") {
+      setEditorView("menu");
+      setActiveItem(null);
+    } else if (cmd === "esc") {
+      setEditorView("closed");
+      setActiveItem(null);
+    } else if (cmd === "arrowdown") {
+      const next = (selectedIdx + 1) % MENU_ITEMS.length;
+      setSelectedIdx(next);
+      setActiveItem(MENU_ITEMS[next]);
+    } else if (cmd === "arrowup") {
+      const prev = (selectedIdx - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
+      setSelectedIdx(prev);
+      setActiveItem(MENU_ITEMS[prev]);
+    }
+  };
+
+  // Touch helpers (mobile)
+  const openMenu = () => {
+    if (editorView === "closed") {
+      setEditorView("menu");
+      setSelectedIdx(0);
+    }
+  };
+  const openItem = (idx: number) => {
+    setSelectedIdx(idx);
+    setActiveItem(MENU_ITEMS[idx]);
+    setEditorView("viewing");
+  };
+  const backToMenu = () => {
+    setEditorView("menu");
+    setActiveItem(null);
+  };
+  const closeEditor = () => {
+    setEditorView("closed");
+    setActiveItem(null);
+  };
+
+  const faceScale = phase >= 1 ? 1 : 1.6;
+  const faceBlur = phase >= 1 ? 0 : 8;
+  const monitorVisible = phase >= 1;
+  const monitorReveal = phase >= 1 ? 1 : 0;
+
+  return (
+    <div className={styles.root}>
+      {/* Oversized editorial title */}
+      <div className={styles.titleLayer} data-visible={phase >= 2 || undefined}>
+        <div
+          className={styles.title}
+          style={{ WebkitTextStroke: `1px ${accent}` }}
+        >
+          BIEL<br />COLOM
+        </div>
+      </div>
+
+      {/* Full-bleed face — fades out as the monitor takes over */}
+      {!monitorVisible && (
+        <div
+          className={styles.faceLayer}
+          style={{
+            transform: `scale(${faceScale})`,
+            filter: `blur(${faceBlur}px) brightness(0.45)`,
+            transition: `transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1), filter ${duration}ms ease-out`,
+          }}
+        >
+          <FaceMedia src={faceSrc} replayKey={replayKey} />
+          <div className={styles.faceVignette} />
+        </div>
+      )}
+
+      {/* Monitor + keyboard */}
+      <div
+        className={styles.stage}
+        style={{
+          width: isMobile ? "94%" : `${monitorWidth}%`,
+          maxWidth: isMobile ? 520 : 720,
+          opacity: monitorReveal,
+          transform: `scale(${monitorReveal ? 1 : 0.85}) translateY(${monitorReveal ? 0 : 40}px)`,
+          transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
+        }}
+      >
+        <Monitor accent={accent} glowIntensity={glowIntensity}>
+          <div
+            className={styles.screen}
+            data-mobile={isMobile || undefined}
+            data-clickable={editorView === "closed" && interactive || undefined}
+            onClick={editorView === "closed" && interactive ? openMenu : undefined}
+          >
+            <div className={styles.screenFace}>
+              <FaceMedia src={faceSrc} replayKey={replayKey} />
+            </div>
+
+            <CodeOverlay
+              view={editorView}
+              items={MENU_ITEMS}
+              selectedIdx={selectedIdx}
+              activeItem={activeItem}
+              accent={accent}
+              active={interactive}
+              isMobile={isMobile}
+              onOpen={openItem}
+              onBack={backToMenu}
+              onClose={closeEditor}
+            />
+
+            {showScanlines && <div className={styles.scanlines} />}
+            <div className={styles.glare} />
+          </div>
+        </Monitor>
+
+        {!isMobile && (
+          <div className={styles.keyboardWrap}>
+            <MagicKeyboard
+              accent={accent}
+              active={interactive}
+              onType={handleType}
+              onCommand={handleCommand}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Bottom meta line */}
+      <div className={styles.meta} data-visible={phase >= 2 || undefined} data-mobile={isMobile || undefined}>
+        <span>Full-stack dev</span>
+        <span style={{ color: accent }}>● GABRIEL COLOM MOLL</span>
+        {!isMobile && <span>Portfolio / 01</span>}
+      </div>
+    </div>
+  );
+};
+
+export default HeroFaceLanding;

@@ -1,62 +1,11 @@
-.monitorRoot {
-    position: relative;
-    --glow-color: #3ddcff;
-    --glow-color-alt: #ff3df5;
-    transform-style: preserve-3d;
-    will-change: transform, opacity, filter;
-    backface-visibility: hidden;
+.root {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1200 / 760;
 }
 
-.monitorSvg {
-    display: block;
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .55)) drop-shadow(0 2px 4px rgba(0, 0, 0, .7));
-    overflow: visible
-}
-
-.bezelGlow {
-    stroke: url(#bezelStrokeGradient);
-    stroke-width: 3.2;
-    fill: none;
-    filter: drop-shadow(0 0 6px var(--glow-color)) drop-shadow(0 0 14px var(--glow-color-alt))
-}
-
-.standShadow {
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .6))
-}
-
-.standGroup {
-    /* Ligero resplandor de borde para integrarse con el bezel */
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .55)) drop-shadow(0 4px 10px rgba(0, 0, 0, .45));
-    transition: filter .4s ease, transform .4s ease;
-}
-
-.standGroup:hover {
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6)) drop-shadow(0 6px 16px rgba(0, 0, 0, .55)) brightness(1.05);
-    transform: translateY(-2px);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .monitorRoot[data-anim="enter"] {
-        animation: monitorEnter var(--monitor-duration, 1.8s) cubic-bezier(.16, .84, .39, 1) forwards;
-    }
-}
-
-@keyframes monitorEnter {
-    0% {
-        transform: translateZ(-220px) scale(.92);
-        filter: blur(2px) brightness(.85);
-        opacity: .9;
-    }
-
-    55% {
-        filter: blur(0.4px) brightness(1);
-    }
-
-    100% {
-        transform: translateZ(0) scale(1);
-        filter: blur(0) brightness(1);
-        opacity: 1;
-    }
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
