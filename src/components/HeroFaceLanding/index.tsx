@@ -70,10 +70,10 @@ const HeroFaceLanding = ({
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
   const deferredQuery = useDeferredValue(query);
 
-  const localizedItems = MENU_ITEMS.map((item) => ({
-    ...item,
-    desc: t.items[item.id as keyof typeof t.items] ?? item.desc,
-  }));
+  const localizedItems = MENU_ITEMS.map((item) => {
+    const tr = t.items[item.id as keyof typeof t.items];
+    return { ...item, desc: tr?.desc ?? item.desc, code: tr?.code ?? item.code };
+  });
 
   const filteredItems = localizedItems.filter((item) => {
     const needle = deferredQuery.trim().toLowerCase();

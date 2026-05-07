@@ -37,11 +37,11 @@ export interface Translations {
     };
   };
   items: {
-    who: string;
-    skills: string;
-    stack: string;
-    contact: string;
-    hi: string;
+    who: { desc: string; code: string };
+    skills: { desc: string; code: string };
+    stack: { desc: string; code: string };
+    contact: { desc: string; code: string };
+    hi: { desc: string; code: string };
   };
 }
 
@@ -82,11 +82,45 @@ export const en: Translations = {
     },
   },
   items: {
-    who: "A short bio",
-    skills: "Things I am good at",
-    stack: "My current setup",
-    contact: "Get in touch",
-    hi: "Just say hello",
+    who: {
+      desc: "A short bio",
+      code: `const me = {
+  name: "Biel Colom",
+  role: "Full-stack developer",
+  loc: "Palma de Mallorca",
+  email: "gabrielcolomoll@gmail.com"
+};`,
+    },
+    skills: {
+      desc: "Things I am good at",
+      code: `const skills = [
+  "TypeScript",
+  "React / Next.js",
+  "Node.js",
+  "GraphQL",
+  "PostgreSQL"
+];`,
+    },
+    stack: {
+      desc: "My current setup",
+      code: `// Current stack
+import { Next15 }    from "next";
+import { React19 }   from "react";
+import { TS5 }       from "typescript";
+import { Tailwind4 } from "tailwindcss";`,
+    },
+    contact: {
+      desc: "Get in touch",
+      code: `const contact = {
+  email:  "gabrielcolomoll@gmail.com",
+  loc:    "Palma de Mallorca",
+  github: "github.com/Bielcolom"
+};`,
+    },
+    hi: {
+      desc: "Just say hello",
+      code: `console.log("Hello 👋  — thanks for stopping by.");`,
+    },
   },
 };
 
@@ -127,11 +161,45 @@ export const es: Translations = {
     },
   },
   items: {
-    who: "Una breve bio",
-    skills: "Cosas en las que soy bueno",
-    stack: "Mi setup actual",
-    contact: "Ponte en contacto",
-    hi: "Solo saludar",
+    who: {
+      desc: "Una breve bio",
+      code: `const me = {
+  name: "Biel Colom",
+  role: "Desarrollador full-stack",
+  loc: "Palma de Mallorca",
+  email: "gabrielcolomoll@gmail.com"
+};`,
+    },
+    skills: {
+      desc: "Cosas en las que soy bueno",
+      code: `const skills = [
+  "TypeScript",
+  "React / Next.js",
+  "Node.js",
+  "GraphQL",
+  "PostgreSQL"
+];`,
+    },
+    stack: {
+      desc: "Mi setup actual",
+      code: `// Stack actual
+import { Next15 }    from "next";
+import { React19 }   from "react";
+import { TS5 }       from "typescript";
+import { Tailwind4 } from "tailwindcss";`,
+    },
+    contact: {
+      desc: "Ponte en contacto",
+      code: `const contact = {
+  email:  "gabrielcolomoll@gmail.com",
+  loc:    "Palma de Mallorca",
+  github: "github.com/Bielcolom"
+};`,
+    },
+    hi: {
+      desc: "Solo saludar",
+      code: `console.log("Hola 👋  — gracias por pasarte.");`,
+    },
   },
 };
 
