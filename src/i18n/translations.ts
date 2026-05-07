@@ -98,7 +98,6 @@ export const en: Translations = {
   "React / Next.js",
   "Node.js",
   "GraphQL",
-  "PostgreSQL"
 ];`,
     },
     stack: {
@@ -177,7 +176,6 @@ export const es: Translations = {
   "React / Next.js",
   "Node.js",
   "GraphQL",
-  "PostgreSQL"
 ];`,
     },
     stack: {
