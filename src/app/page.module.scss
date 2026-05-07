@@ -2,6 +2,8 @@
 @use "./styles/abstracts/variables" as vars;
 @use "sass:map";
 
+$z-navbar: map.get(vars.$z-indexes, navbar);
+
 .page {
   /* Remove outer centering so the Hero handles its own layout */
   min-height: 100vh;
@@ -34,7 +36,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    z-index: 120;
+    z-index: $z-navbar;
     /* Elevate above the stacking context created by the hero's perspective transform */
     color: var(--text-primary);
     /* Workaround for Safari/iOS + Android Chrome compositing issues when parents use 3D/perspective */
