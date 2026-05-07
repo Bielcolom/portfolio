@@ -1,6 +1,5 @@
 "use client";
-import { useDeferredValue, useEffect, useState } from "react";
-import { MENU_ITEMS, MenuItem, EditorView } from "./data";
+import { MENU_ITEMS, MenuItem } from "./data";
 import FaceMedia from "./FaceMedia";
 import Monitor from "./Monitor";
 import MagicKeyboard from "./MagicKeyboard";
@@ -8,6 +7,9 @@ import CodeOverlay from "./CodeOverlay";
 import styles from "./heroFaceLanding.module.scss";
 import { useIsMobile } from "./useIsMobile";
 import { useLanguage } from "@/i18n/context";
+import useAnimationPhase from "./useAnimationPhase";
+import useViewportWidth from "./useViewportWidth";
+import useEditorState from "./useEditorState";
 
 interface Props {
   /** Path to the face media — `.mp4` autoplays as video, otherwise treated as image. */
@@ -37,157 +39,29 @@ const HeroFaceLanding = ({
 }: Props) => {
   const isMobile = useIsMobile(768);
   const { t } = useLanguage();
-  const [phase, setPhase] = useState(-1);
-  const [query, setQuery] = useState("");
-  const [viewportWidth, setViewportWidth] = useState(0);
-
-  useEffect(() => {
-    let complete = 0;
-
-    const start = window.requestAnimationFrame(() => {
-      setPhase(1);
-      complete = window.setTimeout(() => setPhase(2), duration + 100);
-    });
-
-    return () => {
-      window.cancelAnimationFrame(start);
-      window.clearTimeout(complete);
-    };
-  }, [replayKey, duration]);
-
-  useEffect(() => {
-    const syncViewport = () => setViewportWidth(window.innerWidth);
-    syncViewport();
-    window.addEventListener("resize", syncViewport);
-    return () => window.removeEventListener("resize", syncViewport);
-  }, []);
-
-  const interactive = phase >= 2;
-
-  // Editor state machine
-  const [editorView, setEditorView] = useState<EditorView>("closed");
-  const [selectedIdx, setSelectedIdx] = useState(0);
-  const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
-  const deferredQuery = useDeferredValue(query);
+  const phase = useAnimationPhase(replayKey, duration);
+  const viewportWidth = useViewportWidth();
 
   const localizedItems: MenuItem[] = MENU_ITEMS.map((item) => {
     const tr = t.items[item.id as keyof typeof t.items];
     return { ...item, desc: tr.desc, code: tr.code };
   });
 
-  const filteredItems = localizedItems.filter((item) => {
-    const needle = deferredQuery.trim().toLowerCase();
-    if (!needle) return true;
+  const {
+    editorView,
+    selectedIdx,
+    activeItem,
+    query,
+    filteredItems,
+    handleType,
+    handleCommand,
+    openMenu,
+    openItem,
+    backToMenu,
+    closeEditor,
+  } = useEditorState(replayKey, localizedItems);
 
-    const haystack = [item.id, item.label, item.desc].join(" ").toLowerCase();
-    return haystack.includes(needle);
-  });
-  const safeSelectedIdx = filteredItems[selectedIdx] ? selectedIdx : 0;
-
-  useEffect(() => {
-    const reset = window.requestAnimationFrame(() => {
-      setEditorView("closed");
-      setSelectedIdx(0);
-      setActiveItem(null);
-      setQuery("");
-    });
-
-    return () => {
-      window.cancelAnimationFrame(reset);
-    };
-  }, [replayKey]);
-
-  const appendQuery = (value: string) => {
-    setQuery((prev) => prev + value.toLowerCase());
-    setSelectedIdx(0);
-  };
-
-  const closeAndReset = () => {
-    setEditorView("closed");
-    setActiveItem(null);
-    setSelectedIdx(0);
-    setQuery("");
-  };
-
-  // Keyboard input — only meaningful on desktop, but harmless on mobile
-  const handleType = (ch: string) => {
-    if (!ch.trim() && ch !== " ") return;
-
-    if (editorView !== "menu") {
-      setEditorView("menu");
-      setActiveItem(null);
-    }
-
-    appendQuery(ch);
-  };
-
-  const handleCommand = (cmd: string) => {
-    if (editorView === "closed") {
-      if (cmd === "enter" || cmd === "arrowdown" || cmd === "arrowup") {
-        setEditorView("menu");
-        setSelectedIdx(0);
-      }
-      return;
-    }
-    if (editorView === "menu") {
-      if (cmd === "arrowdown" && filteredItems.length > 0) {
-        setSelectedIdx((i) => (i + 1) % filteredItems.length);
-      } else if (cmd === "arrowup" && filteredItems.length > 0) {
-        setSelectedIdx((i) => (i - 1 + filteredItems.length) % filteredItems.length);
-      } else if (cmd === "enter") {
-        const item = filteredItems[safeSelectedIdx];
-        if (!item) return;
-
-        setActiveItem(item);
-        setEditorView("viewing");
-      } else if (cmd === "esc") {
-        closeAndReset();
-      } else if (cmd === "backspace") {
-        setQuery((prev) => prev.slice(0, -1));
-        setSelectedIdx(0);
-      }
-      return;
-    }
-    // viewing
-    if (cmd === "enter" || cmd === "arrowleft") {
-      setEditorView("menu");
-      setActiveItem(null);
-    } else if (cmd === "esc") {
-      closeAndReset();
-    } else if (cmd === "backspace") {
-      setEditorView("menu");
-      setActiveItem(null);
-      setQuery((prev) => prev.slice(0, -1));
-      setSelectedIdx(0);
-    } else if (cmd === "arrowdown" && filteredItems.length > 0) {
-      const next = (selectedIdx + 1) % filteredItems.length;
-      setSelectedIdx(next);
-      setActiveItem(filteredItems[next]);
-    } else if (cmd === "arrowup" && filteredItems.length > 0) {
-      const prev = (selectedIdx - 1 + filteredItems.length) % filteredItems.length;
-      setSelectedIdx(prev);
-      setActiveItem(filteredItems[prev]);
-    }
-  };
-
-  // Touch helpers (mobile)
-  const openMenu = () => {
-    if (editorView === "closed") {
-      setEditorView("menu");
-      setSelectedIdx(0);
-    }
-  };
-  const openItem = (idx: number) => {
-    setSelectedIdx(idx);
-    setActiveItem(filteredItems[idx] ?? null);
-    setEditorView("viewing");
-  };
-  const backToMenu = () => {
-    setEditorView("menu");
-    setActiveItem(null);
-  };
-  const closeEditor = closeAndReset;
-
+  const interactive = phase >= 2;
   const monitorReveal = phase >= 1 ? 1 : 0;
   const desktopStageWidth = Math.min(monitorWidth + 12, 76);
   const desktopMaxWidth = viewportWidth > 0 ? Math.min(900, viewportWidth - 64) : 980;
@@ -235,7 +109,7 @@ const HeroFaceLanding = ({
             <CodeOverlay
               view={editorView}
               items={filteredItems}
-              selectedIdx={safeSelectedIdx}
+              selectedIdx={selectedIdx}
               activeItem={activeItem}
               accent={accent}
               active={interactive}
