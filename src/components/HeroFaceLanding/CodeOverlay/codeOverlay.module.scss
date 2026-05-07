@@ -202,6 +202,46 @@
   color: #5a606b;
 }
 
+.commandLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.commandPrompt {
+  font-weight: 700;
+}
+
+.commandValue {
+  color: #dfe3ea;
+  word-break: break-word;
+
+  &[data-empty] {
+    color: #6e7480;
+  }
+}
+
+.commandCursor {
+  width: 8px;
+  height: 14px;
+  border-radius: 1px;
+  animation: hflBlink 1s step-end infinite;
+}
+
+.resultMeta {
+  margin-bottom: 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #6e7480;
+  text-transform: uppercase;
+}
+
 .menuItem {
   all: unset;
   cursor: pointer;
@@ -243,6 +283,13 @@
 .menuDesc {
   color: #5a606b;
   font-style: italic;
+}
+
+.emptyState {
+  padding: 12px 10px;
+  border-radius: 6px;
+  color: #8b93a0;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* Code view --------------------------------------------------------------- */

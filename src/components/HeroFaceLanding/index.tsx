@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { MENU_ITEMS, MenuItem } from "./data";
 import FaceMedia from "./FaceMedia";
 import Monitor from "./Monitor";
@@ -36,6 +36,7 @@ const HeroFaceLanding = ({
 }: Props) => {
   const isMobile = useIsMobile(768);
   const [phase, setPhase] = useState(-1);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     let complete = 0;
@@ -57,12 +58,23 @@ const HeroFaceLanding = ({
   const [editorView, setEditorView] = useState<EditorView>("closed");
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
+  const deferredQuery = useDeferredValue(query);
+
+  const filteredItems = MENU_ITEMS.filter((item) => {
+    const needle = deferredQuery.trim().toLowerCase();
+    if (!needle) return true;
+
+    const haystack = [item.id, item.label, item.desc].join(" ").toLowerCase();
+    return haystack.includes(needle);
+  });
+  const safeSelectedIdx = filteredItems[selectedIdx] ? selectedIdx : 0;
 
   useEffect(() => {
     const reset = window.requestAnimationFrame(() => {
       setEditorView("closed");
       setSelectedIdx(0);
       setActiveItem(null);
+      setQuery("");
     });
 
     return () => {
@@ -70,12 +82,28 @@ const HeroFaceLanding = ({
     };
   }, [replayKey]);
 
+  const appendQuery = (value: string) => {
+    setQuery((prev) => prev + value.toLowerCase());
+    setSelectedIdx(0);
+  };
+
+  const closeAndReset = () => {
+    setEditorView("closed");
+    setActiveItem(null);
+    setSelectedIdx(0);
+    setQuery("");
+  };
+
   // Keyboard input — only meaningful on desktop, but harmless on mobile
-  const handleType = () => {
-    if (editorView === "closed") {
+  const handleType = (ch: string) => {
+    if (!ch.trim() && ch !== " ") return;
+
+    if (editorView !== "menu") {
       setEditorView("menu");
-      setSelectedIdx(0);
+      setActiveItem(null);
     }
+
+    appendQuery(ch);
   };
 
   const handleCommand = (cmd: string) => {
@@ -87,33 +115,43 @@ const HeroFaceLanding = ({
       return;
     }
     if (editorView === "menu") {
-      if (cmd === "arrowdown") {
-        setSelectedIdx((i) => (i + 1) % MENU_ITEMS.length);
-      } else if (cmd === "arrowup") {
-        setSelectedIdx((i) => (i - 1 + MENU_ITEMS.length) % MENU_ITEMS.length);
+      if (cmd === "arrowdown" && filteredItems.length > 0) {
+        setSelectedIdx((i) => (i + 1) % filteredItems.length);
+      } else if (cmd === "arrowup" && filteredItems.length > 0) {
+        setSelectedIdx((i) => (i - 1 + filteredItems.length) % filteredItems.length);
       } else if (cmd === "enter") {
-        setActiveItem(MENU_ITEMS[selectedIdx]);
+        const item = filteredItems[safeSelectedIdx];
+        if (!item) return;
+
+        setActiveItem(item);
         setEditorView("viewing");
       } else if (cmd === "esc") {
-        setEditorView("closed");
+        closeAndReset();
+      } else if (cmd === "backspace") {
+        setQuery((prev) => prev.slice(0, -1));
+        setSelectedIdx(0);
       }
       return;
     }
     // viewing
-    if (cmd === "enter" || cmd === "backspace" || cmd === "arrowleft") {
+    if (cmd === "enter" || cmd === "arrowleft") {
       setEditorView("menu");
       setActiveItem(null);
     } else if (cmd === "esc") {
-      setEditorView("closed");
+      closeAndReset();
+    } else if (cmd === "backspace") {
+      setEditorView("menu");
       setActiveItem(null);
-    } else if (cmd === "arrowdown") {
-      const next = (selectedIdx + 1) % MENU_ITEMS.length;
+      setQuery((prev) => prev.slice(0, -1));
+      setSelectedIdx(0);
+    } else if (cmd === "arrowdown" && filteredItems.length > 0) {
+      const next = (selectedIdx + 1) % filteredItems.length;
       setSelectedIdx(next);
-      setActiveItem(MENU_ITEMS[next]);
-    } else if (cmd === "arrowup") {
-      const prev = (selectedIdx - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
+      setActiveItem(filteredItems[next]);
+    } else if (cmd === "arrowup" && filteredItems.length > 0) {
+      const prev = (selectedIdx - 1 + filteredItems.length) % filteredItems.length;
       setSelectedIdx(prev);
-      setActiveItem(MENU_ITEMS[prev]);
+      setActiveItem(filteredItems[prev]);
     }
   };
 
@@ -126,17 +164,14 @@ const HeroFaceLanding = ({
   };
   const openItem = (idx: number) => {
     setSelectedIdx(idx);
-    setActiveItem(MENU_ITEMS[idx]);
+    setActiveItem(filteredItems[idx] ?? null);
     setEditorView("viewing");
   };
   const backToMenu = () => {
     setEditorView("menu");
     setActiveItem(null);
   };
-  const closeEditor = () => {
-    setEditorView("closed");
-    setActiveItem(null);
-  };
+  const closeEditor = closeAndReset;
 
   const monitorReveal = phase >= 1 ? 1 : 0;
 
@@ -176,12 +211,13 @@ const HeroFaceLanding = ({
 
             <CodeOverlay
               view={editorView}
-              items={MENU_ITEMS}
-              selectedIdx={selectedIdx}
+              items={filteredItems}
+              selectedIdx={safeSelectedIdx}
               activeItem={activeItem}
               accent={accent}
               active={interactive}
               isMobile={isMobile}
+              query={query}
               onOpen={openItem}
               onBack={backToMenu}
               onClose={closeEditor}

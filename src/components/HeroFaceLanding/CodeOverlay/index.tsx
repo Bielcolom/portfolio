@@ -14,6 +14,7 @@ interface Props {
   accent: string;
   active: boolean;
   isMobile: boolean;
+  query: string;
   onOpen: (idx: number) => void;
   onBack: () => void;
   onClose: () => void;
@@ -24,12 +25,25 @@ const Key = ({ children }: { children: React.ReactNode }) => (
 );
 
 const CodeOverlay = ({
-  view, items, selectedIdx, activeItem, accent, active, isMobile,
-  onOpen, onBack, onClose,
+  view,
+  items,
+  selectedIdx,
+  activeItem,
+  accent,
+  active,
+  isMobile,
+  query,
+  onOpen,
+  onBack,
+  onClose,
 }: Props) => {
   if (view === "closed") {
     return (
-      <div className={styles.closed} data-active={active || undefined} data-mobile={isMobile || undefined}>
+      <div
+        className={styles.closed}
+        data-active={active || undefined}
+        data-mobile={isMobile || undefined}
+      >
         <div
           className={styles.pill}
           style={{ border: `1px solid color-mix(in oklch, ${accent} 30%, transparent)` }}
@@ -38,7 +52,7 @@ const CodeOverlay = ({
             className={styles.pillDot}
             style={{ background: accent, boxShadow: `0 0 10px ${accent}` }}
           />
-          {isMobile ? "Tap to start" : "Type something…"}
+          {isMobile ? "Tap to start" : "Type to search..."}
         </div>
       </div>
     );
@@ -48,8 +62,13 @@ const CodeOverlay = ({
     <div className={styles.editor} data-mobile={isMobile || undefined}>
       <div className={styles.titleBar}>
         {isMobile && view === "viewing" ? (
-          <button type="button" onClick={onBack} className={styles.backBtn} style={{ color: accent }}>
-            ← <span>back</span>
+          <button
+            type="button"
+            onClick={onBack}
+            className={styles.backBtn}
+            style={{ color: accent }}
+          >
+            {"<-"} <span>back</span>
           </button>
         ) : (
           <>
@@ -67,18 +86,22 @@ const CodeOverlay = ({
           <span className={styles.hint}>
             {view === "menu" ? (
               <>
-                <Key>↑</Key><Key>↓</Key> nav · <Key>↵</Key> open · <Key>esc</Key> close
+                type to filter · <Key>up</Key><Key>down</Key> nav · <Key>enter</Key> open ·{" "}
+                <Key>del</Key> erase · <Key>esc</Key> close
               </>
             ) : (
               <>
-                <Key>↵</Key> back · <Key>↑</Key><Key>↓</Key> next · <Key>esc</Key> close
+                <Key>enter</Key> back · <Key>up</Key><Key>down</Key> next · type to search ·{" "}
+                <Key>esc</Key> close
               </>
             )}
           </span>
         )}
 
         {isMobile && view === "menu" && (
-          <button type="button" onClick={onClose} className={styles.closeX}>×</button>
+          <button type="button" onClick={onClose} className={styles.closeX}>
+            x
+          </button>
         )}
       </div>
 
@@ -89,6 +112,7 @@ const CodeOverlay = ({
             selectedIdx={selectedIdx}
             accent={accent}
             isMobile={isMobile}
+            query={query}
             onOpen={onOpen}
           />
         ) : (
