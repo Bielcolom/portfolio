@@ -76,11 +76,7 @@ const CodeOverlay = ({
             {"<-"} <span>{t.overlay.back}</span>
           </button>
         ) : (
-          <>
-            <span className={`${styles.dot} ${styles.dotRed}`} onClick={onClose} />
-            <span className={`${styles.dot} ${styles.dotYellow}`} />
-            <span className={`${styles.dot} ${styles.dotGreen}`} />
-          </>
+          <span className={`${styles.dot} ${styles.dotRed}`} onClick={onClose} />
         )}
 
         <span className={styles.path}>
@@ -91,13 +87,11 @@ const CodeOverlay = ({
           <span className={styles.hint}>
             {view === "menu" ? (
               <>
-                {hm.typeToFilter} · <Key>up</Key><Key>down</Key> {hm.nav} · <Key>enter</Key> {hm.open} ·{" "}
-                <Key>del</Key> {hm.erase} · <Key>esc</Key> {hm.close}
+                <Key>↑↓</Key> {hm.nav} · <Key>↵</Key> {hm.open} · <Key>esc</Key> {hm.close}
               </>
             ) : (
               <>
-                <Key>enter</Key> {hv.back} · <Key>up</Key><Key>down</Key> {hv.next} · {hv.typeToSearch} ·{" "}
-                <Key>esc</Key> {hv.close}
+                <Key>↵</Key> {hv.back} · <Key>↑↓</Key> {hv.next} · <Key>esc</Key> {hv.close}
               </>
             )}
           </span>

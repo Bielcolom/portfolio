@@ -107,13 +107,6 @@
   cursor: pointer;
 }
 
-.dotYellow {
-  background: #febc2e;
-}
-
-.dotGreen {
-  background: #28c840;
-}
 
 .backBtn {
   border: none;
@@ -134,7 +127,7 @@
 }
 
 .path {
-  margin-left: 14px;
+  margin-left: 8px;
   font-size: 11px;
   color: #7a7f88;
 
@@ -147,8 +140,8 @@
 .hint {
   margin-left: auto;
   font-size: 10px;
-  color: #7a7f88;
-  letter-spacing: 0.1em;
+  color: #5a606b;
+  white-space: nowrap;
   text-transform: uppercase;
 }
 
