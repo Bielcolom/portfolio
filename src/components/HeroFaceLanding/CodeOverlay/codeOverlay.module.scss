@@ -1,0 +1,267 @@
+@keyframes hflBlink {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes hflEditorOpen {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Closed pill ------------------------------------------------------------- */
+.closed {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 600ms ease-out 200ms;
+
+  &[data-active] {
+    opacity: 1;
+  }
+
+  &[data-mobile] {
+    bottom: 14px;
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #fff;
+  background: rgba(8, 10, 14, 0.45);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.pillDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: hflBlink 1.4s ease-in-out infinite;
+}
+
+/* Editor open ------------------------------------------------------------- */
+.editor {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 14, 0.82);
+  backdrop-filter: blur(2px);
+  padding: 14px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #dfe3ea;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: hflEditorOpen 220ms ease-out;
+
+  &[data-mobile] {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dotRed {
+  background: #ff5f57;
+  cursor: pointer;
+}
+
+.dotYellow {
+  background: #febc2e;
+}
+
+.dotGreen {
+  background: #28c840;
+}
+
+.backBtn {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  span {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}
+
+.path {
+  margin-left: 14px;
+  font-size: 11px;
+  color: #7a7f88;
+
+  [data-mobile] & {
+    margin-left: 6px;
+    font-size: 10px;
+  }
+}
+
+.hint {
+  margin-left: auto;
+  font-size: 10px;
+  color: #7a7f88;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 0 5px;
+  margin: 0 2px;
+  border: 1px solid #3a4049;
+  border-radius: 3px;
+  font-size: 10px;
+  color: #aab0bb;
+  background: #1a1d22;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.closeX {
+  margin-left: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #9aa0aa;
+  font-size: 14px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: auto;
+}
+
+/* Menu list --------------------------------------------------------------- */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &[data-mobile] {
+    gap: 6px;
+  }
+}
+
+.menuHeader {
+  margin-bottom: 10px;
+  color: #5a606b;
+}
+
+.menuItem {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 120ms ease-out, border-color 120ms ease-out;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: inherit;
+
+  &[data-mobile] {
+    padding: 12px 10px;
+    min-height: 44px;
+  }
+}
+
+.menuArrow {
+  width: 14px;
+  font-weight: 700;
+}
+
+.menuLabel {
+  color: #dfe3ea;
+  font-weight: 500;
+  min-width: 80px;
+
+  &[data-selected] {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  [data-mobile] & {
+    min-width: 70px;
+  }
+}
+
+.menuDesc {
+  color: #5a606b;
+  font-style: italic;
+}
+
+/* Code view --------------------------------------------------------------- */
+.codeView {
+  display: flex;
+  min-height: 0;
+  height: 100%;
+}
+
+.lineNumbers {
+  color: #3a4049;
+  text-align: right;
+  padding-right: 12px;
+  user-select: none;
+}
+
+.codeBody {
+  flex: 1;
+  position: relative;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
