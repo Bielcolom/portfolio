@@ -1,3 +1,9 @@
+/**
+ * MagicKeyboard — interactive keyboard visualization.
+ * Renders a full QWERTY layout that both reflects physical keydown events
+ * and is clickable (touch/mouse). Delegates typed characters and commands
+ * to the parent via onType / onCommand props.
+ */
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./magicKeyboard.module.scss";
