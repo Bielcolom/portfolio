@@ -25,7 +25,7 @@ const LangToggle = () => {
       onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
       onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.55")}
     >
-      {next.toUpperCase()}
+      {locale.toUpperCase()}
     </button>
   );
 };
