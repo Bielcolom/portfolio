@@ -249,8 +249,8 @@
   font-size: inherit;
 
   &[data-mobile] {
-    padding: 12px 10px;
-    min-height: 44px;
+    padding: 6px 8px;
+    min-height: 32px;
   }
 
   @media (hover: hover) and (pointer: fine) {
