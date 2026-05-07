@@ -35,15 +35,20 @@ const HeroFaceLanding = ({
   monitorWidth = 60,
 }: Props) => {
   const isMobile = useIsMobile(768);
-  const [phase, setPhase] = useState(0);
+  const [phase, setPhase] = useState(-1);
 
   useEffect(() => {
-    setPhase(0);
-    const ts = [
-      window.setTimeout(() => setPhase(1), 50),
-      window.setTimeout(() => setPhase(2), duration + 100),
-    ];
-    return () => ts.forEach((t) => window.clearTimeout(t));
+    let complete = 0;
+
+    const start = window.requestAnimationFrame(() => {
+      setPhase(1);
+      complete = window.setTimeout(() => setPhase(2), duration + 100);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(start);
+      window.clearTimeout(complete);
+    };
   }, [replayKey, duration]);
 
   const interactive = phase >= 2;
@@ -54,9 +59,15 @@ const HeroFaceLanding = ({
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
 
   useEffect(() => {
-    setEditorView("closed");
-    setSelectedIdx(0);
-    setActiveItem(null);
+    const reset = window.requestAnimationFrame(() => {
+      setEditorView("closed");
+      setSelectedIdx(0);
+      setActiveItem(null);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(reset);
+    };
   }, [replayKey]);
 
   // Keyboard input — only meaningful on desktop, but harmless on mobile
@@ -127,9 +138,6 @@ const HeroFaceLanding = ({
     setActiveItem(null);
   };
 
-  const faceScale = phase >= 1 ? 1 : 1.6;
-  const faceBlur = phase >= 1 ? 0 : 8;
-  const monitorVisible = phase >= 1;
   const monitorReveal = phase >= 1 ? 1 : 0;
 
   return (
@@ -144,21 +152,6 @@ const HeroFaceLanding = ({
         </div>
       </div>
 
-      {/* Full-bleed face — fades out as the monitor takes over */}
-      {!monitorVisible && (
-        <div
-          className={styles.faceLayer}
-          style={{
-            transform: `scale(${faceScale})`,
-            filter: `blur(${faceBlur}px) brightness(0.45)`,
-            transition: `transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1), filter ${duration}ms ease-out`,
-          }}
-        >
-          <FaceMedia src={faceSrc} replayKey={replayKey} />
-          <div className={styles.faceVignette} />
-        </div>
-      )}
-
       {/* Monitor + keyboard */}
       <div
         className={styles.stage}
@@ -166,7 +159,7 @@ const HeroFaceLanding = ({
           width: isMobile ? "94%" : `${monitorWidth}%`,
           maxWidth: isMobile ? 520 : 720,
           opacity: monitorReveal,
-          transform: `scale(${monitorReveal ? 1 : 0.85}) translateY(${monitorReveal ? 0 : 40}px)`,
+          transform: `scale(${monitorReveal ? 1 : 0.92}) translateY(${monitorReveal ? 0 : 24}px)`,
           transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
         }}
       >
