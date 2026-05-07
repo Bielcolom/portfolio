@@ -20,6 +20,8 @@ interface Props {
   onOpen: (idx: number) => void;
   onBack: () => void;
   onClose: () => void;
+  onType?: (ch: string) => void;
+  onCommand?: (cmd: string) => void;
 }
 
 const Key = ({ children }: { children: React.ReactNode }) => (
@@ -38,6 +40,8 @@ const CodeOverlay = ({
   onOpen,
   onBack,
   onClose,
+  onType,
+  onCommand,
 }: Props) => {
   const { t } = useLanguage();
   const hm = t.overlay.hintMenu;
@@ -77,7 +81,7 @@ const CodeOverlay = ({
             {"<-"} <span>{t.overlay.back}</span>
           </button>
         ) : (
-          <span className={`${styles.dot} ${styles.dotRed}`} onClick={onClose} />
+          !isMobile ? <span className={`${styles.dot} ${styles.dotRed}`} onClick={onClose} /> : null
         )}
 
         <span className={styles.path}>
@@ -114,6 +118,8 @@ const CodeOverlay = ({
             isMobile={isMobile}
             query={query}
             onOpen={onOpen}
+            onType={onType}
+            onCommand={onCommand}
           />
         ) : activeItem?.id === "socials" ? (
           <SocialsView accent={accent} />

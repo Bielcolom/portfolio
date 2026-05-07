@@ -89,8 +89,8 @@ const HeroFaceLanding = ({
       <div
         className={styles.stage}
         style={{
-          width: isMobile ? "70%" : `${desktopStageWidth}%`,
-          maxWidth: isMobile ? 295 : desktopMaxWidth,
+          width: isMobile ? "63%" : `${desktopStageWidth}%`,
+          maxWidth: isMobile ? 265 : desktopMaxWidth,
           opacity: monitorReveal,
           transform: `scale(${monitorReveal ? 1 : 0.92}) translateY(${monitorReveal ? 0 : 24}px)`,
           transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
@@ -120,6 +120,8 @@ const HeroFaceLanding = ({
                 onOpen={openItem}
                 onBack={backToMenu}
                 onClose={closeEditor}
+                onType={handleType}
+                onCommand={handleCommand}
               />
 
               <div className={styles.glare} />

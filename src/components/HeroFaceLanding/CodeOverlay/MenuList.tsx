@@ -10,9 +10,11 @@ interface Props {
   isMobile: boolean;
   query: string;
   onOpen: (idx: number) => void;
+  onType?: (ch: string) => void;
+  onCommand?: (cmd: string) => void;
 }
 
-const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen }: Props) => {
+const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen, onType, onCommand }: Props) => {
   const { t } = useLanguage();
   const m = t.overlay.menu;
 
@@ -20,6 +22,23 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen }: Props
     items.length === 1
       ? `1 ${m.result}`
       : `${items.length} ${m.results}`;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVal = e.target.value;
+    if (newVal.length > query.length) {
+      for (const ch of newVal.slice(query.length)) onType?.(ch);
+    } else {
+      const removed = query.length - newVal.length;
+      for (let i = 0; i < removed; i++) onCommand?.("backspace");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter")     { e.preventDefault(); onCommand?.("enter"); }
+    if (e.key === "Escape")    { onCommand?.("esc"); }
+    if (e.key === "ArrowUp")   { e.preventDefault(); onCommand?.("arrowup"); }
+    if (e.key === "ArrowDown") { e.preventDefault(); onCommand?.("arrowdown"); }
+  };
 
   return (
     <div className={styles.menu} data-mobile={isMobile || undefined}>
@@ -39,6 +58,23 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen }: Props
           {query}
         </span>
         <span className={styles.commandCursor} style={{ background: accent }} />
+
+        {/* Transparent overlay input — captures mobile soft-keyboard typing */}
+        {isMobile && onType && (
+          <input
+            type="text"
+            className={styles.mobileInput}
+            value={query}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck={false}
+            enterKeyHint="search"
+            aria-label="type to filter"
+          />
+        )}
       </div>
 
       <div className={styles.resultMeta}>
