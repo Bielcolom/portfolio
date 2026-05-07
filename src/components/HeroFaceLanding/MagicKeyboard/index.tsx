@@ -60,12 +60,12 @@ const KB_ROWS: Key[][] = [
   ],
   [
     { k: "fn", w: 1, label: "fn", sm: true, deco: true },
-    { k: "ctrl", w: 1, label: "control", sm: true, deco: true },
-    { k: "alt", w: 1, label: "option", sm: true, deco: true },
+    { k: "ctrl", w: 1, label: "ctrl", sm: true, deco: true },
+    { k: "alt", w: 1, label: "opt", sm: true, deco: true },
     { k: "cmd", w: 1.25, label: "cmd", deco: true },
     { k: " ", w: 5, label: "" },
     { k: "cmd2", w: 1.25, label: "cmd", deco: true },
-    { k: "alt2", w: 1, label: "option", sm: true, deco: true },
+    { k: "alt2", w: 1, label: "opt", sm: true, deco: true },
     { k: "arrows", w: 3, special: "arrows" },
   ],
 ];
