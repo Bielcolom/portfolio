@@ -24,7 +24,6 @@ src/
 │   └── styles/                 # Global SCSS: abstracts, base, globals
 ├── components/
 │   ├── LangToggle.tsx          # EN/ES toggle button
-│   ├── NavMessage.tsx          # Dev warning banner
 │   └── HeroFaceLanding/        # Main interactive hero component
 │       ├── index.tsx           # Orchestrator — composes everything
 │       ├── data.ts             # Menu item metadata (id + label only)

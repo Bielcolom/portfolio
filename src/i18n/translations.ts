@@ -1,9 +1,6 @@
 export type Locale = "en" | "es";
 
 export interface Translations {
-  navbar: {
-    devMessage: string;
-  };
   meta: {
     role: string;
     portfolio: string;
@@ -47,9 +44,6 @@ export interface Translations {
 }
 
 export const en: Translations = {
-  navbar: {
-    devMessage: "Website currently under development...",
-  },
   meta: {
     role: "Full-stack dev",
     portfolio: "Portfolio / 01",
@@ -133,9 +127,6 @@ export const en: Translations = {
 };
 
 export const es: Translations = {
-  navbar: {
-    devMessage: "Actualmente la web está en desarrollo...",
-  },
   meta: {
     role: "Desarrollador full-stack",
     portfolio: "Portfolio / 01",
