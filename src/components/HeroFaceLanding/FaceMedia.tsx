@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import styles from "./FaceMedia.module.scss";
 
 interface Props {
   src: string;
@@ -11,6 +12,9 @@ interface Props {
 const FaceMedia = ({ src, replayKey }: Props) => {
   const isVideo = !!src && src.toLowerCase().endsWith(".mp4");
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const assetKey = `${src}::${replayKey ?? 0}`;
+  const [failedAssetKey, setFailedAssetKey] = useState<string | null>(null);
+  const hasError = failedAssetKey === assetKey;
 
   useEffect(() => {
     const v = videoRef.current;
@@ -18,6 +22,10 @@ const FaceMedia = ({ src, replayKey }: Props) => {
     v.currentTime = 0;
     v.play().catch(() => { /* autoplay may be blocked */ });
   }, [replayKey, src]);
+
+  if (hasError) {
+    return <div className={styles.fallback} />;
+  }
 
   if (isVideo) {
     return (
@@ -27,35 +35,21 @@ const FaceMedia = ({ src, replayKey }: Props) => {
         autoPlay
         muted
         playsInline
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          display: "block",
-        }}
+        onError={() => setFailedAssetKey(assetKey)}
+        className={styles.video}
       />
     );
   }
 
-
   return (
-    <span
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        display: "block",
-      }}
-    >
+    <span className={styles.imageWrapper}>
       <Image
         src={src}
         alt=""
         fill
         sizes="(max-width: 768px) 94vw, 76vw"
-        style={{
-          objectFit: "cover",
-        }}
+        onError={() => setFailedAssetKey(assetKey)}
+        style={{ objectFit: "cover" }}
       />
     </span>
   );
