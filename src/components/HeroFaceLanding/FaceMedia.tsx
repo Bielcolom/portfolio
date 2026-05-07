@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 interface Props {
@@ -38,16 +39,25 @@ const FaceMedia = ({ src, replayKey }: Props) => {
 
 
   return (
-    <img
-      src={src}
-      alt=""
+    <span
       style={{
+        position: "relative",
         width: "100%",
         height: "100%",
         objectFit: "cover",
         display: "block",
       }}
-    />
+    >
+      <Image
+        src={src}
+        alt=""
+        fill
+        sizes="(max-width: 768px) 94vw, 76vw"
+        style={{
+          objectFit: "cover",
+        }}
+      />
+    </span>
   );
 };
 
