@@ -8,9 +8,7 @@ const TOKENS = [
   ";", ":", ".", "=",
 ];
 
-const COL_W = 20;
 const FONT_H = 14;
-const TRAIL = 18;
 
 function makeStream(rows: number): string[] {
   const out: string[] = [];
@@ -31,19 +29,19 @@ export default function CodeRain() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let raf = 0;
-    let last = 0;
-    let ms = 1000 / 18;
+    let rafId = 0;
+    let timerId = 0;
+    let mobile = false;
 
-    const applyFps = () => {
-      ms = 1000 / (window.innerWidth <= 768 ? 20 : 18);
-    };
+    // Per-device settings — computed on init/resize
+    let colW = 20;
+    let trail = 18;
+    let fps = 18;
 
     type Col = { drop: number; stream: string[] };
     let cols: Col[] = [];
 
     const applyMask = () => {
-      const mobile = window.innerWidth <= 768;
       const mask = mobile
         ? "none"
         : "linear-gradient(to right, black 0%, black 20%, transparent 30%, transparent 70%, black 80%, black 100%)";
@@ -52,41 +50,37 @@ export default function CodeRain() {
     };
 
     const init = () => {
+      mobile = window.innerWidth <= 768;
+      // Mobile: fewer columns + shorter trail to keep GPU load low
+      colW = mobile ? 30 : 20;
+      trail = mobile ? 10 : 18;
+      fps = mobile ? 20 : 18;
+
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const numCols = Math.ceil(canvas.width / COL_W);
+
+      const numCols = Math.ceil(canvas.width / colW);
       const rows = Math.ceil(canvas.height / FONT_H);
       cols = Array.from({ length: numCols }, () => ({
         drop: Math.random() * -(rows * 1.5),
-        // Fixed char per row — assigned once, never changes, eliminates sparkle
         stream: makeStream(rows).slice(0, rows),
       }));
+
       applyMask();
-      applyFps();
     };
 
-    init();
-    const onResize = () => init();
-    window.addEventListener("resize", onResize);
-
-    const tick = (now: number) => {
-      raf = requestAnimationFrame(tick);
-      if (now - last < ms) return;
-      last = now;
-
-      // Full clear — trail is drawn explicitly so no fade accumulation needed
+    const draw = () => {
       ctx.fillStyle = "#0d0d0f";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
       ctx.font = `${FONT_H - 1}px 'JetBrains Mono', monospace`;
 
       for (let i = 0; i < cols.length; i++) {
         const col = cols[i];
         const headR = Math.floor(col.drop);
-        const px = i * COL_W + 2;
+        const px = i * colW + 2;
         const sLen = col.stream.length;
 
-        for (let t = 0; t < TRAIL; t++) {
+        for (let t = 0; t < trail; t++) {
           const row = headR - t;
           if (row < 0) continue;
           const py = row * FONT_H;
@@ -95,9 +89,8 @@ export default function CodeRain() {
           const ch = col.stream[((row % sLen) + sLen) % sLen];
           if (ch === " ") continue;
 
-          const alpha = Math.max(0, (1 - t / TRAIL) * 0.28);
+          const alpha = Math.max(0, (1 - t / trail) * 0.28);
           ctx.fillStyle = `rgba(61,220,255,${alpha})`;
-
           ctx.fillText(ch, px, py);
         }
 
@@ -110,10 +103,26 @@ export default function CodeRain() {
       }
     };
 
-    raf = requestAnimationFrame(tick);
+    // setTimeout + single rAF per frame: fires exactly FPS times/sec,
+    // no wasted rAF callbacks between frames (crucial on slow mobile CPUs)
+    const schedule = () => {
+      timerId = window.setTimeout(() => {
+        rafId = requestAnimationFrame(() => {
+          draw();
+          schedule();
+        });
+      }, 1000 / fps);
+    };
+
+    init();
+    schedule();
+
+    const onResize = () => { init(); };
+    window.addEventListener("resize", onResize);
 
     return () => {
-      cancelAnimationFrame(raf);
+      clearTimeout(timerId);
+      cancelAnimationFrame(rafId);
       window.removeEventListener("resize", onResize);
     };
   }, []);
