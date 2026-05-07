@@ -2,6 +2,7 @@
 import { MENU_ITEMS, MenuItem } from "./data";
 import FaceMedia from "./FaceMedia";
 import Monitor from "./Monitor";
+import PhoneFrame from "./PhoneFrame";
 import MagicKeyboard from "./MagicKeyboard";
 import CodeOverlay from "./CodeOverlay";
 import styles from "./heroFaceLanding.module.scss";
@@ -88,42 +89,72 @@ const HeroFaceLanding = ({
       <div
         className={styles.stage}
         style={{
-          width: isMobile ? "94%" : `${desktopStageWidth}%`,
-          maxWidth: isMobile ? 560 : desktopMaxWidth,
+          width: isMobile ? "70%" : `${desktopStageWidth}%`,
+          maxWidth: isMobile ? 295 : desktopMaxWidth,
           opacity: monitorReveal,
           transform: `scale(${monitorReveal ? 1 : 0.92}) translateY(${monitorReveal ? 0 : 24}px)`,
           transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
         }}
       >
-        <Monitor accent={accent} glowIntensity={glowIntensity}>
-          <div
-            className={styles.screen}
-            data-mobile={isMobile || undefined}
-            data-clickable={editorView === "closed" && interactive || undefined}
-            onClick={editorView === "closed" && interactive ? openMenu : undefined}
-          >
-            <div className={styles.screenFace}>
-              <FaceMedia src={faceSrc} replayKey={replayKey} />
+        {isMobile ? (
+          <PhoneFrame accent={accent} glowIntensity={glowIntensity}>
+            <div
+              className={styles.screen}
+              data-phone
+              data-clickable={editorView === "closed" && interactive || undefined}
+              onClick={editorView === "closed" && interactive ? openMenu : undefined}
+            >
+              <div className={styles.screenFace}>
+                <FaceMedia src={faceSrc} replayKey={replayKey} />
+              </div>
+
+              <CodeOverlay
+                view={editorView}
+                items={filteredItems}
+                selectedIdx={selectedIdx}
+                activeItem={activeItem}
+                accent={accent}
+                active={interactive}
+                isMobile={isMobile}
+                query={query}
+                onOpen={openItem}
+                onBack={backToMenu}
+                onClose={closeEditor}
+              />
+
+              <div className={styles.glare} />
             </div>
+          </PhoneFrame>
+        ) : (
+          <Monitor accent={accent} glowIntensity={glowIntensity}>
+            <div
+              className={styles.screen}
+              data-clickable={editorView === "closed" && interactive || undefined}
+              onClick={editorView === "closed" && interactive ? openMenu : undefined}
+            >
+              <div className={styles.screenFace}>
+                <FaceMedia src={faceSrc} replayKey={replayKey} />
+              </div>
 
-            <CodeOverlay
-              view={editorView}
-              items={filteredItems}
-              selectedIdx={selectedIdx}
-              activeItem={activeItem}
-              accent={accent}
-              active={interactive}
-              isMobile={isMobile}
-              query={query}
-              onOpen={openItem}
-              onBack={backToMenu}
-              onClose={closeEditor}
-            />
+              <CodeOverlay
+                view={editorView}
+                items={filteredItems}
+                selectedIdx={selectedIdx}
+                activeItem={activeItem}
+                accent={accent}
+                active={interactive}
+                isMobile={isMobile}
+                query={query}
+                onOpen={openItem}
+                onBack={backToMenu}
+                onClose={closeEditor}
+              />
 
-            {showScanlines && <div className={styles.scanlines} />}
-            <div className={styles.glare} />
-          </div>
-        </Monitor>
+              {showScanlines && <div className={styles.scanlines} />}
+              <div className={styles.glare} />
+            </div>
+          </Monitor>
+        )}
 
         {!isMobile && (
           <div className={styles.keyboardWrap}>

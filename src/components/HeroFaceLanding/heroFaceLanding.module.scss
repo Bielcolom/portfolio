@@ -12,6 +12,14 @@
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+@media (max-width: 768px) {
+  .root {
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+}
+
 /* Oversized title behind the monitor ------------------------------------- */
 .titleLayer {
   position: absolute;
@@ -62,6 +70,16 @@
 
   &[data-mobile] {
     inset: 6% 5% 12% 5%;
+  }
+
+  /* Screen inset for the phone frame (glass x=3 y=3; island bottom y=91; home indicator y=815) */
+  &[data-phone] {
+    inset: 11.6% 1% 5% 1%;
+    border-radius: 12%;
+
+    .screenFace {
+      transform: scale(0.82);
+    }
   }
 
   &[data-clickable] {
