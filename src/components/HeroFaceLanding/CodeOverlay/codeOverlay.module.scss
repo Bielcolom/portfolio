@@ -230,6 +230,7 @@
 .commandCursor {
   width: 8px;
   height: 14px;
+  margin-left: -4px;
   border-radius: 1px;
   animation: hflBlink 1s step-end infinite;
 }
