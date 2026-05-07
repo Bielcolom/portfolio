@@ -38,7 +38,6 @@ export interface Translations {
   };
   items: {
     who: { desc: string; code: string };
-    skills: { desc: string; code: string };
     stack: { desc: string; code: string };
     contact: { desc: string; code: string };
     hi: { desc: string; code: string };
@@ -91,22 +90,13 @@ export const en: Translations = {
   email: "gabrielcolomoll@gmail.com"
 };`,
     },
-    skills: {
-      desc: "Things I am good at",
-      code: `const skills = [
-  "TypeScript",
-  "React / Next.js",
-  "Node.js",
-  "GraphQL",
-];`,
-    },
     stack: {
-      desc: "My current setup",
-      code: `// Current stack
-import { Next15 }    from "next";
-import { React19 }   from "react";
-import { TS5 }       from "typescript";
-import { Tailwind4 } from "tailwindcss";`,
+      desc: "Skills & current setup",
+      code: `import { Next16, React19 } from "frontend";
+import { TypeScript5 }     from "languages";
+import { Node, GraphQL }   from "backend";
+import { MongoDB, SQL }      from "databases";
+import { SCSS, Tailwind }            from "styling";`,
     },
     contact: {
       desc: "Get in touch",
@@ -169,22 +159,13 @@ export const es: Translations = {
   email: "gabrielcolomoll@gmail.com"
 };`,
     },
-    skills: {
-      desc: "Cosas en las que soy bueno",
-      code: `const skills = [
-  "TypeScript",
-  "React / Next.js",
-  "Node.js",
-  "GraphQL",
-];`,
-    },
     stack: {
-      desc: "Mi setup actual",
-      code: `// Stack actual
-import { Next15 }    from "next";
-import { React19 }   from "react";
-import { TS5 }       from "typescript";
-import { Tailwind4 } from "tailwindcss";`,
+      desc: "Skills y setup actual",
+      code: `import { Next16, React19 } from "frontend";
+import { TypeScript5 }     from "languages";
+import { Node, GraphQL }   from "backend";
+import { MongoDB, SQL }      from "databases";
+import { SCSS, Tailwind }            from "styling";`,
     },
     contact: {
       desc: "Ponte en contacto",
