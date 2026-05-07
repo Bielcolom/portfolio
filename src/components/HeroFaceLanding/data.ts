@@ -12,8 +12,9 @@ export interface MenuItem extends MenuItemBase {
 export type EditorView = "closed" | "menu" | "viewing";
 
 export const MENU_ITEMS: MenuItemBase[] = [
-  { id: "who",     label: "who"     },
-  { id: "stack",   label: "stack"   },
-  { id: "contact", label: "contact" },
-  { id: "hi",      label: "hi"      },
+  { id: "who",        label: "who"        },
+  { id: "stack",      label: "stack"      },
+  { id: "experience", label: "experience" },
+  { id: "projects",   label: "projects"   },
+  { id: "contact",    label: "contact"    },
 ];

@@ -39,8 +39,9 @@ export interface Translations {
   items: {
     who: { desc: string; code: string };
     stack: { desc: string; code: string };
+    experience: { desc: string; code: string };
+    projects: { desc: string; code: string };
     contact: { desc: string; code: string };
-    hi: { desc: string; code: string };
   };
 }
 
@@ -92,11 +93,31 @@ export const en: Translations = {
     },
     stack: {
       desc: "Skills & current setup",
-      code: `import { Next16, React19 } from "frontend";
-import { TypeScript5 }     from "languages";
-import { Node, GraphQL }   from "backend";
-import { MongoDB, SQL }      from "databases";
-import { SCSS, Tailwind }            from "styling";`,
+      code: `const stack = {
+  languages:  ["TypeScript", "JavaScript", "Python"],
+  frameworks: ["React", "Next.js", "Node.js", "React Native"],
+  databases:  ["MongoDB", "PostgreSQL"],
+  tools:      ["Git", "GitHub", "Figma"]
+};`,
+    },
+    experience: {
+      desc: "Where I have worked",
+      code: `const experience = [
+  {
+    role:    "Full Stack Developer",
+    company: "WOZZO",
+    since:   "March 2024",
+    loc:     "Palma de Mallorca"
+  }
+];`,
+    },
+    projects: {
+      desc: "Things I have built",
+      code: `const projects = [
+  { name: "portfolio",     tech: "Next.js 16 + React 19" },
+  { name: "spotify-clone", tech: "React + Node.js"       },
+  { name: "next-template", tech: "Next.js 15 + React 19" }
+];`,
     },
     contact: {
       desc: "Get in touch",
@@ -105,10 +126,6 @@ import { SCSS, Tailwind }            from "styling";`,
   loc:    "Palma de Mallorca",
   github: "github.com/Bielcolom"
 };`,
-    },
-    hi: {
-      desc: "Just say hello",
-      code: `console.log("Hello 👋  — thanks for stopping by.");`,
     },
   },
 };
@@ -161,11 +178,31 @@ export const es: Translations = {
     },
     stack: {
       desc: "Skills y setup actual",
-      code: `import { Next16, React19 } from "frontend";
-import { TypeScript5 }     from "languages";
-import { Node, GraphQL }   from "backend";
-import { MongoDB, SQL }      from "databases";
-import { SCSS, Tailwind }            from "styling";`,
+      code: `const stack = {
+  languages:  ["TypeScript", "JavaScript", "Python"],
+  frameworks: ["React", "Next.js", "Node.js", "React Native"],
+  databases:  ["MongoDB", "PostgreSQL"],
+  tools:      ["Git", "GitHub", "Figma"]
+};`,
+    },
+    experience: {
+      desc: "Dónde he trabajado",
+      code: `const experience = [
+  {
+    role:    "Full Stack Developer",
+    company: "WOZZO",
+    since:   "Marzo 2024",
+    loc:     "Palma de Mallorca"
+  }
+];`,
+    },
+    projects: {
+      desc: "Cosas que he construido",
+      code: `const projects = [
+  { name: "portfolio",     tech: "Next.js 16 + React 19" },
+  { name: "spotify-clone", tech: "React + Node.js"       },
+  { name: "next-template", tech: "Next.js 15 + React 19" }
+];`,
     },
     contact: {
       desc: "Ponte en contacto",
@@ -174,10 +211,6 @@ import { SCSS, Tailwind }            from "styling";`,
   loc:    "Palma de Mallorca",
   github: "github.com/Bielcolom"
 };`,
-    },
-    hi: {
-      desc: "Solo saludar",
-      code: `console.log("Hola 👋  — gracias por pasarte.");`,
     },
   },
 };
