@@ -5,9 +5,13 @@
 @use "./abstracts/functions";
 @use "./base/reset";
 
+html {
+  background-color: #0d0d0f;
+}
+
 body {
   color: var(--text-primary);
-  background: var(--background);
+  background: #0d0d0f;
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
