@@ -42,6 +42,7 @@ export interface Translations {
     experience: { desc: string; code: string };
     projects: { desc: string; code: string };
     contact: { desc: string; code: string };
+    socials: { desc: string; code: string };
   };
 }
 
@@ -127,6 +128,7 @@ export const en: Translations = {
   github: "github.com/Bielcolom"
 };`,
     },
+    socials: { desc: "Find me online", code: "" },
   },
 };
 
@@ -212,6 +214,7 @@ export const es: Translations = {
   github: "github.com/Bielcolom"
 };`,
     },
+    socials: { desc: "Encuéntrame online", code: "" },
   },
 };
 

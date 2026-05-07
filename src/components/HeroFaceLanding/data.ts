@@ -17,4 +17,5 @@ export const MENU_ITEMS: MenuItemBase[] = [
   { id: "experience", label: "experience" },
   { id: "projects",   label: "projects"   },
   { id: "contact",    label: "contact"    },
+  { id: "socials",    label: "socials"    },
 ];

@@ -2,6 +2,7 @@
 import { EditorView, MenuItem } from "../data";
 import MenuList from "./MenuList";
 import CodeView from "./CodeView";
+import SocialsView from "./SocialsView";
 import styles from "./codeOverlay.module.scss";
 import { useLanguage } from "@/i18n/context";
 
@@ -114,6 +115,8 @@ const CodeOverlay = ({
             query={query}
             onOpen={onOpen}
           />
+        ) : activeItem?.id === "socials" ? (
+          <SocialsView accent={accent} />
         ) : (
           <CodeView item={activeItem} />
         )}
