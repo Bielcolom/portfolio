@@ -1,10 +1,10 @@
 "use client";
 import { useDeferredValue, useEffect, useState } from "react";
-import { MENU_ITEMS, MenuItem } from "./data";
+import { MENU_ITEMS, MenuItem, EditorView } from "./data";
 import FaceMedia from "./FaceMedia";
 import Monitor from "./Monitor";
 import MagicKeyboard from "./MagicKeyboard";
-import CodeOverlay, { EditorView } from "./CodeOverlay";
+import CodeOverlay from "./CodeOverlay";
 import styles from "./heroFaceLanding.module.scss";
 import { useIsMobile } from "./useIsMobile";
 import { useLanguage } from "@/i18n/context";
@@ -70,9 +70,9 @@ const HeroFaceLanding = ({
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
   const deferredQuery = useDeferredValue(query);
 
-  const localizedItems = MENU_ITEMS.map((item) => {
+  const localizedItems: MenuItem[] = MENU_ITEMS.map((item) => {
     const tr = t.items[item.id as keyof typeof t.items];
-    return { ...item, desc: tr?.desc ?? item.desc, code: tr?.code ?? item.code };
+    return { ...item, desc: tr.desc, code: tr.code };
   });
 
   const filteredItems = localizedItems.filter((item) => {

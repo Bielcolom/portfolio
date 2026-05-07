@@ -1,11 +1,11 @@
 "use client";
-import { MenuItem } from "../data";
+import { EditorView, MenuItem } from "../data";
 import MenuList from "./MenuList";
 import CodeView from "./CodeView";
 import styles from "./codeOverlay.module.scss";
 import { useLanguage } from "@/i18n/context";
 
-export type EditorView = "closed" | "menu" | "viewing";
+export type { EditorView };
 
 interface Props {
   view: EditorView;
