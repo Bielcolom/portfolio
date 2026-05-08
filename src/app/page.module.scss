@@ -6,7 +6,7 @@ $z-navbar: map.get(vars.$z-indexes, navbar);
 
 .page {
   /* Remove outer centering so the Hero handles its own layout */
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   font-family: var(--font-geist-sans);
   background: transparent;
@@ -14,7 +14,7 @@ $z-navbar: map.get(vars.$z-indexes, navbar);
 
   .main {
     position: relative;
-    min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
     background: transparent;
     /* Prevents grayish contrast with the black container */
