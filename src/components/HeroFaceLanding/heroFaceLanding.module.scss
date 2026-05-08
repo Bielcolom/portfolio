@@ -14,9 +14,9 @@
 
 @media (max-width: 768px) {
   .root {
-    min-height: 100vh;
-    min-height: 100svh;
-    min-height: 100dvh;
+    /* Exact height — prevents stage overflow from expanding the hero beyond the viewport */
+    height: 100dvh;
+    min-height: unset;
   }
 }
 
