@@ -26,18 +26,30 @@ function useTime() {
 
 const PhoneFrame = ({ children, accent, glowIntensity }: Props) => {
   const time = useTime();
+  const glow = 18 + glowIntensity * 28;
+  const glowOpacity = 10 + glowIntensity * 12;
 
   return (
-    <div className={styles.root}>
-      {/* ── Layer 1: phone body + glass (behind content) ────────── */}
+    <div
+      className={styles.root}
+      style={{
+        boxShadow: `0 28px 56px rgba(0,0,0,0.72), 0 0 ${glow}px color-mix(in oklch, ${accent} ${glowOpacity}%, transparent)`,
+      }}
+    >
+      {/* ── Layer 1: dark screen background ─────────────────────────────── */}
+      <svg viewBox="0 0 390 844" className={styles.svg} aria-hidden>
+        <rect x="0" y="0" width="390" height="844" rx="50" fill="#0a0a0c" />
+      </svg>
+
+      {/* ── Layer 2: screen content ──────────────────────────────────────── */}
+      {children}
+
+      {/* ── Layer 3: phone bezel on top + status bar overlay ────────────── */}
+      {/*    The bezel mask cuts the screen glass hole so content shows through */}
       <svg
         viewBox="0 0 390 844"
-        className={styles.svg}
+        className={styles.svgOverlay}
         aria-hidden
-        style={{
-          filter: `drop-shadow(0 28px 56px rgba(0,0,0,0.72))
-                   drop-shadow(0 0 ${18 + glowIntensity * 28}px color-mix(in oklch, ${accent} ${10 + glowIntensity * 12}%, transparent))`,
-        }}
       >
         <defs>
           <linearGradient id="hflPhBody" x1="0" x2="0" y1="0" y2="1">
@@ -56,33 +68,30 @@ const PhoneFrame = ({ children, accent, glowIntensity }: Props) => {
             <stop offset="40%"  stopColor={accent} stopOpacity="0" />
             <stop offset="100%" stopColor={accent} stopOpacity="0.05" />
           </linearGradient>
+
+          {/* Bezel mask: phone body shape minus screen glass hole */}
+          <mask id="hflBezel">
+            <rect width="390" height="844" rx="50" fill="white" />
+            <rect x="5" y="5" width="380" height="834" rx="46" fill="black" />
+          </mask>
         </defs>
 
-        {/* Phone body */}
-        <rect x="0" y="0" width="390" height="844" rx="50" fill="url(#hflPhBody)" />
-        <rect x="0" y="0" width="390" height="844" rx="50" fill="url(#hflPhSide)" />
-        <rect x="0" y="0" width="390" height="844" rx="50" fill="url(#hflPhHL)" />
+        {/* Phone bezel — body fills masked to the bezel ring only */}
+        <rect x="0" y="0" width="390" height="844" rx="50" fill="url(#hflPhBody)" mask="url(#hflBezel)" />
+        <rect x="0" y="0" width="390" height="844" rx="50" fill="url(#hflPhSide)" mask="url(#hflBezel)" />
+        <rect x="0" y="0" width="390" height="844" rx="50" fill="url(#hflPhHL)"  mask="url(#hflBezel)" />
+
+        {/* Phone outline strokes */}
         <rect x="-0.5" y="-0.5" width="391" height="845" rx="50.5" fill="none"
           stroke="rgba(0,0,0,0.55)" strokeWidth="1" />
         <rect x="0.75" y="0.75" width="388.5" height="842.5" rx="49.25" fill="none"
           stroke="#3e3e44" strokeWidth="1.5" />
 
-        {/* Screen glass — near-black fill, content goes on top */}
-        <rect x="5" y="5" width="380" height="834" rx="46" fill="#0a0a0c" />
+        {/* Screen glass inner glow stroke */}
         <rect x="5.5" y="5.5" width="379" height="833" rx="45.5" fill="none"
           stroke={accent} strokeWidth="0.5" opacity={0.05 + glowIntensity * 0.06} />
-      </svg>
 
-      {/* ── Layer 2: screen content (edge-to-edge inside glass) ─── */}
-      {children}
-
-      {/* ── Layer 3: overlay — status bar + dynamic island + home indicator ── */}
-      <svg
-        viewBox="0 0 390 844"
-        className={styles.svgOverlay}
-        aria-hidden
-      >
-        {/* Status bar — left: time (baseline at y=36, center ≈ y=30) */}
+        {/* Status bar — time */}
         <text
           x="30" y="36"
           fill="white" fillOpacity="0.92"
@@ -93,13 +102,12 @@ const PhoneFrame = ({ children, accent, glowIntensity }: Props) => {
           {time}
         </text>
 
-        {/* Status bar — right: signal + wifi + battery (all centered at y=30) */}
-        {/* Signal bars bottom-aligned at y=36 */}
+        {/* Status bar — signal bars */}
         <rect x="278" y="31" width="3.5" height="5"  rx="1" fill="white" fillOpacity="0.85" />
         <rect x="284" y="27" width="3.5" height="9"  rx="1" fill="white" fillOpacity="0.85" />
         <rect x="290" y="23" width="3.5" height="13" rx="1" fill="white" fillOpacity="0.85" />
 
-        {/* WiFi icon — fan of ∩ arcs converging on a dot */}
+        {/* Status bar — WiFi */}
         <g transform="translate(311, 27)" fill="none" stroke="white" strokeOpacity="0.85" strokeWidth="1.6" strokeLinecap="round">
           <path d="M -8.5,0 Q 0,-6.5 8.5,0" />
           <path d="M -6,3.8 Q 0,-0.5 6,3.8" />
@@ -107,17 +115,14 @@ const PhoneFrame = ({ children, accent, glowIntensity }: Props) => {
           <circle cx="0" cy="10" r="1.5" fill="white" stroke="none" fillOpacity="0.85" />
         </g>
 
-        {/* Battery icon centered at y=30 (height 13, top at y=23.5) */}
+        {/* Status bar — battery */}
         <g transform="translate(334, 23)">
-          {/* body */}
           <rect x="0" y="0" width="24" height="13" rx="3" fill="none" stroke="white" strokeOpacity="0.7" strokeWidth="1.2" />
-          {/* nub */}
           <rect x="24.6" y="4" width="2.4" height="5" rx="1.2" fill="white" fillOpacity="0.5" />
-          {/* fill ~80% */}
           <rect x="2" y="2" width="18" height="9" rx="1.8" fill="white" fillOpacity="0.85" />
         </g>
 
-        {/* Dynamic island — at top, same height as status bar (center y=30) */}
+        {/* Dynamic island */}
         <rect x="131" y="12" width="128" height="36" rx="18" fill="#000" />
         <circle cx="242" cy="30" r="7"   fill="#0c0c10" />
         <circle cx="242" cy="30" r="4.5" fill="#080810" />

@@ -2,6 +2,9 @@
   position: relative;
   width: 100%;
   aspect-ratio: 390 / 844;
+  /* rx=50 on 390×844 → 50/390 horizontal, 50/844 vertical */
+  border-radius: 12.82% / 5.92%;
+  overflow: hidden;
 }
 
 .svg {
