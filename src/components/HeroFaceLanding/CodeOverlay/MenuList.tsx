@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { MenuItem } from "../data";
 import styles from "./codeOverlay.module.scss";
 import { useLanguage } from "@/i18n/context";
@@ -17,6 +18,7 @@ interface Props {
 const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen, onType, onCommand }: Props) => {
   const { t } = useLanguage();
   const m = t.overlay.menu;
+  const [inputFocused, setInputFocused] = useState(false);
 
   const resultLabel =
     items.length === 1
@@ -57,7 +59,11 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen, onType,
         <span className={styles.commandValue} data-empty={!query || undefined}>
           {query}
         </span>
-        <span className={styles.commandCursor} style={{ background: accent }} />
+        <span
+          className={styles.commandCursor}
+          style={{ background: accent }}
+          data-paused={(isMobile && !inputFocused) || undefined}
+        />
 
         {/* Transparent overlay input — captures mobile soft-keyboard typing */}
         {isMobile && onType && (
@@ -67,6 +73,8 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen, onType,
             value={query}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onFocus={() => setInputFocused(true)}
+            onBlur={() => setInputFocused(false)}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="none"

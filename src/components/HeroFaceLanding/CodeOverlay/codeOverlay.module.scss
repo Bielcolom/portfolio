@@ -241,6 +241,11 @@
   margin-left: -4px;
   border-radius: 1px;
   animation: hflBlink 1s step-end infinite;
+
+  &[data-paused] {
+    animation-play-state: paused;
+    opacity: 0.4;
+  }
 }
 
 .resultMeta {
