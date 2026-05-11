@@ -28,9 +28,8 @@ src/
 │       ├── index.tsx           # Orchestrator — composes everything
 │       ├── data.ts             # Menu item metadata (id + label only)
 │       ├── useAnimationPhase   # Hook: manages reveal animation phases
-│       ├── useViewportWidth    # Hook: tracks window.innerWidth
+│       ├── useViewportWidth    # Hook: tracks window.innerWidth; isMobile derived from it
 │       ├── useEditorState      # Hook: full editor state machine + handlers
-│       ├── useIsMobile         # Hook: responsive breakpoint detection
 │       ├── FaceMedia           # Video/image display with error fallback
 │       ├── Monitor/            # SVG monitor frame
 │       ├── MagicKeyboard/      # Interactive QWERTY keyboard (desktop only)
@@ -59,6 +58,24 @@ src/
 - Hover states via `@media (hover: hover) and (pointer: fine)` (touch-safe)
 - z-index values defined in `$z-indexes` map in `_variables.scss`
 - Every user-visible string goes through `t` from `useLanguage()` — nothing hardcoded
+
+### SCSS design tokens — mandatory
+
+All spacing and font-size values must use the maps in `_variables.scss` via `map.get()`. Never write a raw pixel value that falls within 2 px of a token.
+
+```
+$size:       xs 4px · sm 8px · md 16px · lg 24px · xl 32px · xxl 48px
+$font-sizes: xs 11px · sm 14px · base 16px · lg 18px · xl 40px
+```
+
+Usage pattern — every SCSS module that needs these must start with:
+```scss
+@use "sass:map";
+@use "<relative-path>/app/styles/abstracts/variables" as vars;
+// then: map.get(vars.$size, md)  /  map.get(vars.$font-sizes, xs)
+```
+
+Approximation rule: if a value is within 2 px of a token, use the token. Values that are equidistant between two tokens or are highly component-specific (e.g. SVG coordinates, border-width) stay as literals.
 
 ## What not to touch without thinking twice
 

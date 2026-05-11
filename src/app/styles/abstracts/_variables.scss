@@ -1,4 +1,22 @@
 // Design tokens & scales
+
+$size: (
+  xs:  4px,
+  sm:  8px,
+  md:  16px,
+  lg:  24px,
+  xl:  32px,
+  xxl: 48px,
+);
+
+$font-sizes: (
+  xs:   11px,
+  sm:   14px,
+  base: 16px,
+  lg:   18px,
+  xl:   40px,
+);
+
 $colors: (
   background-light: #ffffff,
   foreground-light: #171717,

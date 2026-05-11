@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "../../../app/styles/abstracts/variables" as vars;
+
 @keyframes hflBlink {
 
   0%,
@@ -38,17 +41,17 @@
   }
 
   &[data-mobile] {
-    bottom: 32px;
+    bottom: map.get(vars.$size, xl);
   }
 }
 
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: map.get(vars.$size, sm);
   padding: 7px 14px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: map.get(vars.$font-sizes, xs);
   letter-spacing: 0.18em;
   color: #fff;
   background: rgba(8, 10, 14, 0.45);
@@ -71,9 +74,9 @@
   inset: 0;
   background: rgba(8, 10, 14, 0.82);
   backdrop-filter: blur(2px);
-  padding: 14px 18px;
+  padding: map.get(vars.$size, md);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: map.get(vars.$font-sizes, sm);
   line-height: 1.55;
   color: #dfe3ea;
   overflow: hidden;
@@ -83,16 +86,16 @@
 
   &[data-mobile] {
     padding: 36px 12px 10px;
-    font-size: 12px;
+    font-size: map.get(vars.$font-sizes, xs);
   }
 }
 
 .titleBar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  gap: map.get(vars.$size, sm);
+  margin-bottom: map.get(vars.$size, sm);
+  padding-bottom: map.get(vars.$size, sm);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -111,35 +114,35 @@
 .backBtn {
   border: none;
   background: transparent;
-  font-size: 16px;
+  font-size: map.get(vars.$font-sizes, base);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px map.get(vars.$size, sm);
   font-family: inherit;
   display: flex;
   align-items: center;
   gap: 6px;
 
   span {
-    font-size: 11px;
+    font-size: map.get(vars.$font-sizes, xs);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 }
 
 .path {
-  margin-left: 8px;
-  font-size: 11px;
+  margin-left: map.get(vars.$size, sm);
+  font-size: map.get(vars.$font-sizes, xs);
   color: #7a7f88;
 
   [data-mobile] & {
     margin-left: 6px;
-    font-size: 10px;
+    font-size: map.get(vars.$font-sizes, xs);
   }
 }
 
 .hint {
   margin-left: auto;
-  font-size: 10px;
+  font-size: map.get(vars.$font-sizes, xs);
   color: #5a606b;
   white-space: nowrap;
   text-transform: uppercase;
@@ -151,7 +154,7 @@
   margin: 0 2px;
   border: 1px solid #3a4049;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: map.get(vars.$font-sizes, xs);
   color: #aab0bb;
   background: #1a1d22;
   font-family: 'JetBrains Mono', monospace;
@@ -162,7 +165,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
   color: #9aa0aa;
-  font-size: 14px;
+  font-size: map.get(vars.$font-sizes, sm);
   cursor: pointer;
   width: 28px;
   height: 28px;
@@ -199,10 +202,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: map.get(vars.$size, sm);
   min-height: 40px;
-  margin-bottom: 10px;
-  padding: 10px 12px;
+  margin-bottom: map.get(vars.$size, sm);
+  padding: map.get(vars.$size, sm) 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.18);
@@ -215,7 +218,7 @@
   border: none;
   outline: none;
   background: transparent;
-  font-size: 16px;
+  font-size: map.get(vars.$font-sizes, base);
   /* prevents iOS Safari auto-zoom on focus */
   color: transparent;
   caret-color: transparent;
@@ -250,8 +253,8 @@
 }
 
 .resultMeta {
-  margin-bottom: 8px;
-  font-size: 11px;
+  margin-bottom: map.get(vars.$size, sm);
+  font-size: map.get(vars.$font-sizes, xs);
   letter-spacing: 0.08em;
   color: #6e7480;
   text-transform: uppercase;
@@ -345,9 +348,9 @@
 .socialCard {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: 8px;
+  gap: map.get(vars.$size, md);
+  padding: map.get(vars.$size, md);
+  border-radius: map.get(vars.$size, sm);
   border: 1px solid rgba(255, 255, 255, 0.07);
   background: rgba(255, 255, 255, 0.03);
   text-decoration: none;
@@ -380,19 +383,19 @@
 .socialInfo {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: map.get(vars.$size, xs);
   flex: 1;
   min-width: 0;
 }
 
 .socialName {
-  font-size: 13px;
+  font-size: map.get(vars.$font-sizes, sm);
   font-weight: 600;
   color: #dfe3ea;
 }
 
 .socialHandle {
-  font-size: 11px;
+  font-size: map.get(vars.$font-sizes, xs);
   color: #5a606b;
   white-space: nowrap;
   overflow: hidden;
@@ -401,7 +404,7 @@
 
 .socialArrow {
   flex-shrink: 0;
-  font-size: 16px;
+  font-size: map.get(vars.$font-sizes, base);
   color: var(--accent);
   opacity: 0.6;
   transition: opacity 140ms ease-out, transform 140ms ease-out;

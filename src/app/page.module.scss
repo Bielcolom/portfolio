@@ -25,11 +25,11 @@ $z-navbar: map.get(vars.$z-indexes, navbar);
     top: 0;
     left: 0;
     width: 100%;
-    padding: 16px 32px;
+    padding: map.get(vars.$size, md) map.get(vars.$size, xl);
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 16px;
+    gap: map.get(vars.$size, md);
     z-index: $z-navbar;
     /* Elevate above the stacking context created by the hero's perspective transform */
     color: var(--text-primary);

@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "../../../app/styles/abstracts/variables" as vars;
+
 .root {
   padding: 12px;
   border-radius: 10px;
@@ -35,17 +38,17 @@
 .arrows {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  width: calc(32px * 3 + 10px);
+  gap: map.get(vars.$size, xs);
+  width: calc(map.get(vars.$size, xl) * 3 + map.get(vars.$size, sm));
 }
 
 .arrowsTop {
   display: flex;
-  gap: 5px;
+  gap: map.get(vars.$size, xs);
   justify-content: center;
 }
 
 .arrowsBottom {
   display: flex;
-  gap: 5px;
+  gap: map.get(vars.$size, xs);
 }

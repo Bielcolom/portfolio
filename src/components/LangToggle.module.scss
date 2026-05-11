@@ -1,10 +1,13 @@
+@use "sass:map";
+@use "../app/styles/abstracts/variables" as vars;
+
 .btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #fff;
   border-radius: 6px;
   padding: 3px 10px;
-  font-size: 11px;
+  font-size: map.get(vars.$font-sizes, xs);
   font-family: var(--font-geist-mono);
   cursor: pointer;
   letter-spacing: 0.08em;

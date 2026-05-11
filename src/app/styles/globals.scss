@@ -1,4 +1,4 @@
-@use "./abstracts/variables";
+@use "./abstracts/variables" as vars;
 @use "sass:map";
 @use "./abstracts/themes";
 @use "./base/reset";
@@ -16,7 +16,7 @@ body {
 }
 
 h1 {
-  font-size: 40px;
+  font-size: map.get(vars.$font-sizes, xl);
   font-weight: 600;
   line-height: 48px;
   letter-spacing: -2.4px;
@@ -25,7 +25,7 @@ h1 {
 }
 
 p {
-  font-size: 18px;
+  font-size: map.get(vars.$font-sizes, lg);
   line-height: 32px;
   text-wrap: balance;
   color: var(--text-primary);
@@ -78,13 +78,13 @@ a:focus-visible::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  height: 48px;
-  padding: 0 16px;
+  gap: map.get(vars.$size, sm);
+  height: map.get(vars.$size, xxl);
+  padding: 0 map.get(vars.$size, md);
   border-radius: 128px;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: map.get(vars.$font-sizes, sm);
+  line-height: map.get(vars.$font-sizes, sm);
   cursor: pointer;
   border: 1px solid transparent;
   background: var(--primary, var(--text-primary));

@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+
 .root {
   position: relative;
   width: 100%;
@@ -118,7 +121,7 @@
 }
 
 .keyboardWrap {
-  margin-top: 22px;
+  margin-top: map.get(vars.$size, lg);
   display: flex;
   justify-content: center;
 }
@@ -126,20 +129,20 @@
 /* Bottom meta line ------------------------------------------------------ */
 .meta {
   position: absolute;
-  bottom: 22px;
-  left: 32px;
-  right: 32px;
+  bottom: map.get(vars.$size, lg);
+  left: map.get(vars.$size, xl);
+  right: map.get(vars.$size, xl);
   display: flex;
   justify-content: space-between;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: map.get(vars.$font-sizes, xs);
   letter-spacing: 0.15em;
   color: #7a7d83;
   text-transform: uppercase;
   opacity: 0;
   transition: opacity 600ms ease-out 200ms;
   z-index: 4;
-  gap: 10px;
+  gap: map.get(vars.$size, sm);
   height: 1px;
 
   &[data-visible] {
@@ -147,9 +150,9 @@
   }
 
   &[data-mobile] {
-    bottom: 14px;
-    left: 16px;
-    right: 16px;
+    bottom: map.get(vars.$size, md);
+    left: map.get(vars.$size, md);
+    right: map.get(vars.$size, md);
     font-size: 9px;
   }
 }
