@@ -1,6 +1,6 @@
 "use client";
 import { useLanguage } from "@/i18n/context";
-import styles from "./LangToggle.module.scss";
+import styles from "./langToggle.module.scss";
 
 const LangToggle = () => {
   const { locale, setLocale } = useLanguage();

@@ -1,7 +1,7 @@
 import styles from "./page.module.scss";
 import HeroFaceLanding from "@/components/HeroFaceLanding";
-import LangToggle from "@/components/LangToggle";
 import CodeRain from "@/components/CodeRain";
+import LangToggle from "@/components/LangToggle";
 
 export default function Home() {
   return (
