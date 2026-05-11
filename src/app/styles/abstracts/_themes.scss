@@ -51,11 +51,3 @@ $themes: (
         @include theme-vars(map.get($themes, dark));
     }
 }
-
-.theme-dark {
-    @include theme-vars(map.get($themes, dark));
-}
-
-.theme-light {
-    @include theme-vars(map.get($themes, light));
-}

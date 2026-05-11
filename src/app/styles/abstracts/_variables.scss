@@ -23,49 +23,6 @@ $colors: (
   secondary-light: #5ac2cc
 );
 
-$size: (
-  xs: 4px,
-  sm: 8px,
-  md: 16px,
-  lg: 24px,
-  xl: 32px,
-  xxl: 48px,
-  xxxl: 64px,
-  mega: 80px,
-  giga: 96px,
-  ultra: 120px
-);
-
-$font-sizes: (
-  sm: 14px,
-  base: 16px,
-  md: 18px,
-  lg: 32px,
-  xlg: 36px,
-  xl: 40px
-);
-
-$line-heights: (
-  sm: 20px,
-  base: 24px,
-  md: 32px,
-  lg: 40px,
-  xlg: 44px,
-  xl: 48px
-);
-
-$radii: (
-  pill: 128px,
-  sm: 4px,
-  md: 8px
-);
-
-$breakpoints: (
-  sm: 600px,
-  md: 900px,
-  lg: 1200px
-);
-
 // z-index scale — above the hero's 3D perspective stacking context
 $z-indexes: (
   navbar: 120

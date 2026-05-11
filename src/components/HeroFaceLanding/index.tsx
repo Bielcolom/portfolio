@@ -6,7 +6,6 @@ import PhoneFrame from "./PhoneFrame";
 import MagicKeyboard from "./MagicKeyboard";
 import CodeOverlay from "./CodeOverlay";
 import styles from "./heroFaceLanding.module.scss";
-import { useIsMobile } from "./useIsMobile";
 import { useLanguage } from "@/i18n/context";
 import useAnimationPhase from "./useAnimationPhase";
 import useViewportWidth from "./useViewportWidth";
@@ -38,10 +37,10 @@ const HeroFaceLanding = ({
   showScanlines = true,
   monitorWidth = 60,
 }: Props) => {
-  const isMobile = useIsMobile(768);
   const { t } = useLanguage();
   const phase = useAnimationPhase(replayKey, duration);
   const viewportWidth = useViewportWidth();
+  const isMobile = viewportWidth > 0 && viewportWidth < 768;
 
   const localizedItems: MenuItem[] = MENU_ITEMS.map((item) => {
     const tr = t.items[item.id as keyof typeof t.items];

@@ -1,5 +1,5 @@
 import { useDeferredValue, useEffect, useState } from "react";
-import { EditorView, MenuItem, MenuItemBase } from "./data";
+import { EditorView, MenuItem } from "./data";
 
 interface EditorState {
   editorView: EditorView;

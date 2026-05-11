@@ -1,8 +1,6 @@
 @use "./abstracts/variables";
 @use "sass:map";
-@use "./abstracts/mixins";
 @use "./abstracts/themes";
-@use "./abstracts/functions";
 @use "./base/reset";
 
 html {
@@ -36,7 +34,6 @@ p {
 a {
   font-weight: 500;
   color: var(--primary);
-  text-decoration: none;
   position: relative;
   transition: color .25s;
 }
