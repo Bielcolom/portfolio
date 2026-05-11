@@ -1,9 +1,14 @@
 @use "sass:map";
-@use "../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/variables" as vars;
 
 @keyframes fall {
-  from { transform: translateY(-100%); }
-  to   { transform: translateY(calc(100vh - 30%)); }
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(calc(100vh - 30%));
+  }
 }
 
 .desktopCanvas {
@@ -11,24 +16,20 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  mask-image: linear-gradient(
-    to right,
-    black 0%,
-    black 20%,
-    transparent 30%,
-    transparent 70%,
-    black 80%,
-    black 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    black 0%,
-    black 20%,
-    transparent 30%,
-    transparent 70%,
-    black 80%,
-    black 100%
-  );
+  mask-image: linear-gradient(to right,
+      black 0%,
+      black 20%,
+      transparent 30%,
+      transparent 70%,
+      black 80%,
+      black 100%);
+  -webkit-mask-image: linear-gradient(to right,
+      black 0%,
+      black 20%,
+      transparent 30%,
+      transparent 70%,
+      black 80%,
+      black 100%);
 }
 
 .mobileContainer {
