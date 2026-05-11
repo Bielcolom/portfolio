@@ -124,7 +124,7 @@ const CodeOverlay = ({
         ) : activeItem?.id === "socials" ? (
           <SocialsView accent={accent} />
         ) : (
-          <CodeView item={activeItem} />
+          <CodeView item={activeItem} isMobile={isMobile} />
         )}
       </div>
     </div>

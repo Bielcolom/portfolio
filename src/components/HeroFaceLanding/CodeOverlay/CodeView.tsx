@@ -4,11 +4,12 @@ import styles from "./codeOverlay.module.scss";
 
 interface Props {
   item: MenuItem | null;
+  isMobile?: boolean;
 }
 
-const CodeView = ({ item }: Props) => {
+const CodeView = ({ item, isMobile }: Props) => {
   if (!item) return null;
-  const lines = item.code.split("\n");
+  const lines = item.code.split("\n").map(l => isMobile ? l.trimStart() : l);
   return (
     <div className={styles.codeView}>
       <div className={styles.lineNumbers}>
