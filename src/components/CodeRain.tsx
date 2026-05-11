@@ -1,5 +1,13 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import styles from "./CodeRain.module.scss";
+
+function subscribeResize(cb: () => void) {
+  window.addEventListener("resize", cb);
+  return () => window.removeEventListener("resize", cb);
+}
+const getIsMobile = () => window.innerWidth <= 768;
+const getServerSnapshot = () => false;
 
 const TOKENS = [
   "const", "let", "=>", "if", "for", "null", "true", "false",
@@ -8,7 +16,11 @@ const TOKENS = [
   ";", ":", ".", "=",
 ];
 
+// ── Desktop canvas constants ────────────────────────────────────────────────
 const FONT_H = 14;
+const COL_W  = 20;
+const TRAIL  = 18;
+const FPS    = 18;
 
 function makeStream(rows: number): string[] {
   const out: string[] = [];
@@ -20,53 +32,65 @@ function makeStream(rows: number): string[] {
   return out;
 }
 
+// ── Mobile CSS columns ──────────────────────────────────────────────────────
+// Deterministic (index-based) so server and client produce identical markup.
+
+// Two interleaved waves, offset by half the duration, so one is always visible
+// while the other resets — creating a continuous "one after another" cascade.
+// Tiny per-column delay stagger (0.1s) prevents a simultaneous reset flash.
+const COLS_PER_WAVE = 7;
+const WAVE_DURATION = 9;
+const COL_SPACING   = 90 / COLS_PER_WAVE; // ~12.9% between wave A columns
+
+const mobileColumns = [
+  // Wave A
+  ...Array.from({ length: COLS_PER_WAVE }, (_, i) => ({
+    left:     `${(i / COLS_PER_WAVE) * 90 + 3}%`,
+    duration: `${WAVE_DURATION}s`,
+    delay:    `${-(i * 0.12).toFixed(2)}s`,
+    content:  Array.from({ length: 50 }, (_, j) =>
+      TOKENS[(i * 7 + j * 3) % TOKENS.length]
+    ).join("\n"),
+  })),
+  // Wave B — half-duration offset, positions midpoint between wave A columns
+  ...Array.from({ length: COLS_PER_WAVE }, (_, i) => ({
+    left:     `${(i / COLS_PER_WAVE) * 90 + 3 + COL_SPACING / 2}%`,
+    duration: `${WAVE_DURATION}s`,
+    delay:    `${-(WAVE_DURATION / 2 + i * 0.12).toFixed(2)}s`,
+    content:  Array.from({ length: 50 }, (_, j) =>
+      TOKENS[((i + 4) * 5 + j * 4) % TOKENS.length]
+    ).join("\n"),
+  })),
+];
+
+// ── Component ───────────────────────────────────────────────────────────────
 export default function CodeRain() {
+  const isMobile = useSyncExternalStore(subscribeResize, getIsMobile, getServerSnapshot);
   const ref = useRef<HTMLCanvasElement>(null);
 
+  // Desktop-only canvas animation
   useEffect(() => {
+    if (isMobile) return;
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let rafId = 0;
+    let rafId  = 0;
     let timerId = 0;
-    let mobile = false;
-
-    // Per-device settings — computed on init/resize
-    let colW = 20;
-    let trail = 18;
-    let fps = 18;
 
     type Col = { drop: number; stream: string[] };
     let cols: Col[] = [];
 
-    const applyMask = () => {
-      const mask = mobile
-        ? "none"
-        : "linear-gradient(to right, black 0%, black 20%, transparent 30%, transparent 70%, black 80%, black 100%)";
-      canvas.style.maskImage = mask;
-      (canvas.style as CSSStyleDeclaration & { webkitMaskImage: string }).webkitMaskImage = mask;
-    };
-
     const init = () => {
-      mobile = window.innerWidth <= 768;
-      // Mobile: fewer columns + shorter trail to keep GPU load low
-      colW = mobile ? 30 : 20;
-      trail = mobile ? 10 : 18;
-      fps = mobile ? 20 : 18;
-
-      canvas.width = window.innerWidth;
+      canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
-
-      const numCols = Math.ceil(canvas.width / colW);
-      const rows = Math.ceil(canvas.height / FONT_H);
+      const numCols = Math.ceil(canvas.width / COL_W);
+      const rows    = Math.ceil(canvas.height / FONT_H);
       cols = Array.from({ length: numCols }, () => ({
-        drop: Math.random() * -(rows * 1.5),
+        drop:   Math.random() * -(rows * 1.5),
         stream: makeStream(rows).slice(0, rows),
       }));
-
-      applyMask();
     };
 
     const draw = () => {
@@ -75,29 +99,26 @@ export default function CodeRain() {
       ctx.font = `${FONT_H - 1}px 'JetBrains Mono', monospace`;
 
       for (let i = 0; i < cols.length; i++) {
-        const col = cols[i];
+        const col  = cols[i];
         const headR = Math.floor(col.drop);
-        const px = i * colW + 2;
+        const px   = i * COL_W + 2;
         const sLen = col.stream.length;
 
-        for (let t = 0; t < trail; t++) {
+        for (let t = 0; t < TRAIL; t++) {
           const row = headR - t;
           if (row < 0) continue;
           const py = row * FONT_H;
           if (py > canvas.height) continue;
-
           const ch = col.stream[((row % sLen) + sLen) % sLen];
           if (ch === " ") continue;
-
-          const alpha = Math.max(0, (1 - t / trail) * 0.28);
+          const alpha = Math.max(0, (1 - t / TRAIL) * 0.28);
           ctx.fillStyle = `rgba(61,220,255,${alpha})`;
           ctx.fillText(ch, px, py);
         }
 
         col.drop += 1;
-
         if (headR * FONT_H > canvas.height && Math.random() > 0.975) {
-          col.drop = Math.random() * -30;
+          col.drop   = Math.random() * -30;
           col.stream = makeStream(Math.ceil(canvas.height / FONT_H));
         }
       }
@@ -111,17 +132,10 @@ export default function CodeRain() {
           draw();
           schedule();
         });
-      }, 1000 / fps);
+      }, 1000 / FPS);
     };
 
     init();
-
-    if (mobile) {
-      // On real mobile devices the canvas animation tanks CPU and kills video autoplay.
-      // The dark body background already covers the page — no animation needed.
-      return;
-    }
-
     schedule();
 
     const onResize = () => { init(); };
@@ -132,18 +146,27 @@ export default function CodeRain() {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", onResize);
     };
-  }, []);
+  }, [isMobile]);
 
-  return (
-    <canvas
-      ref={ref}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: "none",
-        opacity: 1,
-      }}
-    />
-  );
+  if (isMobile) {
+    return (
+      <div className={styles.mobileContainer}>
+        {mobileColumns.map((col, i) => (
+          <span
+            key={i}
+            className={styles.col}
+            style={{
+              "--col-left":     col.left,
+              "--col-duration": col.duration,
+              "--col-delay":    col.delay,
+            } as React.CSSProperties}
+          >
+            {col.content}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  return <canvas ref={ref} className={styles.desktopCanvas} />;
 }

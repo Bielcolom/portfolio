@@ -1,0 +1,54 @@
+@keyframes fall {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(calc(100vh - 30%)); }
+}
+
+.desktopCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 20%,
+    transparent 30%,
+    transparent 70%,
+    black 80%,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 20%,
+    transparent 30%,
+    transparent 70%,
+    black 80%,
+    black 100%
+  );
+}
+
+.mobileContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: #0d0d0f;
+}
+
+.col {
+  position: absolute;
+  top: 0;
+  left: var(--col-left);
+  white-space: pre;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 20px;
+  color: rgba(61, 220, 255, 0.22);
+  animation: fall linear infinite;
+  animation-duration: var(--col-duration);
+  animation-delay: var(--col-delay);
+  mask-image: linear-gradient(to top, white 0%, rgba(255, 255, 255, 0.5) 35%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to top, white 0%, rgba(255, 255, 255, 0.5) 35%, transparent 70%);
+}
