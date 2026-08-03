@@ -23,14 +23,6 @@
   gap: map.get(vars.$size, md);
 }
 
-.path {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: map.get(vars.$font-sizes, xs);
-  letter-spacing: 0.1em;
-  color: #5a606b;
-  text-transform: lowercase;
-}
-
 .title {
   display: flex;
   align-items: baseline;
@@ -48,6 +40,12 @@
   font-weight: 700;
   color: var(--accent);
   opacity: 0.85;
+  white-space: nowrap;
+}
+
+.numTotal {
+  color: #5a606b;
+  font-weight: 400;
 }
 
 .paragraph {

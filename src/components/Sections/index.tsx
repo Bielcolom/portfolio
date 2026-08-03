@@ -143,9 +143,11 @@ const Sections = () => {
         return (
           <section key={id} id={id} className={styles.section}>
             <motion.div className={styles.sectionInner} {...REVEAL}>
-              <span className={styles.path}>~/portfolio/{id}.md</span>
               <h2 className={styles.title}>
-                <span className={styles.num}>{String(i + 1).padStart(2, "0")}</span>
+                <span className={styles.num}>
+                  {String(i + 1).padStart(2, "0")}
+                  <span className={styles.numTotal}>/{String(MENU_ITEMS.length).padStart(2, "0")}</span>
+                </span>
                 {t.sections[id].title}
               </h2>
               {bodyFor(id)}
