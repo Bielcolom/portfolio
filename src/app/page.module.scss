@@ -38,7 +38,7 @@ $z-navbar: map.get(vars.$z-indexes, navbar);
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: map.get(vars.$size, md);
+    gap: map.get(vars.$size, sm);
     z-index: $z-navbar;
     /* Elevate above the stacking context created by the hero's perspective transform */
     color: var(--text-primary);

@@ -159,18 +159,26 @@
 }
 
 .projectCard {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: map.get(vars.$size, sm);
 }
 
+/* Pinned astride the card's top border — out of flow so every card's
+   title starts at the same height, award or not */
 .award {
-  align-self: flex-start;
+  position: absolute;
+  top: 0;
+  left: map.get(vars.$size, md);
+  transform: translateY(-50%);
   font-family: 'JetBrains Mono', monospace;
-  font-size: map.get(vars.$font-sizes, xs);
+  font-size: 10px;
   letter-spacing: 0.04em;
+  white-space: nowrap;
   color: #ffd447;
-  border: 1px solid rgba(255, 212, 71, 0.3);
+  background: #101116;
+  border: 1px solid rgba(255, 212, 71, 0.35);
   border-radius: 999px;
   padding: 3px 10px;
 }
