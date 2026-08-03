@@ -1,8 +1,6 @@
-@use "sass:map";
-@use "../../../app/styles/abstracts/variables" as vars;
-
+/* Sizes (padding, gaps, key dimensions) come from the component — they scale
+   with the stage width, so this module only carries the visual treatment. */
 .root {
-  padding: 12px;
   border-radius: 12px;
   display: inline-block;
   user-select: none;
@@ -17,12 +15,10 @@
 .rows {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .row {
   display: flex;
-  gap: 6px;
 }
 
 .keycap {
@@ -74,17 +70,13 @@
 .arrows {
   display: flex;
   flex-direction: column;
-  gap: map.get(vars.$size, xs);
-  width: calc(map.get(vars.$size, xl) * 3 + map.get(vars.$size, sm));
 }
 
 .arrowsTop {
   display: flex;
-  gap: map.get(vars.$size, xs);
   justify-content: center;
 }
 
 .arrowsBottom {
   display: flex;
-  gap: map.get(vars.$size, xs);
 }

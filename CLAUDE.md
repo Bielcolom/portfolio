@@ -11,7 +11,8 @@ Personal portfolio landing page. Single route (`/`), deployed on Vercel.
 - SCSS modules — no Tailwind, no CSS-in-JS
 - React Compiler enabled (`reactCompiler: true`) — no manual `useMemo`/`useCallback`
 - Turbopack for dev and build
-- Framer Motion (installed, not heavily used yet)
+- Framer Motion — hero tilt springs and the name's ghost-typing animation
+- Dark-only design: `_themes.scss` defines a single palette, no light/dark pair
 
 ## Project structure
 
@@ -23,7 +24,7 @@ src/
 │   ├── global-error.tsx        # Root error boundary (replaces layout on crash)
 │   └── styles/                 # Global SCSS: abstracts, base, globals
 ├── components/
-│   ├── LangToggle.tsx          # EN/ES toggle button
+│   ├── LangToggle/             # EN/ES toggle button
 │   ├── Sections/               # Docs-style content sections below the hero (anchor ids = menu ids)
 │   └── HeroFaceLanding/        # Main interactive hero component
 │       ├── index.tsx           # Orchestrator — composes everything

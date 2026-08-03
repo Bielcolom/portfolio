@@ -13,7 +13,6 @@ interface Props {
   isMobile: boolean;
   query: string;
   faceSrc: string;
-  replayKey: number;
   onOpen: (idx: number) => void;
   onType?: (ch: string) => void;
   onCommand?: (cmd: string) => void;
@@ -31,7 +30,6 @@ const ScreenIndex = ({
   isMobile,
   query,
   faceSrc,
-  replayKey,
   onOpen,
   onType,
   onCommand,
@@ -75,7 +73,7 @@ const ScreenIndex = ({
 
         <aside className={styles.facePane}>
           <div className={styles.faceCard}>
-            <FaceMedia src={faceSrc} replayKey={replayKey} />
+            <FaceMedia src={faceSrc} />
           </div>
           <div className={styles.faceCaption}>
             <span className={styles.statusDot} style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />

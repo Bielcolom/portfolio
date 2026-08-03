@@ -20,8 +20,6 @@ interface Props {
   duration?: number;
   /** 0..1 — screen ambient glow strength. */
   glowIntensity?: number;
-  /** Bumping this restarts the animation. */
-  replayKey?: number;
   /** Bigger = wider screen on desktop (% of viewport width). */
   monitorWidth?: number;
 }
@@ -37,11 +35,10 @@ const HeroFaceLanding = ({
   accent = "#3ddcff",
   duration = 1400,
   glowIntensity = 0.6,
-  replayKey = 0,
   monitorWidth = 60,
 }: Props) => {
   const { t } = useLanguage();
-  const phase = useAnimationPhase(replayKey, duration);
+  const phase = useAnimationPhase(duration);
   const viewportWidth = useViewportWidth();
   const viewportHeight = useViewportHeight();
   const isMobile = viewportWidth > 0 && viewportWidth < 768;
@@ -56,7 +53,7 @@ const HeroFaceLanding = ({
   };
 
   const { selectedIdx, query, filteredItems, handleType, handleCommand, openItem } =
-    useEditorState(replayKey, localizedItems, scrollToSection);
+    useEditorState(localizedItems, scrollToSection);
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -106,11 +103,10 @@ const HeroFaceLanding = ({
     };
     timer = window.setTimeout(tick, 500);
     return () => window.clearTimeout(timer);
-  }, [revealed, replayKey]);
+  }, [revealed]);
 
   const nameComplete = typed >= NAME.length;
 
-  const monitorReveal = phase >= 1 ? 1 : 0;
   const desktopStageWidth = Math.min(monitorWidth + 12, 76);
   const widthCap = viewportWidth > 0 ? viewportWidth - 64 : 980;
   /* Screen + keyboard must fit inside the viewport height */
@@ -129,11 +125,10 @@ const HeroFaceLanding = ({
         items={filteredItems}
         selectedIdx={selectedIdx}
         accent={accent}
-        active={phase >= 1}
+        active={revealed}
         isMobile={isMobile}
         query={query}
         faceSrc={faceSrc}
-        replayKey={replayKey}
         onOpen={openItem}
         onType={isMobile ? handleType : undefined}
         onCommand={isMobile ? handleCommand : undefined}
@@ -158,8 +153,8 @@ const HeroFaceLanding = ({
         style={{
           width: isMobile ? undefined : `${desktopStageWidth}%`,
           maxWidth: isMobile ? undefined : desktopMaxWidth,
-          opacity: monitorReveal,
-          transform: `scale(${monitorReveal ? 1 : 0.92}) translateY(${monitorReveal ? 0 : 24}px)`,
+          opacity: revealed ? 1 : 0,
+          transform: `scale(${revealed ? 1 : 0.92}) translateY(${revealed ? 0 : 24}px)`,
           transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
         }}
       >
@@ -185,7 +180,7 @@ const HeroFaceLanding = ({
               >
                 {NAME.split("").map((ch, i) => (
                   <motion.span
-                    key={`${replayKey}-${i}`}
+                    key={i}
                     className={styles.titleChar}
                     initial={false}
                     animate={
@@ -220,7 +215,6 @@ const HeroFaceLanding = ({
       {/* Bottom meta line */}
       <div className={styles.meta} data-visible={interactive || undefined} data-mobile={isMobile || undefined}>
         <span>{t.meta.role}</span>
-        <span style={{ color: accent }}>● GABRIEL COLOM MOLL</span>
         <span className={styles.scrollHint}>{t.meta.scroll}</span>
       </div>
     </div>

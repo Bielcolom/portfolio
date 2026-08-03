@@ -5,23 +5,20 @@ import styles from "./FaceMedia.module.scss";
 
 interface Props {
   src: string;
-  /** Bump this to restart the video from the beginning. */
-  replayKey?: number;
 }
 
-const FaceMedia = ({ src, replayKey }: Props) => {
+const FaceMedia = ({ src }: Props) => {
   const isVideo = !!src && src.toLowerCase().endsWith(".mp4");
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const assetKey = `${src}::${replayKey ?? 0}`;
-  const [failedAssetKey, setFailedAssetKey] = useState<string | null>(null);
-  const hasError = failedAssetKey === assetKey;
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const hasError = failedSrc === src;
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
     v.currentTime = 0;
     v.play().catch(() => { /* autoplay may be blocked */ });
-  }, [replayKey, src]);
+  }, [src]);
 
   if (hasError) {
     return <div className={styles.fallback} />;
@@ -35,7 +32,7 @@ const FaceMedia = ({ src, replayKey }: Props) => {
         autoPlay
         muted
         playsInline
-        onError={() => setFailedAssetKey(assetKey)}
+        onError={() => setFailedSrc(src)}
         className={styles.video}
       />
     );
@@ -47,8 +44,8 @@ const FaceMedia = ({ src, replayKey }: Props) => {
         src={src}
         alt=""
         fill
-        sizes="(max-width: 768px) 94vw, 76vw"
-        onError={() => setFailedAssetKey(assetKey)}
+        sizes="(max-width: 768px) 90vw, 320px"
+        onError={() => setFailedSrc(src)}
         style={{ objectFit: "cover" }}
       />
     </span>

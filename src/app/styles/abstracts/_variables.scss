@@ -18,27 +18,9 @@ $font-sizes: (
 );
 
 $colors: (
-  background-light: #ffffff,
-  foreground-light: #171717,
-  background-dark: #0a0a0a,
-  foreground-dark: #000000,
-  text-light-primary: #000000,
-  // Primary text color for dark mode (was missing, caused a null color)
-  text-dark-primary: #ffffff,
-  // Removed neutral grays for a brighter palette
-  text-light-secondary: #0b7e89,
-  text-dark-secondary: #0b7e89,
-  accent-yellow: #ffd447,
-  accent-pink: #ff4fa3,
-  accent-purple: #7f6cff,
-  // Brand colors
+  text-primary: #ffffff,
   primary: #0b8a96,
   primary-hover: #1fb6c7,
-  primary-light: #4fc8d4,
-  primary-dark: #064e56,
-  secondary: #0b7e89,
-  secondary-hover: #0e939f,
-  secondary-light: #5ac2cc
 );
 
 // z-index scale — above the hero's 3D perspective stacking context

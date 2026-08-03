@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useState } from "react";
+import { useDeferredValue, useState } from "react";
 import { MenuItem } from "./data";
 
 interface IndexState {
@@ -16,7 +16,6 @@ interface IndexState {
  * what opening means (scrolling to the matching page section).
  */
 const useEditorState = (
-  replayKey: number,
   allItems: MenuItem[],
   onOpen: (item: MenuItem) => void,
 ): IndexState => {
@@ -30,14 +29,6 @@ const useEditorState = (
     return [item.id, item.label, item.desc].join(" ").toLowerCase().includes(needle);
   });
   const safeIdx = filteredItems[selectedIdx] ? selectedIdx : 0;
-
-  useEffect(() => {
-    const id = window.requestAnimationFrame(() => {
-      setSelectedIdx(0);
-      setQuery("");
-    });
-    return () => window.cancelAnimationFrame(id);
-  }, [replayKey]);
 
   const handleType = (ch: string) => {
     if (!ch.trim() && ch !== " ") return;

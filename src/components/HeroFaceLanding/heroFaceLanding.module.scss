@@ -32,8 +32,7 @@
 
   @media (max-width: 768px) {
     /* Size by available height so the phone fits the viewport */
-    width: min(88%, calc((100dvh - 140px) * 390 / 844)) !important;
-    max-width: none !important;
+    width: min(88%, calc((100dvh - 140px) * 390 / 844));
   }
 }
 

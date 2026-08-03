@@ -1,10 +1,9 @@
-@use "./abstracts/variables" as vars;
-@use "sass:map";
 @use "./abstracts/themes";
 @use "./base/reset";
 
 html {
   background-color: #0d0d0f;
+  color-scheme: dark;
 }
 
 body {
@@ -18,22 +17,6 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-h1 {
-  font-size: map.get(vars.$font-sizes, xl);
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-p {
-  font-size: map.get(vars.$font-sizes, lg);
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-primary);
 }
 
 a {
@@ -68,66 +51,4 @@ a::after {
 a:hover::after,
 a:focus-visible::after {
   transform: scaleX(1);
-}
-
-@media (max-width: 600px) {
-  h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-/* Global button component */
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: map.get(vars.$size, sm);
-  height: map.get(vars.$size, xxl);
-  padding: 0 map.get(vars.$size, md);
-  border-radius: 128px;
-  font-weight: 500;
-  font-size: map.get(vars.$font-sizes, sm);
-  line-height: map.get(vars.$font-sizes, sm);
-  cursor: pointer;
-  border: 1px solid transparent;
-  background: var(--primary, var(--text-primary));
-  color: var(--background);
-  transition: background-color .3s, color .3s, border-color .3s;
-  text-decoration: none;
-
-  /* prevent the animated underline pseudo-element from showing on .button */
-  position: relative;
-  overflow: hidden;
-}
-
-.button.transparent {
-  background: transparent;
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .button:hover:not(.transparent) {
-    background: var(--primary-hover);
-    color: var(--background);
-  }
-
-  .button.transparent:hover {
-    background: var(--primary-hover);
-    color: var(--background);
-  }
-}
-
-.button:focus-visible {
-  outline: 2px solid var(--text-primary);
-  outline-offset: 2px;
-}
-
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }

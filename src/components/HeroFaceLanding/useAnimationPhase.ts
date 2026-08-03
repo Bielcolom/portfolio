@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
  * Also resets when the page is restored from bfcache (iOS pull-to-refresh),
  * because in that case React state is frozen and effects don't re-run.
  */
-const useAnimationPhase = (replayKey: number, duration: number): number => {
+const useAnimationPhase = (duration: number): number => {
   const [phase, setPhase] = useState(-1);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const useAnimationPhase = (replayKey: number, duration: number): number => {
       window.clearTimeout(complete);
       window.removeEventListener("pageshow", onPageShow);
     };
-  }, [replayKey, duration]);
+  }, [duration]);
 
   return phase;
 };
