@@ -5,17 +5,16 @@ export interface MenuItemBase {
 
 /** Full item after merging with localized translations. */
 export interface MenuItem extends MenuItemBase {
+  num: string;
   desc: string;
-  code: string;
 }
 
-export type EditorView = "closed" | "menu" | "viewing";
-
+/** Site index — each item maps 1:1 to a page section with the same id. */
 export const MENU_ITEMS: MenuItemBase[] = [
-  { id: "who",        label: "who"        },
-  { id: "stack",      label: "stack"      },
+  { id: "about",      label: "about"      },
   { id: "experience", label: "experience" },
   { id: "projects",   label: "projects"   },
+  { id: "stack",      label: "stack"      },
+  { id: "education",  label: "education"  },
   { id: "contact",    label: "contact"    },
-  { id: "socials",    label: "socials"    },
 ];

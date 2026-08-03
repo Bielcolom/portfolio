@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { MenuItem } from "../data";
-import styles from "./codeOverlay.module.scss";
+import styles from "./screenIndex.module.scss";
 import { useLanguage } from "@/i18n/context";
 
 interface Props {
@@ -79,7 +79,7 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen, onType,
             autoCorrect="off"
             autoCapitalize="none"
             spellCheck={false}
-            enterKeyHint="search"
+            enterKeyHint="go"
             aria-label="type to filter"
           />
         )}
@@ -110,8 +110,8 @@ const MenuList = ({ items, selectedIdx, accent, isMobile, query, onOpen, onType,
                 borderLeft: `2px solid ${selected ? accent : "transparent"}`,
               }}
             >
-              <span className={styles.menuArrow} style={{ color: selected ? accent : "#3a4049" }}>
-                {selected ? ">" : " "}
+              <span className={styles.menuNum} style={{ color: selected ? accent : "#3a4049" }}>
+                {item.num}
               </span>
               <span className={styles.menuLabel} data-selected={selected || undefined}>
                 {item.label}

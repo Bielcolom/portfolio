@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MagicKeyboard — interactive keyboard visualization.
  * Renders a full QWERTY layout that both reflects physical keydown events
  * and is clickable (touch/mouse). Delegates typed characters and commands
@@ -22,6 +22,8 @@ interface Props {
   accent?: string;
   active?: boolean;
   scale?: number;
+  /** Ghost keypress — flashes the matching key each time seq changes. */
+  ghost?: { char: string; seq: number } | null;
   onType?: (ch: string) => void;
   onCommand?: (cmd: Cmd) => void;
 }
@@ -77,12 +79,12 @@ const KB_ROWS: Key[][] = [
 ];
 
 const SPECIAL = ["delete", "tab", "caps", "enter", "shift", "shift2", "fn", "ctrl", "alt", "alt2", "cmd", "cmd2"];
-const ROW_HUES = [-40, -15, 10, 35, 60];
 const BASE_UNIT = 32;
 const BASE_GAP = 6;
 
 const MagicKeyboard = ({
   accent = "#3ddcff",
+  ghost = null,
   onType,
   onCommand,
   active = true,
@@ -111,6 +113,14 @@ const MagicKeyboard = ({
       });
     }, 220);
   }, []);
+
+  useEffect(() => {
+    if (!ghost) return;
+    const id = window.requestAnimationFrame(() => {
+      flash(ghost.char === " " ? " " : ghost.char.toLowerCase());
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [ghost, flash]);
 
   useEffect(() => {
     if (!active) return;
@@ -171,60 +181,45 @@ const MagicKeyboard = ({
       style={{
         ["--accent" as string]: accent,
         padding,
-        border: `1px solid color-mix(in oklch, ${accent} 22%, transparent)`,
-        background: `linear-gradient(180deg,
-          color-mix(in oklch, ${accent} 5%, transparent) 0%,
-          color-mix(in oklch, ${accent} 2%, transparent) 100%)`,
-        boxShadow: `
-          inset 0 1px 0 color-mix(in oklch, ${accent} 12%, transparent),
-          0 0 0 1px rgba(0,0,0,0.4),
-          0 18px 40px rgba(0,0,0,0.5)
-        `,
       }}
     >
       <div className={styles.rows} style={{ gap }}>
-        {KB_ROWS.map((row, ri) => {
-          const rowAccent = `oklch(from ${accent} l c calc(h + ${ROW_HUES[ri] || 0}))`;
-
-          return (
-            <div key={ri} className={styles.row} style={{ gap }}>
-              {row.map((key, ki) => {
-                if (key.special === "arrows") {
-                  return (
-                    <ArrowCluster
-                      key={`${ri}-${ki}`}
-                      accent={rowAccent}
-                      unit={unit}
-                      gap={gap}
-                      fontSize={smallKeyFont}
-                      smallPaddingLeft={smallPaddingLeft}
-                      smallPaddingTop={smallPaddingTop}
-                      pressed={pressed}
-                      onClick={handleClick}
-                    />
-                  );
-                }
-
+        {KB_ROWS.map((row, ri) => (
+          <div key={ri} className={styles.row} style={{ gap }}>
+            {row.map((key, ki) => {
+              if (key.special === "arrows") {
                 return (
-                  <Keycap
+                  <ArrowCluster
                     key={`${ri}-${ki}`}
-                    width={key.w * unit + (key.w - 1) * gap}
-                    height={unit}
-                    label={key.label !== undefined ? key.label : key.k}
-                    smallLabel={key.sm}
-                    fontSize={key.sm ? smallKeyFont : keyFont}
+                    unit={unit}
+                    gap={gap}
+                    fontSize={smallKeyFont}
                     smallPaddingLeft={smallPaddingLeft}
                     smallPaddingTop={smallPaddingTop}
-                    decorative={key.deco}
-                    pressed={pressed.has(key.k)}
-                    accent={rowAccent}
-                    onClick={() => handleClick(key.k, key.k)}
+                    pressed={pressed}
+                    onClick={handleClick}
                   />
                 );
-              })}
-            </div>
-          );
-        })}
+              }
+
+              return (
+                <Keycap
+                  key={`${ri}-${ki}`}
+                  width={key.w * unit + (key.w - 1) * gap}
+                  height={unit}
+                  label={key.label !== undefined ? key.label : key.k}
+                  smallLabel={key.sm}
+                  fontSize={key.sm ? smallKeyFont : keyFont}
+                  smallPaddingLeft={smallPaddingLeft}
+                  smallPaddingTop={smallPaddingTop}
+                  decorative={key.deco}
+                  pressed={pressed.has(key.k)}
+                  onClick={() => handleClick(key.k, key.k)}
+                />
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -240,7 +235,6 @@ interface KeycapProps {
   smallPaddingTop: number;
   decorative?: boolean;
   pressed?: boolean;
-  accent: string;
   onClick?: () => void;
 }
 
@@ -254,7 +248,6 @@ const Keycap = ({
   smallPaddingTop,
   decorative,
   pressed,
-  accent,
   onClick,
 }: KeycapProps) => {
   const isUpper = !smallLabel && label && label.length === 1 && /[a-z]/i.test(label);
@@ -265,25 +258,14 @@ const Keycap = ({
       type="button"
       onClick={onClick}
       className={styles.keycap}
+      data-pressed={pressed || undefined}
+      data-deco={decorative || undefined}
       style={{
         width,
         height,
-        background: pressed
-          ? `color-mix(in oklch, ${accent} 75%, transparent)`
-          : `color-mix(in oklch, ${accent} 12%, transparent)`,
-        boxShadow: pressed
-          ? `0 0 18px color-mix(in oklch, ${accent} 70%, transparent), 0 0 38px color-mix(in oklch, ${accent} 35%, transparent)`
-          : `inset 0 0 0 1px color-mix(in oklch, ${accent} 22%, transparent)`,
-        color: pressed
-          ? "#0a0b0d"
-          : decorative
-            ? `color-mix(in oklch, ${accent} 55%, white 15%)`
-            : `color-mix(in oklch, ${accent} 75%, white 22%)`,
         fontSize,
-        fontWeight: pressed ? 600 : 400,
         letterSpacing: smallLabel ? "0.08em" : 0,
         textTransform: smallLabel ? "uppercase" : "none",
-        transform: pressed ? "scale(1.06)" : "scale(1)",
         textAlign: smallLabel ? "left" : "center",
         paddingLeft: smallLabel ? smallPaddingLeft : 0,
         paddingTop: smallLabel ? smallPaddingTop : 0,
@@ -297,7 +279,6 @@ const Keycap = ({
 };
 
 interface ArrowsProps {
-  accent: string;
   unit: number;
   gap: number;
   fontSize: number;
@@ -308,7 +289,6 @@ interface ArrowsProps {
 }
 
 const ArrowCluster = ({
-  accent,
   unit,
   gap,
   fontSize,
@@ -333,7 +313,6 @@ const ArrowCluster = ({
           smallPaddingLeft={smallPaddingLeft}
           smallPaddingTop={smallPaddingTop}
           pressed={pressed.has("arrowup")}
-          accent={accent}
           onClick={() => onClick("arrowup", "arrowup")}
         />
         <div style={{ width: unit }} />
@@ -348,7 +327,6 @@ const ArrowCluster = ({
           smallPaddingLeft={smallPaddingLeft}
           smallPaddingTop={smallPaddingTop}
           pressed={pressed.has("arrowleft")}
-          accent={accent}
           onClick={() => onClick("arrowleft", "arrowleft")}
         />
         <Keycap
@@ -360,7 +338,6 @@ const ArrowCluster = ({
           smallPaddingLeft={smallPaddingLeft}
           smallPaddingTop={smallPaddingTop}
           pressed={pressed.has("arrowdown")}
-          accent={accent}
           onClick={() => onClick("arrowdown", "arrowdown")}
         />
         <Keycap
@@ -372,7 +349,6 @@ const ArrowCluster = ({
           smallPaddingLeft={smallPaddingLeft}
           smallPaddingTop={smallPaddingTop}
           pressed={pressed.has("arrowright")}
-          accent={accent}
           onClick={() => onClick("arrowright", "arrowright")}
         />
       </div>

@@ -1,0 +1,298 @@
+@use "sass:map";
+@use "../../../app/styles/abstracts/variables" as vars;
+
+@keyframes hflBlink {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Screen layout ----------------------------------------------------------- */
+.root {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0b0d11;
+  padding: map.get(vars.$size, md);
+  /* The interleaved name crosses the bottom edge — keep content clear of it */
+  padding-bottom: clamp(24px, 5cqw, 56px);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: map.get(vars.$font-sizes, sm);
+  line-height: 1.55;
+  color: #dfe3ea;
+  opacity: 0;
+  transition: opacity 600ms ease-out 150ms;
+
+  &[data-active] {
+    opacity: 1;
+  }
+
+  &[data-mobile] {
+    font-size: map.get(vars.$font-sizes, xs);
+    padding: 36px 12px 12px;
+  }
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  gap: map.get(vars.$size, sm);
+  margin-bottom: map.get(vars.$size, sm);
+  padding-bottom: map.get(vars.$size, sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.trafficDots {
+  display: flex;
+  gap: 6px;
+
+  span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.path {
+  margin-left: map.get(vars.$size, sm);
+  font-size: map.get(vars.$font-sizes, xs);
+  color: #7a7f88;
+
+  [data-mobile] & {
+    margin-left: 6px;
+  }
+}
+
+.hint {
+  margin-left: auto;
+  font-size: map.get(vars.$font-sizes, xs);
+  color: #5a606b;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 0 5px;
+  margin: 0 2px;
+  border: 1px solid #3a4049;
+  border-radius: 3px;
+  font-size: map.get(vars.$font-sizes, xs);
+  color: #aab0bb;
+  background: #1a1d22;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Body: index + face card ------------------------------------------------- */
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: map.get(vars.$size, md);
+
+  [data-mobile] & {
+    flex-direction: column;
+  }
+}
+
+.indexPane {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+
+.facePane {
+  flex: 0 0 34%;
+  display: flex;
+  flex-direction: column;
+  gap: map.get(vars.$size, sm);
+  min-height: 0;
+
+  [data-mobile] & {
+    order: -1;
+    flex: 0 0 32%;
+    width: 100%;
+  }
+}
+
+.faceCard {
+  flex: 1;
+  min-height: 0;
+  border-radius: map.get(vars.$size, sm);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #000;
+}
+
+.faceCaption {
+  display: flex;
+  align-items: center;
+  gap: map.get(vars.$size, sm);
+  font-size: map.get(vars.$font-sizes, xs);
+  color: #7a7f88;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.statusDot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: hflBlink 1.4s ease-in-out infinite;
+}
+
+.captionLoc {
+  margin-left: auto;
+  color: #5a606b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Index list --------------------------------------------------------------- */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &[data-mobile] {
+    gap: 6px;
+  }
+}
+
+.menuHeader {
+  margin-bottom: 10px;
+  color: #5a606b;
+}
+
+.commandLine {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: map.get(vars.$size, sm);
+  min-height: 40px;
+  margin-bottom: map.get(vars.$size, sm);
+  padding: map.get(vars.$size, sm) 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.mobileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: map.get(vars.$font-sizes, base);
+  /* prevents iOS Safari auto-zoom on focus */
+  color: transparent;
+  caret-color: transparent;
+  cursor: text;
+  border-radius: inherit;
+}
+
+.commandPrompt {
+  font-weight: 700;
+}
+
+.commandValue {
+  color: #dfe3ea;
+  word-break: break-word;
+
+  &[data-empty] {
+    color: #6e7480;
+  }
+}
+
+.commandCursor {
+  width: 8px;
+  height: 14px;
+  margin-left: -4px;
+  border-radius: 1px;
+  animation: hflBlink 1s step-end infinite;
+
+  &[data-paused] {
+    animation-play-state: paused;
+    opacity: 0.4;
+  }
+}
+
+.resultMeta {
+  margin-bottom: map.get(vars.$size, sm);
+  font-size: map.get(vars.$font-sizes, xs);
+  letter-spacing: 0.08em;
+  color: #6e7480;
+  text-transform: uppercase;
+}
+
+.menuItem {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 120ms ease-out, border-color 120ms ease-out;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: inherit;
+
+  &[data-mobile] {
+    padding: 6px 8px;
+    min-height: 32px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:not([data-selected]):hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+.menuNum {
+  font-size: map.get(vars.$font-sizes, xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.menuLabel {
+  color: #dfe3ea;
+  font-weight: 500;
+  min-width: 80px;
+
+  &[data-selected] {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  [data-mobile] & {
+    min-width: 70px;
+  }
+}
+
+.menuDesc {
+  color: #5a606b;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emptyState {
+  padding: 12px 10px;
+  border-radius: 6px;
+  color: #8b93a0;
+  background: rgba(255, 255, 255, 0.03);
+}

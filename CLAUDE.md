@@ -19,32 +19,33 @@ Personal portfolio landing page. Single route (`/`), deployed on Vercel.
 src/
 ├── app/                        # Next.js App Router
 │   ├── layout.tsx              # Root layout with LanguageProvider
-│   ├── page.tsx                # Only page — navbar + HeroFaceLanding
+│   ├── page.tsx                # Only page — navbar + HeroFaceLanding + Sections
 │   ├── global-error.tsx        # Root error boundary (replaces layout on crash)
 │   └── styles/                 # Global SCSS: abstracts, base, globals
 ├── components/
 │   ├── LangToggle.tsx          # EN/ES toggle button
+│   ├── Sections/               # Docs-style content sections below the hero (anchor ids = menu ids)
 │   └── HeroFaceLanding/        # Main interactive hero component
 │       ├── index.tsx           # Orchestrator — composes everything
-│       ├── data.ts             # Menu item metadata (id + label only)
+│       ├── data.ts             # Site index metadata (id + label only); ids double as section anchors
 │       ├── useAnimationPhase   # Hook: manages reveal animation phases
-│       ├── useViewportWidth    # Hook: tracks window.innerWidth; isMobile derived from it
-│       ├── useEditorState      # Hook: full editor state machine + handlers
+│       ├── useViewportWidth    # Hooks: viewport width + height; isMobile derived from width
+│       ├── useEditorState      # Hook: index state (filter, selection, keyboard nav → onOpen)
 │       ├── FaceMedia           # Video/image display with error fallback
-│       ├── Monitor/            # SVG monitor frame
+│       ├── PhoneFrame/         # Phone bezel (mobile only); desktop uses frameless .screenFrame
 │       ├── MagicKeyboard/      # Interactive QWERTY keyboard (desktop only)
-│       └── CodeOverlay/        # Editor UI: MenuList, CodeView, syntaxHighlight
+│       └── ScreenIndex/        # Screen content: site index (MenuList) + face video card
 └── i18n/
     ├── context.tsx             # LanguageProvider + useLanguage hook
-    └── translations.ts         # EN + ES strings, including item desc/code
+    └── translations.ts         # EN + ES strings: index descs + section content
 ```
 
 ## Architecture decisions
 
 **Single source of truth for content:**
-`data.ts` holds only `id` and `label` per menu item. All `desc` and `code` come from `translations.ts`. Never add content to `data.ts` — add it to both locales in `translations.ts`.
+`data.ts` holds only `id` and `label` per index item. All descriptions and section content come from `translations.ts`. Never add content to `data.ts` — add it to both locales in `translations.ts`.
 
-**`EditorView` type lives in `data.ts`**, not in `CodeOverlay`. Both `CodeOverlay` and `useEditorState` import from there.
+**Index ids are section anchors:** each `MENU_ITEMS` id matches the `id` of a `<section>` in `Sections/`. Choosing an item in the hero index smooth-scrolls to that section. Adding a section means adding it in `data.ts` (id+label), `translations.ts` (items + sections, both locales).
 
 **Custom hooks live next to the component that owns them**, not in a shared `/hooks` folder.
 

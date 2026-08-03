@@ -9,7 +9,12 @@ html {
 
 body {
   color: var(--text-primary);
-  background: #0d0d0f;
+  /* Viewport-fixed gradients so the glow doesn't stretch as the page grows */
+  background:
+    radial-gradient(120% 90% at 50% 12%, rgba(61, 220, 255, 0.045), transparent 55%),
+    radial-gradient(140% 100% at 50% 110%, #12131a, transparent 65%),
+    #0d0d0f;
+  background-attachment: fixed;
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

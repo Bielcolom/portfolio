@@ -1,28 +1,26 @@
 import { useDeferredValue, useEffect, useState } from "react";
-import { EditorView, MenuItem } from "./data";
+import { MenuItem } from "./data";
 
-interface EditorState {
-  editorView: EditorView;
+interface IndexState {
   selectedIdx: number;
-  activeItem: MenuItem | null;
   query: string;
   filteredItems: MenuItem[];
   handleType: (ch: string) => void;
   handleCommand: (cmd: string) => void;
-  openMenu: () => void;
   openItem: (idx: number) => void;
-  backToMenu: () => void;
-  closeEditor: () => void;
 }
 
 /**
- * Manages the code-overlay editor state machine.
- * Accepts the full localized item list and handles filtering, selection, and navigation internally.
+ * State for the screen index: filtering, selection and keyboard navigation.
+ * `onOpen` fires when an item is chosen (enter / click) — the parent decides
+ * what opening means (scrolling to the matching page section).
  */
-const useEditorState = (replayKey: number, allItems: MenuItem[]): EditorState => {
-  const [editorView, setEditorView] = useState<EditorView>("closed");
+const useEditorState = (
+  replayKey: number,
+  allItems: MenuItem[],
+  onOpen: (item: MenuItem) => void,
+): IndexState => {
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
 
@@ -35,111 +33,49 @@ const useEditorState = (replayKey: number, allItems: MenuItem[]): EditorState =>
 
   useEffect(() => {
     const id = window.requestAnimationFrame(() => {
-      setEditorView("closed");
       setSelectedIdx(0);
-      setActiveItem(null);
       setQuery("");
     });
     return () => window.cancelAnimationFrame(id);
   }, [replayKey]);
 
-  const closeEditor = () => {
-    setEditorView("closed");
-    setActiveItem(null);
-    setSelectedIdx(0);
-    setQuery("");
-  };
-
   const handleType = (ch: string) => {
     if (!ch.trim() && ch !== " ") return;
-    if (editorView !== "menu") {
-      setEditorView("menu");
-      setActiveItem(null);
-    }
     setQuery((prev) => prev + ch.toLowerCase());
     setSelectedIdx(0);
   };
 
   const handleCommand = (cmd: string) => {
-    if (editorView === "closed") {
-      if (cmd === "enter" || cmd === "arrowdown" || cmd === "arrowup") {
-        setEditorView("menu");
-        setSelectedIdx(0);
-      }
-      return;
-    }
-
-    if (editorView === "menu") {
-      if (cmd === "arrowdown" && filteredItems.length > 0) {
-        setSelectedIdx((i) => (i + 1) % filteredItems.length);
-      } else if (cmd === "arrowup" && filteredItems.length > 0) {
-        setSelectedIdx((i) => (i - 1 + filteredItems.length) % filteredItems.length);
-      } else if (cmd === "enter") {
-        const item = filteredItems[safeIdx];
-        if (!item) return;
-        setActiveItem(item);
-        setEditorView("viewing");
-      } else if (cmd === "esc") {
-        closeEditor();
-      } else if (cmd === "backspace") {
-        setQuery((prev) => prev.slice(0, -1));
-        setSelectedIdx(0);
-      }
-      return;
-    }
-
-    // viewing
-    if (cmd === "enter" || cmd === "arrowleft") {
-      setEditorView("menu");
-      setActiveItem(null);
-    } else if (cmd === "esc") {
-      closeEditor();
+    if (cmd === "arrowdown" && filteredItems.length > 0) {
+      setSelectedIdx((i) => (i + 1) % filteredItems.length);
+    } else if (cmd === "arrowup" && filteredItems.length > 0) {
+      setSelectedIdx((i) => (i - 1 + filteredItems.length) % filteredItems.length);
+    } else if (cmd === "enter") {
+      const item = filteredItems[safeIdx];
+      if (item) onOpen(item);
     } else if (cmd === "backspace") {
-      setEditorView("menu");
-      setActiveItem(null);
       setQuery((prev) => prev.slice(0, -1));
       setSelectedIdx(0);
-    } else if (cmd === "arrowdown" && filteredItems.length > 0) {
-      const next = (selectedIdx + 1) % filteredItems.length;
-      setSelectedIdx(next);
-      setActiveItem(filteredItems[next]);
-    } else if (cmd === "arrowup" && filteredItems.length > 0) {
-      const prev = (selectedIdx - 1 + filteredItems.length) % filteredItems.length;
-      setSelectedIdx(prev);
-      setActiveItem(filteredItems[prev]);
-    }
-  };
-
-  const openMenu = () => {
-    if (editorView === "closed") {
-      setEditorView("menu");
+    } else if (cmd === "esc") {
+      setQuery("");
       setSelectedIdx(0);
     }
   };
 
   const openItem = (idx: number) => {
+    const item = filteredItems[idx];
+    if (!item) return;
     setSelectedIdx(idx);
-    setActiveItem(filteredItems[idx] ?? null);
-    setEditorView("viewing");
-  };
-
-  const backToMenu = () => {
-    setEditorView("menu");
-    setActiveItem(null);
+    onOpen(item);
   };
 
   return {
-    editorView,
     selectedIdx: safeIdx,
-    activeItem,
     query,
     filteredItems,
     handleType,
     handleCommand,
-    openMenu,
     openItem,
-    backToMenu,
-    closeEditor,
   };
 };
 

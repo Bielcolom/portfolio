@@ -3,9 +3,15 @@
 
 .root {
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   display: inline-block;
   user-select: none;
+  /* Translucent case — the front title crossing behind stays visible through it */
+  background: linear-gradient(180deg, rgba(30, 33, 39, 0.42) 0%, rgba(16, 18, 22, 0.5) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
 .rows {
@@ -22,17 +28,47 @@
 .keycap {
   position: relative;
   border: none;
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 0;
   font-family: 'JetBrains Mono', monospace;
   cursor: pointer;
   display: flex;
   outline: none;
+  background: linear-gradient(180deg, rgba(46, 50, 58, 0.5) 0%, rgba(28, 31, 36, 0.45) 100%);
+  color: #a6acb6;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.3);
   transition:
-    transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    background 200ms ease-out,
-    box-shadow 200ms ease-out,
-    color 160ms ease-out;
+    transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 180ms ease-out,
+    box-shadow 180ms ease-out,
+    color 140ms ease-out;
+
+  &[data-deco] {
+    color: #767d89;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not([data-pressed]) {
+      background: linear-gradient(180deg, rgba(58, 63, 72, 0.6) 0%, rgba(36, 40, 46, 0.55) 100%);
+      color: #ccd1da;
+    }
+  }
+
+  /* Pressed: the cap sinks with a gentle accent tint */
+  &[data-pressed] {
+    background: linear-gradient(180deg,
+        color-mix(in oklch, var(--accent) 16%, rgba(46, 50, 58, 0.55)) 0%,
+        color-mix(in oklch, var(--accent) 10%, rgba(28, 31, 36, 0.5)) 100%);
+    color: color-mix(in oklch, var(--accent) 45%, #ccd1da);
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 0 0 1px color-mix(in oklch, var(--accent) 22%, transparent),
+      0 0 10px color-mix(in oklch, var(--accent) 14%, transparent);
+  }
 }
 
 .arrows {

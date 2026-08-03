@@ -1,14 +1,14 @@
 "use client";
+import { useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { MENU_ITEMS, MenuItem } from "./data";
-import FaceMedia from "./FaceMedia";
-import Monitor from "./Monitor";
 import PhoneFrame from "./PhoneFrame";
 import MagicKeyboard from "./MagicKeyboard";
-import CodeOverlay from "./CodeOverlay";
+import ScreenIndex from "./ScreenIndex";
 import styles from "./heroFaceLanding.module.scss";
 import { useLanguage } from "@/i18n/context";
 import useAnimationPhase from "./useAnimationPhase";
-import useViewportWidth from "./useViewportWidth";
+import useViewportWidth, { useViewportHeight } from "./useViewportWidth";
 import useEditorState from "./useEditorState";
 
 interface Props {
@@ -18,15 +18,19 @@ interface Props {
   accent?: string;
   /** ms for the zoom-out + reveal transition. */
   duration?: number;
-  /** 0..1 — bezel + screen accent glow strength. */
+  /** 0..1 — screen ambient glow strength. */
   glowIntensity?: number;
   /** Bumping this restarts the animation. */
   replayKey?: number;
-  /** Show CRT scanlines on the monitor screen. */
-  showScanlines?: boolean;
-  /** Bigger = wider monitor on desktop (% of viewport width). */
+  /** Bigger = wider screen on desktop (% of viewport width). */
   monitorWidth?: number;
 }
+
+const TILT_SPRING = { stiffness: 120, damping: 18, mass: 0.5 };
+
+const NAME = "Gabriel Colom Moll";
+/** Spring for each letter popping in as it is "typed". */
+const CHAR_SPRING = { type: "spring", stiffness: 520, damping: 17, mass: 0.6 } as const;
 
 const HeroFaceLanding = ({
   faceSrc = "/face.mp4",
@@ -34,37 +38,84 @@ const HeroFaceLanding = ({
   duration = 1400,
   glowIntensity = 0.6,
   replayKey = 0,
-  showScanlines = true,
   monitorWidth = 60,
 }: Props) => {
   const { t } = useLanguage();
   const phase = useAnimationPhase(replayKey, duration);
   const viewportWidth = useViewportWidth();
+  const viewportHeight = useViewportHeight();
   const isMobile = viewportWidth > 0 && viewportWidth < 768;
 
-  const localizedItems: MenuItem[] = MENU_ITEMS.map((item) => {
+  const localizedItems: MenuItem[] = MENU_ITEMS.map((item, i) => {
     const tr = t.items[item.id as keyof typeof t.items];
-    return { ...item, desc: tr.desc, code: tr.code };
+    return { ...item, num: String(i + 1).padStart(2, "0"), desc: tr.desc };
   });
 
-  const {
-    editorView,
-    selectedIdx,
-    activeItem,
-    query,
-    filteredItems,
-    handleType,
-    handleCommand,
-    openMenu,
-    openItem,
-    backToMenu,
-    closeEditor,
-  } = useEditorState(replayKey, localizedItems);
+  const scrollToSection = (item: MenuItem) => {
+    document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const { selectedIdx, query, filteredItems, handleType, handleCommand, openItem } =
+    useEditorState(replayKey, localizedItems, scrollToSection);
+
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const tiltX = useSpring(useTransform(my, [-0.5, 0.5], [4.5, -4.5]), TILT_SPRING);
+  const tiltY = useSpring(useTransform(mx, [-0.5, 0.5], [-7, 7]), TILT_SPRING);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isMobile || e.pointerType !== "mouse") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - rect.left) / rect.width - 0.5);
+    my.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const resetTilt = () => {
+    mx.set(0);
+    my.set(0);
+  };
 
   const interactive = phase >= 2;
+  const revealed = phase >= 1;
+
+  /* Ghost-typing intro: the name types itself letter by letter,
+     flashing the matching key on the MagicKeyboard in sync.
+     Starts during the reveal, while the video is already playing */
+  const [typed, setTyped] = useState(0);
+  const [ghost, setGhost] = useState<{ char: string; seq: number } | null>(null);
+
+  useEffect(() => {
+    if (!revealed) {
+      const id = window.requestAnimationFrame(() => {
+        setTyped(0);
+        setGhost(null);
+      });
+      return () => window.cancelAnimationFrame(id);
+    }
+
+    let i = 0;
+    let timer: number;
+    const tick = () => {
+      i += 1;
+      setTyped(i);
+      setGhost({ char: NAME[i - 1], seq: i });
+      if (i < NAME.length) {
+        timer = window.setTimeout(tick, 60 + Math.random() * 70);
+      }
+    };
+    timer = window.setTimeout(tick, 500);
+    return () => window.clearTimeout(timer);
+  }, [revealed, replayKey]);
+
+  const nameComplete = typed >= NAME.length;
+
   const monitorReveal = phase >= 1 ? 1 : 0;
   const desktopStageWidth = Math.min(monitorWidth + 12, 76);
-  const desktopMaxWidth = viewportWidth > 0 ? Math.min(900, viewportWidth - 64) : 980;
+  const widthCap = viewportWidth > 0 ? viewportWidth - 64 : 980;
+  /* Screen + keyboard must fit inside the viewport height */
+  const heightCap = viewportHeight > 0 ? (viewportHeight - 380) * 1.7 : 980;
+  const desktopMaxWidth = Math.max(420, Math.min(900, widthCap, heightCap));
   const stageWidthPx = viewportWidth > 0
     ? Math.min((desktopStageWidth / 100) * viewportWidth, desktopMaxWidth)
     : desktopMaxWidth;
@@ -72,109 +123,105 @@ const HeroFaceLanding = ({
     ? 1
     : Math.max(1, Math.min(1.32, (stageWidthPx - 24) / 580));
 
-  return (
-    <div className={styles.root}>
-      {/* Oversized editorial title */}
-      <div className={styles.titleLayer} data-visible={phase >= 2 || undefined}>
-        <div
-          className={styles.title}
-          style={{ WebkitTextStroke: `1px ${accent}` }}
-        >
-          BIEL<br />COLOM
-        </div>
-      </div>
+  const screenContent = (
+    <div className={styles.screen}>
+      <ScreenIndex
+        items={filteredItems}
+        selectedIdx={selectedIdx}
+        accent={accent}
+        active={phase >= 1}
+        isMobile={isMobile}
+        query={query}
+        faceSrc={faceSrc}
+        replayKey={replayKey}
+        onOpen={openItem}
+        onType={isMobile ? handleType : undefined}
+        onCommand={isMobile ? handleCommand : undefined}
+      />
+      <div className={styles.glare} />
+    </div>
+  );
 
-      {/* Monitor + keyboard */}
+  return (
+    <div
+      className={styles.root}
+      style={{
+        "--accent": accent,
+        "--glow-alpha": `${Math.round(8 + glowIntensity * 8)}%`,
+      } as React.CSSProperties}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetTilt}
+    >
+      {/* Screen + interleaved title + keyboard */}
       <div
         className={styles.stage}
         style={{
-          width: isMobile ? "63%" : `${desktopStageWidth}%`,
-          maxWidth: isMobile ? 265 : desktopMaxWidth,
+          width: isMobile ? undefined : `${desktopStageWidth}%`,
+          maxWidth: isMobile ? undefined : desktopMaxWidth,
           opacity: monitorReveal,
           transform: `scale(${monitorReveal ? 1 : 0.92}) translateY(${monitorReveal ? 0 : 24}px)`,
           transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
         }}
       >
-        {isMobile ? (
-          <PhoneFrame accent={accent} glowIntensity={glowIntensity}>
-            <div
-              className={styles.screen}
-              data-phone
-              data-clickable={editorView === "closed" && interactive || undefined}
-              onClick={editorView === "closed" && interactive ? openMenu : undefined}
-            >
-              <div className={styles.screenFace}>
-                <FaceMedia src={faceSrc} replayKey={replayKey} />
-              </div>
+        <motion.div className={styles.tilt} style={{ rotateX: tiltX, rotateY: tiltY }}>
+          <div className={styles.screenZone}>
+            {isMobile ? (
+              <PhoneFrame accent={accent} glowIntensity={glowIntensity}>
+                {screenContent}
+              </PhoneFrame>
+            ) : (
+              <div className={styles.screenFrame}>{screenContent}</div>
+            )}
 
-              <CodeOverlay
-                view={editorView}
-                items={filteredItems}
-                selectedIdx={selectedIdx}
-                activeItem={activeItem}
+            <span className={styles.titleFront} data-visible={revealed || undefined}>
+              <motion.span
+                className={styles.titleInner}
+                animate={
+                  nameComplete
+                    ? { scaleY: [1, 0.9, 1.04, 1], y: [0, 4, -3, 0] }
+                    : { scaleY: 1, y: 0 }
+                }
+                transition={{ duration: 0.55, ease: "easeOut", times: [0, 0.3, 0.65, 1] }}
+              >
+                {NAME.split("").map((ch, i) => (
+                  <motion.span
+                    key={`${replayKey}-${i}`}
+                    className={styles.titleChar}
+                    initial={false}
+                    animate={
+                      i < typed
+                        ? { opacity: 1, scale: 1, y: 0 }
+                        : { opacity: 0, scale: 0.4, y: 12 }
+                    }
+                    transition={CHAR_SPRING}
+                  >
+                    {ch === " " ? " " : ch}
+                  </motion.span>
+                ))}
+              </motion.span>
+            </span>
+          </div>
+
+          {!isMobile && (
+            <div className={styles.keyboardWrap}>
+              <MagicKeyboard
                 accent={accent}
                 active={interactive}
-                isMobile={isMobile}
-                query={query}
-                onOpen={openItem}
-                onBack={backToMenu}
-                onClose={closeEditor}
+                scale={keyboardScale}
+                ghost={ghost}
                 onType={handleType}
                 onCommand={handleCommand}
               />
-
-              <div className={styles.glare} />
             </div>
-          </PhoneFrame>
-        ) : (
-          <Monitor accent={accent} glowIntensity={glowIntensity}>
-            <div
-              className={styles.screen}
-              data-clickable={editorView === "closed" && interactive || undefined}
-              onClick={editorView === "closed" && interactive ? openMenu : undefined}
-            >
-              <div className={styles.screenFace}>
-                <FaceMedia src={faceSrc} replayKey={replayKey} />
-              </div>
-
-              <CodeOverlay
-                view={editorView}
-                items={filteredItems}
-                selectedIdx={selectedIdx}
-                activeItem={activeItem}
-                accent={accent}
-                active={interactive}
-                isMobile={isMobile}
-                query={query}
-                onOpen={openItem}
-                onBack={backToMenu}
-                onClose={closeEditor}
-              />
-
-              {showScanlines && <div className={styles.scanlines} />}
-              <div className={styles.glare} />
-            </div>
-          </Monitor>
-        )}
-
-        {!isMobile && (
-          <div className={styles.keyboardWrap}>
-            <MagicKeyboard
-              accent={accent}
-              active={interactive}
-              scale={keyboardScale}
-              onType={handleType}
-              onCommand={handleCommand}
-            />
-          </div>
-        )}
+          )}
+        </motion.div>
       </div>
 
       {/* Bottom meta line */}
-      <div className={styles.meta} data-visible={phase >= 2 || undefined} data-mobile={isMobile || undefined}>
+      <div className={styles.meta} data-visible={interactive || undefined} data-mobile={isMobile || undefined}>
         <span>{t.meta.role}</span>
         <span style={{ color: accent }}>● GABRIEL COLOM MOLL</span>
-        {!isMobile && <span>{t.meta.portfolio}</span>}
+        <span className={styles.scrollHint}>{t.meta.scroll}</span>
       </div>
     </div>
   );
