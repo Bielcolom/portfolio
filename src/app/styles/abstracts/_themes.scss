@@ -7,4 +7,6 @@
     --text-primary: #{map.get(vars.$colors, text-primary)};
     --primary: #{map.get(vars.$colors, primary)};
     --primary-hover: #{map.get(vars.$colors, primary-hover)};
+    /* Site accent — the hero overrides it locally via its `accent` prop */
+    --accent: #3ddcff;
 }
