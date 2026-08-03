@@ -33,9 +33,8 @@ src/
 │       ├── useViewportWidth    # Hooks: viewport width + height; isMobile derived from width
 │       ├── useEditorState      # Hook: index state (filter, selection, keyboard nav → onOpen)
 │       ├── FaceMedia           # Video/image display with error fallback
-│       ├── PhoneFrame/         # Phone bezel (mobile only); desktop uses frameless .screenFrame
 │       ├── MagicKeyboard/      # Interactive QWERTY keyboard (desktop only)
-│       └── ScreenIndex/        # Screen content: site index (MenuList) + face video card
+│       └── ScreenIndex/        # Desktop screen content: index + face card; MenuList is shared with mobile
 └── i18n/
     ├── context.tsx             # LanguageProvider + useLanguage hook
     └── translations.ts         # EN + ES strings: index descs + section content
@@ -47,6 +46,10 @@ src/
 `data.ts` holds only `id` and `label` per index item. All descriptions and section content come from `translations.ts`. Never add content to `data.ts` — add it to both locales in `translations.ts`.
 
 **Index ids are section anchors:** each `MENU_ITEMS` id matches the `id` of a `<section>` in `Sections/`. Choosing an item in the hero index smooth-scrolls to that section. Adding a section means adding it in `data.ts` (id+label), `translations.ts` (items + sections, both locales).
+
+**Mobile hero is a native layout, not a device mockup:** desktop shows the floating screen + keyboard; mobile renders face card + typed name + MenuList directly on the page. No phone frame — a phone inside a phone hurt credibility.
+
+**Face clips are per-breakpoint, sized to their display box.** Browsers downscale `<video>` with a cheap filter (unlike images), so an oversized clip renders visibly mushy: `face-lg.mp4` (562px) for the desktop card, `face-sm.mp4` (224px) for the 56px mobile avatar, `face-poster.png` as the poster/fallback. If the card size changes, re-encode to match — do not just reuse a bigger file.
 
 **Custom hooks live next to the component that owns them**, not in a shared `/hooks` folder.
 
@@ -81,7 +84,7 @@ Approximation rule: if a value is within 2 px of a token, use the token. Values 
 
 ## What not to touch without thinking twice
 
-- `/public/face.mp4` — main visual asset
+- `/public/face-*.mp4|png` — main visual assets (see the per-breakpoint note above)
 - `src/app/styles/abstracts/_variables.scss` — design tokens used everywhere
 - `LanguageProvider` hydration pattern in `context.tsx` — fragile, known issues if changed
 

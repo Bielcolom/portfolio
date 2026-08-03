@@ -5,9 +5,11 @@ import styles from "./FaceMedia.module.scss";
 
 interface Props {
   src: string;
+  /** Still shown until the video paints — also the fallback if it fails. */
+  poster?: string;
 }
 
-const FaceMedia = ({ src }: Props) => {
+const FaceMedia = ({ src, poster }: Props) => {
   const isVideo = !!src && src.toLowerCase().endsWith(".mp4");
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -16,19 +18,15 @@ const FaceMedia = ({ src }: Props) => {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.currentTime = 0;
     v.play().catch(() => { /* autoplay may be blocked */ });
   }, [src]);
 
-  if (hasError) {
-    return <div className={styles.fallback} />;
-  }
-
-  if (isVideo) {
+  if (isVideo && !hasError) {
     return (
       <video
         ref={videoRef}
         src={src}
+        poster={poster}
         autoPlay
         muted
         playsInline
@@ -38,14 +36,18 @@ const FaceMedia = ({ src }: Props) => {
     );
   }
 
+  const imgSrc = hasError ? poster : src;
+  if (!imgSrc) {
+    return <div className={styles.fallback} />;
+  }
+
   return (
     <span className={styles.imageWrapper}>
       <Image
-        src={src}
+        src={imgSrc}
         alt=""
         fill
-        sizes="(max-width: 768px) 90vw, 320px"
-        onError={() => setFailedSrc(src)}
+        sizes="(max-width: 768px) 120px, 320px"
         style={{ objectFit: "cover" }}
       />
     </span>

@@ -33,11 +33,6 @@
   &[data-active] {
     opacity: 1;
   }
-
-  &[data-mobile] {
-    font-size: map.get(vars.$font-sizes, xs);
-    padding: 36px 12px 12px;
-  }
 }
 
 .titleBar {
@@ -65,10 +60,6 @@
   margin-left: map.get(vars.$size, sm);
   font-size: map.get(vars.$font-sizes, xs);
   color: #7a7f88;
-
-  [data-mobile] & {
-    margin-left: 6px;
-  }
 }
 
 .hint {
@@ -97,10 +88,6 @@
   min-height: 0;
   display: flex;
   gap: map.get(vars.$size, md);
-
-  [data-mobile] & {
-    flex-direction: column;
-  }
 }
 
 .indexPane {
@@ -115,12 +102,6 @@
   flex-direction: column;
   gap: map.get(vars.$size, sm);
   min-height: 0;
-
-  [data-mobile] & {
-    order: -1;
-    flex: 0 0 32%;
-    width: 100%;
-  }
 }
 
 .faceCard {

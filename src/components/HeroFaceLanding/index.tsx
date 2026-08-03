@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { MENU_ITEMS, MenuItem } from "./data";
-import PhoneFrame from "./PhoneFrame";
+import FaceMedia from "./FaceMedia";
 import MagicKeyboard from "./MagicKeyboard";
 import ScreenIndex from "./ScreenIndex";
+import MenuList from "./ScreenIndex/MenuList";
 import styles from "./heroFaceLanding.module.scss";
 import { useLanguage } from "@/i18n/context";
 import useAnimationPhase from "./useAnimationPhase";
@@ -12,8 +13,16 @@ import useViewportWidth, { useViewportHeight } from "./useViewportWidth";
 import useEditorState from "./useEditorState";
 
 interface Props {
-  /** Path to the face media — `.mp4` autoplays as video, otherwise treated as image. */
+  /**
+   * Face clip for the desktop screen card. Browsers downscale video with a cheap
+   * filter, so each breakpoint gets a source near its display size — a 1122px
+   * clip shown at 56px renders visibly mushy.
+   */
   faceSrc?: string;
+  /** Face clip for the small mobile avatar. */
+  faceSrcMobile?: string;
+  /** Still frame shown until the video paints, and fallback if it fails. */
+  facePoster?: string;
   /** Accent color (hex / oklch). Default electric blue. */
   accent?: string;
   /** ms for the zoom-out + reveal transition. */
@@ -29,9 +38,13 @@ const TILT_SPRING = { stiffness: 120, damping: 18, mass: 0.5 };
 const NAME = "Gabriel Colom Moll";
 /** Spring for each letter popping in as it is "typed". */
 const CHAR_SPRING = { type: "spring", stiffness: 520, damping: 17, mass: 0.6 } as const;
+const CHAR_VISIBLE = { opacity: 1, scale: 1, y: 0 };
+const CHAR_HIDDEN = { opacity: 0, scale: 0.4, y: 12 };
 
 const HeroFaceLanding = ({
-  faceSrc = "/face.mp4",
+  faceSrc = "/face-lg.mp4",
+  faceSrcMobile = "/face-sm.mp4",
+  facePoster = "/face-poster.png",
   accent = "#3ddcff",
   duration = 1400,
   glowIntensity = 0.6,
@@ -107,6 +120,46 @@ const HeroFaceLanding = ({
 
   const nameComplete = typed >= NAME.length;
 
+  /* Words as inline-blocks so the name can wrap between words on mobile;
+     letter indices track NAME positions (spaces included) to stay in sync
+     with the ghost typing */
+  const nameEl = (
+    <motion.span
+      className={styles.titleInner}
+      animate={
+        nameComplete
+          ? { scaleY: [1, 0.9, 1.04, 1], y: [0, 4, -3, 0] }
+          : { scaleY: 1, y: 0 }
+      }
+      transition={{ duration: 0.55, ease: "easeOut", times: [0, 0.3, 0.65, 1] }}
+    >
+      {(() => {
+        let idx = 0;
+        return NAME.split(" ").map((word, w) => {
+          if (w > 0) idx += 1;
+          return (
+            <span key={w} className={styles.titleWord}>
+              {word.split("").map((ch) => {
+                const i = idx++;
+                return (
+                  <motion.span
+                    key={i}
+                    className={styles.titleChar}
+                    initial={false}
+                    animate={i < typed ? CHAR_VISIBLE : CHAR_HIDDEN}
+                    transition={CHAR_SPRING}
+                  >
+                    {ch}
+                  </motion.span>
+                );
+              })}
+            </span>
+          );
+        });
+      })()}
+    </motion.span>
+  );
+
   const desktopStageWidth = Math.min(monitorWidth + 12, 76);
   const widthCap = viewportWidth > 0 ? viewportWidth - 64 : 980;
   /* Screen + keyboard must fit inside the viewport height */
@@ -115,27 +168,7 @@ const HeroFaceLanding = ({
   const stageWidthPx = viewportWidth > 0
     ? Math.min((desktopStageWidth / 100) * viewportWidth, desktopMaxWidth)
     : desktopMaxWidth;
-  const keyboardScale = isMobile
-    ? 1
-    : Math.max(1, Math.min(1.32, (stageWidthPx - 24) / 580));
-
-  const screenContent = (
-    <div className={styles.screen}>
-      <ScreenIndex
-        items={filteredItems}
-        selectedIdx={selectedIdx}
-        accent={accent}
-        active={revealed}
-        isMobile={isMobile}
-        query={query}
-        faceSrc={faceSrc}
-        onOpen={openItem}
-        onType={isMobile ? handleType : undefined}
-        onCommand={isMobile ? handleCommand : undefined}
-      />
-      <div className={styles.glare} />
-    </div>
-  );
+  const keyboardScale = Math.max(1, Math.min(1.32, (stageWidthPx - 24) / 580));
 
   return (
     <div
@@ -147,57 +180,70 @@ const HeroFaceLanding = ({
       onPointerMove={handlePointerMove}
       onPointerLeave={resetTilt}
     >
-      {/* Screen + interleaved title + keyboard */}
-      <div
-        className={styles.stage}
-        style={{
-          width: isMobile ? undefined : `${desktopStageWidth}%`,
-          maxWidth: isMobile ? undefined : desktopMaxWidth,
-          opacity: revealed ? 1 : 0,
-          transform: `scale(${revealed ? 1 : 0.92}) translateY(${revealed ? 0 : 24}px)`,
-          transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
-        }}
-      >
-        <motion.div className={styles.tilt} style={{ rotateX: tiltX, rotateY: tiltY }}>
-          <div className={styles.screenZone}>
-            {isMobile ? (
-              <PhoneFrame accent={accent} glowIntensity={glowIntensity}>
-                {screenContent}
-              </PhoneFrame>
-            ) : (
-              <div className={styles.screenFrame}>{screenContent}</div>
-            )}
-
-            <span className={styles.titleFront} data-visible={revealed || undefined}>
-              <motion.span
-                className={styles.titleInner}
-                animate={
-                  nameComplete
-                    ? { scaleY: [1, 0.9, 1.04, 1], y: [0, 4, -3, 0] }
-                    : { scaleY: 1, y: 0 }
-                }
-                transition={{ duration: 0.55, ease: "easeOut", times: [0, 0.3, 0.65, 1] }}
-              >
-                {NAME.split("").map((ch, i) => (
-                  <motion.span
-                    key={i}
-                    className={styles.titleChar}
-                    initial={false}
-                    animate={
-                      i < typed
-                        ? { opacity: 1, scale: 1, y: 0 }
-                        : { opacity: 0, scale: 0.4, y: 12 }
-                    }
-                    transition={CHAR_SPRING}
-                  >
-                    {ch === " " ? " " : ch}
-                  </motion.span>
-                ))}
-              </motion.span>
-            </span>
+      {isMobile ? (
+        /* Native mobile layout — no device mockup inside a device */
+        <div className={styles.mobileHero} data-visible={revealed || undefined}>
+          <div className={styles.mobileHeader}>
+            <div className={styles.mobileFace}>
+              <FaceMedia src={faceSrcMobile} poster={facePoster} />
+            </div>
+            <div className={styles.mobileIdentity}>
+              <h1 className={styles.mobileTitle}>{nameEl}</h1>
+              <span className={styles.mobileMeta}>
+                <span className={styles.statusDot} />
+                {t.meta.role} · {t.meta.location}
+              </span>
+            </div>
           </div>
 
-          {!isMobile && (
+          <div className={styles.mobileIndex}>
+            <MenuList
+              items={filteredItems}
+              selectedIdx={selectedIdx}
+              accent={accent}
+              isMobile
+              query={query}
+              onOpen={openItem}
+              onType={handleType}
+              onCommand={handleCommand}
+            />
+          </div>
+        </div>
+      ) : (
+        /* Desktop: floating screen + interleaved name + keyboard */
+        <div
+          className={styles.stage}
+          style={{
+            width: `${desktopStageWidth}%`,
+            maxWidth: desktopMaxWidth,
+            opacity: revealed ? 1 : 0,
+            transform: `scale(${revealed ? 1 : 0.92}) translateY(${revealed ? 0 : 24}px)`,
+            transition: `opacity ${duration * 0.5}ms ease-out, transform ${duration}ms cubic-bezier(0.16, 0.84, 0.39, 1)`,
+          }}
+        >
+          <motion.div className={styles.tilt} style={{ rotateX: tiltX, rotateY: tiltY }}>
+            <div className={styles.screenZone}>
+              <div className={styles.screenFrame}>
+                <div className={styles.screen}>
+                  <ScreenIndex
+                    items={filteredItems}
+                    selectedIdx={selectedIdx}
+                    accent={accent}
+                    active={revealed}
+                    query={query}
+                    faceSrc={faceSrc}
+                    facePoster={facePoster}
+                    onOpen={openItem}
+                  />
+                  <div className={styles.glare} />
+                </div>
+              </div>
+
+              <span className={styles.titleFront} data-visible={revealed || undefined}>
+                {nameEl}
+              </span>
+            </div>
+
             <div className={styles.keyboardWrap}>
               <MagicKeyboard
                 accent={accent}
@@ -208,13 +254,13 @@ const HeroFaceLanding = ({
                 onCommand={handleCommand}
               />
             </div>
-          )}
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Bottom meta line */}
       <div className={styles.meta} data-visible={interactive || undefined} data-mobile={isMobile || undefined}>
-        <span>{t.meta.role}</span>
+        {!isMobile && <span>{t.meta.role}</span>}
         <span className={styles.scrollHint}>{t.meta.scroll}</span>
       </div>
     </div>
