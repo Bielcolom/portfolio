@@ -71,7 +71,7 @@ const KB_ROWS: Key[][] = [
     { k: "ctrl", w: 1, label: "ctrl", sm: true, deco: true },
     { k: "alt", w: 1, label: "opt", sm: true, deco: true },
     { k: "cmd", w: 1.25, label: "cmd", deco: true },
-    { k: " ", w: 5, label: "" },
+    { k: " ", w: 5.1, label: "" },
     { k: "cmd2", w: 1.25, label: "cmd", deco: true },
     { k: "alt2", w: 1, label: "opt", sm: true, deco: true },
     { k: "arrows", w: 3, special: "arrows" },
@@ -194,8 +194,6 @@ const MagicKeyboard = ({
                     unit={unit}
                     gap={gap}
                     fontSize={smallKeyFont}
-                    smallPaddingLeft={smallPaddingLeft}
-                    smallPaddingTop={smallPaddingTop}
                     pressed={pressed}
                     onClick={handleClick}
                   />
@@ -231,8 +229,8 @@ interface KeycapProps {
   label?: string;
   smallLabel?: boolean;
   fontSize: number;
-  smallPaddingLeft: number;
-  smallPaddingTop: number;
+  smallPaddingLeft?: number;
+  smallPaddingTop?: number;
   decorative?: boolean;
   pressed?: boolean;
   onClick?: () => void;
@@ -244,8 +242,8 @@ const Keycap = ({
   label,
   smallLabel,
   fontSize,
-  smallPaddingLeft,
-  smallPaddingTop,
+  smallPaddingLeft = 0,
+  smallPaddingTop = 0,
   decorative,
   pressed,
   onClick,
@@ -282,75 +280,53 @@ interface ArrowsProps {
   unit: number;
   gap: number;
   fontSize: number;
-  smallPaddingLeft: number;
-  smallPaddingTop: number;
   pressed: Set<string>;
   onClick: (id: string, ch: string) => void;
 }
+
+const BOTTOM_ARROWS = [
+  { id: "arrowleft", glyph: "←" },
+  { id: "arrowdown", glyph: "↓" },
+  { id: "arrowright", glyph: "→" },
+];
 
 const ArrowCluster = ({
   unit,
   gap,
   fontSize,
-  smallPaddingLeft,
-  smallPaddingTop,
   pressed,
   onClick,
 }: ArrowsProps) => {
-  const halfHeight = unit / 2 - (2.5 * unit) / BASE_UNIT;
-  const clusterGap = Math.max(3, gap - 1);
+  // The two stacked half rows must add up to exactly one keycap height,
+  // and the cluster to exactly a 3-unit keycap, so it lands on the key grid.
+  const halfHeight = (unit - gap) / 2;
 
   return (
-    <div className={styles.arrows} style={{ width: unit * 3 + clusterGap * 2, gap: clusterGap }}>
-      <div className={styles.arrowsTop} style={{ gap: clusterGap }}>
+    <div className={styles.arrows} style={{ width: unit * 3 + gap * 2, gap }}>
+      <div className={styles.arrowsTop} style={{ gap }}>
         <div style={{ width: unit }} />
         <Keycap
           width={unit}
           height={halfHeight}
-          label="^"
-          smallLabel
+          label="↑"
           fontSize={fontSize}
-          smallPaddingLeft={smallPaddingLeft}
-          smallPaddingTop={smallPaddingTop}
           pressed={pressed.has("arrowup")}
           onClick={() => onClick("arrowup", "arrowup")}
         />
         <div style={{ width: unit }} />
       </div>
-      <div className={styles.arrowsBottom} style={{ gap: clusterGap }}>
-        <Keycap
-          width={unit}
-          height={halfHeight}
-          label="<"
-          smallLabel
-          fontSize={fontSize}
-          smallPaddingLeft={smallPaddingLeft}
-          smallPaddingTop={smallPaddingTop}
-          pressed={pressed.has("arrowleft")}
-          onClick={() => onClick("arrowleft", "arrowleft")}
-        />
-        <Keycap
-          width={unit}
-          height={halfHeight}
-          label="v"
-          smallLabel
-          fontSize={fontSize}
-          smallPaddingLeft={smallPaddingLeft}
-          smallPaddingTop={smallPaddingTop}
-          pressed={pressed.has("arrowdown")}
-          onClick={() => onClick("arrowdown", "arrowdown")}
-        />
-        <Keycap
-          width={unit}
-          height={halfHeight}
-          label=">"
-          smallLabel
-          fontSize={fontSize}
-          smallPaddingLeft={smallPaddingLeft}
-          smallPaddingTop={smallPaddingTop}
-          pressed={pressed.has("arrowright")}
-          onClick={() => onClick("arrowright", "arrowright")}
-        />
+      <div className={styles.arrowsBottom} style={{ gap }}>
+        {BOTTOM_ARROWS.map(({ id, glyph }) => (
+          <Keycap
+            key={id}
+            width={unit}
+            height={halfHeight}
+            label={glyph}
+            fontSize={fontSize}
+            pressed={pressed.has(id)}
+            onClick={() => onClick(id, id)}
+          />
+        ))}
       </div>
     </div>
   );
