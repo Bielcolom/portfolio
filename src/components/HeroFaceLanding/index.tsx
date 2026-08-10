@@ -168,7 +168,8 @@ const HeroFaceLanding = ({
   const stageWidthPx = viewportWidth > 0
     ? Math.min((desktopStageWidth / 100) * viewportWidth, desktopMaxWidth)
     : desktopMaxWidth;
-  const keyboardScale = Math.max(1, Math.min(1.32, (stageWidthPx - 24) / 580));
+  /* Divisor tracks the keyboard's own width at scale 1 (18.25u + nav cluster) */
+  const keyboardScale = Math.max(1, Math.min(1.32, (stageWidthPx - 24) / 720));
 
   return (
     <div

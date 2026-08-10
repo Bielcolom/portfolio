@@ -2,7 +2,8 @@
    with the stage width, so this module only carries the visual treatment. */
 .root {
   border-radius: 12px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: flex-end;
   user-select: none;
   /* Translucent case — the front title crossing behind stays visible through it */
   background: linear-gradient(180deg, rgba(30, 33, 39, 0.42) 0%, rgba(16, 18, 22, 0.5) 100%);
@@ -13,6 +14,7 @@
 }
 
 .rows {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
@@ -26,9 +28,13 @@
   border: none;
   border-radius: 5px;
   padding: 0;
-  font-family: 'JetBrains Mono', monospace;
+  /* Symbol faces are the fallback for ⌘ ⌥ ⌃ ⌫ — outside JetBrains Mono's coverage */
+  font-family: 'JetBrains Mono', 'Segoe UI Symbol', 'Apple Symbols', monospace;
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   outline: none;
   background: linear-gradient(180deg, rgba(46, 50, 58, 0.5) 0%, rgba(28, 31, 36, 0.45) 100%);
   color: #a6acb6;
@@ -67,16 +73,24 @@
   }
 }
 
-.arrows {
+/* clip-path overrides border-radius and cuts the outer shadow, so the L shape
+   carries its own rounding in the path and its depth via drop-shadow. */
+.isoEnter {
+  position: absolute;
+  right: 0;
+  border-radius: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+
+  &[data-pressed] {
+    filter: drop-shadow(0 0 6px color-mix(in oklch, var(--accent) 30%, transparent));
+  }
+}
+
+.nav {
   display: flex;
   flex-direction: column;
 }
 
-.arrowsTop {
-  display: flex;
-  justify-content: center;
-}
-
-.arrowsBottom {
+.navRow {
   display: flex;
 }
