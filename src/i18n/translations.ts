@@ -241,7 +241,7 @@ export const es: Translations = {
       title: "Proyectos",
       items: [
         {
-          name: "Music Social Platform",
+          name: "Red Social para Músicos",
           desc: "Red social full stack para músicos, web y móvil: perfiles, compartición de contenido, interacción entre artistas y streaming de audio. En desarrollo activo.",
           tech: ["Next.js", "React Native", "Expo", "TypeScript", "Node.js", "Prisma", "Supabase", "Cloudflare"],
           award: "3er Premio · PalmaActiva 2024",
