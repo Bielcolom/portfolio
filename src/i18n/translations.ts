@@ -45,7 +45,6 @@ export interface Translations {
     hintMenu: {
       nav: string;
       open: string;
-      clear: string;
     };
     menu: {
       headerMobile: string;
@@ -77,7 +76,6 @@ export const en: Translations = {
     hintMenu: {
       nav: "nav",
       open: "go",
-      clear: "clear",
     },
     menu: {
       headerMobile: "Tap a section or use a keyboard.",
@@ -195,7 +193,6 @@ export const es: Translations = {
     hintMenu: {
       nav: "nav",
       open: "ir",
-      clear: "limpiar",
     },
     menu: {
       headerMobile: "Toca una sección o usa el teclado.",
