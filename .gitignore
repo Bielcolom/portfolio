@@ -47,3 +47,6 @@ launch.json
 face.jpeg
 # next-agents-md
 .next-docs/
+
+# raw video masters (encoded into /public/face-*)
+/assets

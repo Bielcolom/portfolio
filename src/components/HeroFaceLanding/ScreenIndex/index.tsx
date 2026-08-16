@@ -35,7 +35,7 @@ const ScreenIndex = ({ items, selectedIdx, accent, active, query, faceSrc, faceP
         </span>
         <span className={styles.path}>~/portfolio/index.md</span>
         <span className={styles.hint}>
-          <Key>↑↓</Key> {hm.nav} · <Key>↵</Key> {hm.open} · <Key>esc</Key> {hm.clear}
+          <Key>↑↓</Key> {hm.nav} · <Key>↵</Key> {hm.open}
         </span>
       </div>
 

@@ -56,7 +56,7 @@ export interface Translations {
       noSection: string;
     };
   };
-  items: Record<SectionId, { desc: string }>;
+  items: Record<SectionId, { label: string; desc: string }>;
   sections: {
     about: { title: string; body: string[] };
     experience: { title: string; entries: ExperienceEntry[] };
@@ -89,12 +89,12 @@ export const en: Translations = {
     },
   },
   items: {
-    about: { desc: "A short bio" },
-    experience: { desc: "Where I work" },
-    projects: { desc: "Things I've built" },
-    stack: { desc: "Tools I use" },
-    education: { desc: "Where I studied" },
-    contact: { desc: "Get in touch" },
+    about: { label: "about", desc: "A short bio" },
+    experience: { label: "experience", desc: "Where I work" },
+    projects: { label: "projects", desc: "Things I've built" },
+    stack: { label: "stack", desc: "Tools I use" },
+    education: { label: "education", desc: "Where I studied" },
+    contact: { label: "contact", desc: "Get in touch" },
   },
   sections: {
     about: {
@@ -207,12 +207,13 @@ export const es: Translations = {
     },
   },
   items: {
-    about: { desc: "Una breve bio" },
-    experience: { desc: "Dónde trabajo" },
-    projects: { desc: "Cosas que he construido" },
-    stack: { desc: "Herramientas que uso" },
-    education: { desc: "Dónde he estudiado" },
-    contact: { desc: "Ponte en contacto" },
+    // Labels stay lowercase and unaccented — they are also what the user types to filter
+    about: { label: "sobre-mi", desc: "Una breve bio" },
+    experience: { label: "experiencia", desc: "Dónde trabajo" },
+    projects: { label: "proyectos", desc: "Cosas que he construido" },
+    stack: { label: "stack", desc: "Herramientas que uso" },
+    education: { label: "formacion", desc: "Dónde he estudiado" },
+    contact: { label: "contacto", desc: "Ponte en contacto" },
   },
   sections: {
     about: {

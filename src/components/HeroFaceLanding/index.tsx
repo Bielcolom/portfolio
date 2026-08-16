@@ -23,6 +23,8 @@ interface Props {
   faceSrcMobile?: string;
   /** Still frame shown until the video paints, and fallback if it fails. */
   facePoster?: string;
+  /** Poster for the mobile avatar — squared, so the face survives the cover crop. */
+  facePosterMobile?: string;
   /** Accent color (hex / oklch). Default electric blue. */
   accent?: string;
   /** ms for the zoom-out + reveal transition. */
@@ -44,7 +46,8 @@ const CHAR_HIDDEN = { opacity: 0, scale: 0.4, y: 12 };
 const HeroFaceLanding = ({
   faceSrc = "/face-lg.mp4",
   faceSrcMobile = "/face-sm.mp4",
-  facePoster = "/face-poster.png",
+  facePoster = "/face-poster.jpg",
+  facePosterMobile = "/face-poster-sm.jpg",
   accent = "#3ddcff",
   duration = 1400,
   glowIntensity = 0.6,
@@ -58,7 +61,7 @@ const HeroFaceLanding = ({
 
   const localizedItems: MenuItem[] = MENU_ITEMS.map((item, i) => {
     const tr = t.items[item.id as keyof typeof t.items];
-    return { ...item, num: String(i + 1).padStart(2, "0"), desc: tr.desc };
+    return { ...item, num: String(i + 1).padStart(2, "0"), label: tr.label, desc: tr.desc };
   });
 
   const scrollToSection = (item: MenuItem) => {
@@ -186,7 +189,7 @@ const HeroFaceLanding = ({
         <div className={styles.mobileHero} data-visible={revealed || undefined}>
           <div className={styles.mobileHeader}>
             <div className={styles.mobileFace}>
-              <FaceMedia src={faceSrcMobile} poster={facePoster} />
+              <FaceMedia src={faceSrcMobile} poster={facePosterMobile} />
             </div>
             <div className={styles.mobileIdentity}>
               <h1 className={styles.mobileTitle}>{nameEl}</h1>
