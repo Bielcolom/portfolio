@@ -89,12 +89,12 @@ export const en: Translations = {
     },
   },
   items: {
-    about:      { desc: "A short bio" },
+    about: { desc: "A short bio" },
     experience: { desc: "Where I work" },
-    projects:   { desc: "Things I've built" },
-    stack:      { desc: "Tools I use" },
-    education:  { desc: "Where I studied" },
-    contact:    { desc: "Get in touch" },
+    projects: { desc: "Things I've built" },
+    stack: { desc: "Tools I use" },
+    education: { desc: "Where I studied" },
+    contact: { desc: "Get in touch" },
   },
   sections: {
     about: {
@@ -207,12 +207,12 @@ export const es: Translations = {
     },
   },
   items: {
-    about:      { desc: "Una breve bio" },
+    about: { desc: "Una breve bio" },
     experience: { desc: "Dónde trabajo" },
-    projects:   { desc: "Cosas que he construido" },
-    stack:      { desc: "Herramientas que uso" },
-    education:  { desc: "Dónde he estudiado" },
-    contact:    { desc: "Ponte en contacto" },
+    projects: { desc: "Cosas que he construido" },
+    stack: { desc: "Herramientas que uso" },
+    education: { desc: "Dónde he estudiado" },
+    contact: { desc: "Ponte en contacto" },
   },
   sections: {
     about: {
@@ -255,7 +255,7 @@ export const es: Translations = {
           tech: ["Next.js 15", "React 19", "TypeScript"],
         },
         {
-          name: "Spotify Clone",
+          name: "Clon de Spotify",
           desc: "Clon funcional de la interfaz y funcionalidades principales de la plataforma.",
           tech: ["React", "Node.js", "MongoDB"],
         },
