@@ -204,12 +204,11 @@ export const es: Translations = {
     },
   },
   items: {
-    // Labels stay lowercase and unaccented — they are also what the user types to filter
-    about: { label: "sobre-mi", desc: "Una breve bio" },
+    about: { label: "sobre mí", desc: "Una breve bio" },
     experience: { label: "experiencia", desc: "Dónde trabajo" },
     projects: { label: "proyectos", desc: "Cosas que he construido" },
     stack: { label: "stack", desc: "Herramientas que uso" },
-    education: { label: "formacion", desc: "Dónde he estudiado" },
+    education: { label: "formación", desc: "Dónde he estudiado" },
     contact: { label: "contacto", desc: "Ponte en contacto" },
   },
   sections: {
