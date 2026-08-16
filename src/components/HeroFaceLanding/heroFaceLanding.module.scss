@@ -173,7 +173,6 @@
 .mobileIdentity {
   display: flex;
   flex-direction: column;
-  gap: map.get(vars.$size, xs);
   min-width: 0;
 }
 
@@ -183,23 +182,27 @@
   letter-spacing: -0.02em;
   line-height: 1.05;
   color: #e9eaee;
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 
+/* Inline flow, not flex: as a flex item the whole string is one box, so a
+   narrow screen wrapped it below the dot and left the dot stranded alone */
 .mobileMeta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: map.get(vars.$size, xs) map.get(vars.$size, sm);
   min-width: 0;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
+  line-height: 1.45;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #9aa1ac;
 }
 
 .statusDot {
-  flex-shrink: 0;
+  display: inline-block;
+  /* Optical centering against the uppercase x-height */
+  vertical-align: 0.1em;
+  margin-right: map.get(vars.$size, sm);
   width: 6px;
   height: 6px;
   border-radius: 50%;
