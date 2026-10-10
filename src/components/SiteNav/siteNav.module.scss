@@ -172,6 +172,9 @@ $z-menu: map.get(vars.$z-indexes, menu);
   gap: map.get(vars.$size, xxl);
   padding: 120px map.get(vars.$size, xl) map.get(vars.$size, xl);
   background: var(--ink-raised);
+  /* A very short phone scrolls the index instead of cutting it */
+  overflow-y: auto;
+  overscroll-behavior: contain;
   clip-path: circle(0px at var(--origin-x, 100%) var(--origin-y, 0%));
   visibility: hidden;
   transition:
@@ -232,6 +235,17 @@ $z-menu: map.get(vars.$z-indexes, menu);
   letter-spacing: -0.03em;
   color: var(--bone);
   transition: color 300ms var(--ease-out);
+
+  /* Phones: larger and further apart, for thumbs */
+  @include mx.phone {
+    font-size: map.get(vars.$display, menu);
+    line-height: 1.12;
+  }
+
+  /* Touch has no hover; the press itself answers */
+  &:active {
+    color: var(--text-muted);
+  }
 }
 
 .linkInner {
@@ -278,6 +292,12 @@ $z-menu: map.get(vars.$z-indexes, menu);
     transition:
       opacity 800ms var(--ease-out) 600ms,
       transform 800ms var(--ease-expo) 600ms;
+  }
+
+  /* Stacked, the contact details read as the index's footer */
+  @include mx.tablet-down {
+    padding-top: map.get(vars.$size, lg);
+    border-top: 1px solid var(--line);
   }
 }
 

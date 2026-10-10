@@ -151,7 +151,7 @@ Content after the story lives on one raised sheet; the close is full-height on i
 - **Buttons:** pills, 52px in the hero, 44px elsewhere. Primary is filled bone; secondary is outlined and fills bone from the bottom on hover. Labels roll to a second copy on hover. Hero buttons are magnetic. Press: scale 0.97.
 - **Availability:** the green light (two rings on load, then still) with status, places and eligibility; a compact status-only form sits in the bar on wide screens.
 - **Bar:** monogram, Palma's live clock, availability, CV, EN/ES, Menu. On phones the clock goes and the menu is its icon alone, so the availability light always fits; between 601 and 1100px the light gives way to the centred clock. Blends with `difference`; hides on scroll down, returns on scroll up; a 2px progress line runs along the top.
-- **Menu:** full-screen on Ink Raised; huge links with rolling labels; email, profiles and availability beside them.
+- **Menu:** full-screen on Ink Raised; huge links with rolling labels; email, profiles and availability beside them. On phones the links grow to 13vw (44–64px, rows of about 57px for thumbs), dim on press, and the contact details sit below a hairline as the index's footer; a screen too short for it all scrolls the index.
 - **Contact answers:** two large outlined pills under the contact question ("A new role", "A new project"), 64px, magnetic, arrow nudging on hover. Each opens a pre-written email; a quiet line beneath says so. On a computer the click keeps the pill filled and opens a row beneath it instead: Gmail, Outlook, the mail app, copy the address, as 40px outlined pills.
 
 ## Do's and Don'ts

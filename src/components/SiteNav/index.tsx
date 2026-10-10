@@ -132,6 +132,7 @@ const SiteNav = () => {
         className={styles.overlay}
         data-open={open || undefined}
         data-instant={instant || undefined}
+        data-lenis-prevent
         role="dialog"
         aria-modal="true"
         aria-label={t.nav.menu}
