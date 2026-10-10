@@ -1,5 +1,6 @@
 "use client";
 import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import Availability from "@/components/Availability";
@@ -10,6 +11,7 @@ import { jumpTo, lockScroll, scrollToTarget } from "@/components/SmoothScroll";
 import TextRoll from "@/components/TextRoll";
 import { EMAIL, FINE_POINTER, PROFILE_LINKS, mailto } from "@/content/links";
 import { SECTIONS } from "@/content/sections";
+import { PAGE_PATH, PageKey } from "@/content/site";
 import { useLanguage } from "@/i18n/context";
 import { SectionId } from "@/i18n/translations";
 import styles from "./siteNav.module.scss";
@@ -17,10 +19,14 @@ import styles from "./siteNav.module.scss";
 /**
  * The fixed bar and the full-screen index it opens. The index grows out of
  * the menu button as a circle; choosing an entry swaps the page underneath
- * and wipes the destination up over it, like changing pages.
+ * and wipes the destination up over it, like changing pages. Away from the
+ * home page its sections are a real page change away; the contact block
+ * closes every page, so it stays a jump.
  */
-const SiteNav = () => {
-  const { t } = useLanguage();
+const SiteNav = ({ page = "home" }: { page?: PageKey }) => {
+  const { locale, t } = useLanguage();
+  const onHome = page === "home";
+  const home = PAGE_PATH.home[locale];
   const [open, setOpen] = useState(false);
   const [instant, setInstant] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -97,9 +103,15 @@ const SiteNav = () => {
       <motion.div className={styles.progress} style={{ transform: progress }} aria-hidden />
 
       <header className={styles.bar} data-hidden={(hidden && !open) || undefined}>
-        <a href="#top" className={styles.mark} onClick={toTop} aria-label={t.nav.home}>
-          <TextRoll text="GCM" />
-        </a>
+        {onHome ? (
+          <a href="#top" className={styles.mark} onClick={toTop} aria-label={t.nav.home}>
+            <TextRoll text="GCM" />
+          </a>
+        ) : (
+          <Link href={home} className={styles.mark} aria-label={t.nav.homePage}>
+            <TextRoll text="GCM" />
+          </Link>
+        )}
 
         <LocalTime label={t.nav.localTime} className={styles.time} />
 
@@ -142,18 +154,41 @@ const SiteNav = () => {
           <ol className={styles.links}>
             {SECTIONS.map((id, i) => (
               <li key={id} className={styles.item}>
-                <a
-                  ref={i === 0 ? firstLinkRef : undefined}
-                  href={`#${id}`}
-                  className={styles.link}
-                  onClick={go(id)}
-                >
-                  <span className={styles.linkInner}>
-                    <TextRoll text={t.items[id]} />
-                  </span>
-                </a>
+                {onHome || id === "contact" ? (
+                  <a
+                    ref={i === 0 ? firstLinkRef : undefined}
+                    href={`#${id}`}
+                    className={styles.link}
+                    onClick={go(id)}
+                  >
+                    <span className={styles.linkInner}>
+                      <TextRoll text={t.items[id]} />
+                    </span>
+                  </a>
+                ) : (
+                  <Link ref={i === 0 ? firstLinkRef : undefined} href={`${home}#${id}`} className={styles.link}>
+                    <span className={styles.linkInner}>
+                      <TextRoll text={t.items[id]} />
+                    </span>
+                  </Link>
+                )}
               </li>
             ))}
+            <li className={styles.item}>
+              {onHome ? (
+                <Link href={PAGE_PATH.services[locale]} className={styles.link}>
+                  <span className={styles.linkInner}>
+                    <TextRoll text={t.services.nav} />
+                  </span>
+                </Link>
+              ) : (
+                <a href="#top" className={styles.link} aria-current="page" onClick={toTop}>
+                  <span className={styles.linkInner}>
+                    <TextRoll text={t.services.nav} />
+                  </span>
+                </a>
+              )}
+            </li>
           </ol>
         </nav>
 

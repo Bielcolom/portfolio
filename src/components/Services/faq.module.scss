@@ -1,0 +1,61 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.faq {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+  padding: 16svh map.get(vars.$size, xl) 18svh;
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, xl);
+    padding: 12svh map.get(vars.$size, md) 12svh;
+  }
+}
+
+.title {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, section);
+}
+
+.list {
+  display: grid;
+}
+
+/* Question on the left, answer on the right, a hairline between pairs */
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: map.get(vars.$size, xl);
+  padding: map.get(vars.$size, lg) 0 map.get(vars.$size, xl);
+  border-top: 1px solid var(--line);
+
+  @include mx.tablet-down {
+    grid-template-columns: minmax(0, 1fr);
+    gap: map.get(vars.$size, sm);
+    padding: map.get(vars.$size, md) 0 map.get(vars.$size, lg);
+  }
+}
+
+.question {
+  max-width: 24ch;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, entry);
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  text-wrap: balance;
+}
+
+.answer {
+  max-width: 56ch;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.5;
+  color: var(--text-body);
+  text-wrap: pretty;
+
+  @include mx.phone {
+    font-size: map.get(vars.$font-sizes, base);
+  }
+}

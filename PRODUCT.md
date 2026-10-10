@@ -35,6 +35,7 @@ Two things a neighbouring portfolio cannot truthfully copy:
 - One page in two languages, each at its own address: English at `/`, Spanish at `/es`, on https://www.gcolom.com (gcolom.com redirects there). Next.js App Router, SCSS modules with design tokens, dark-only, deployed on Vercel.
 - Every user-visible string lives in `src/i18n/translations.ts`, in both locales.
 - Availability (confirmed 2026-10-10): open to new roles in Ireland (happy to relocate), in Spain, or remote, and to freelance projects (websites, web apps, mobile apps). He is an EU citizen, which the English locale states because it removes the visa question for Irish employers; the Spanish locale omits it.
+- Freelance terms (confirmed by the owner, 2026-10-10), stated on the services page (`/services`, `/es/servicios`): four kinds of work (websites for businesses, custom web apps, mobile apps, AI and automation); quotes are tailored, no prices on the site; few projects at a time, since he combines them with his full-time job; in person in Mallorca or remotely, in Spanish, Catalan or English. Maintenance after launch is offered as an option.
 
 ## Brand Commitments
 

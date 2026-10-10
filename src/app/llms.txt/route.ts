@@ -1,5 +1,5 @@
 import { EMAIL, PROFILE_LINKS } from "@/content/links";
-import { LOCALE_PATH, SITE_URL } from "@/content/site";
+import { PAGE_PATH, SITE_URL } from "@/content/site";
 import { en, es } from "@/i18n/translations";
 
 export const dynamic = "force-static";
@@ -7,8 +7,8 @@ export const dynamic = "force-static";
 const list = (items: string[]) => items.map((item) => `- ${item}`).join("\n");
 
 /**
- * /llms.txt: the page in plain Markdown, for AI assistants that read it
- * instead of the HTML. Built from the same strings as the site, so the two
+ * /llms.txt: the site in plain Markdown, for AI assistants that read it
+ * instead of the HTML. Built from the same strings as the pages, so the two
  * never disagree.
  */
 export function GET() {
@@ -31,8 +31,10 @@ ${list([
 
 ## Pages
 
-- [Portfolio in English](${SITE_URL}${LOCALE_PATH.en})
-- [Portfolio en español](${SITE_URL}${LOCALE_PATH.es})
+- [Portfolio in English](${SITE_URL}${PAGE_PATH.home.en})
+- [Portfolio en español](${SITE_URL}${PAGE_PATH.home.es})
+- [Services for businesses](${SITE_URL}${PAGE_PATH.services.en})
+- [Servicios para negocios](${SITE_URL}${PAGE_PATH.services.es})
 
 ## ${en.about.title}
 
@@ -44,9 +46,19 @@ ${list(en.experience.chapters.map((chapter) => `**${chapter.title}**: ${chapter.
 
 ${en.experience.also}
 
-## Freelance services
+## ${en.services.seo.title}
 
-${list(en.seo.services)}
+${en.services.lede} ${en.services.availability.status}: ${en.services.availability.where}. ${en.services.availability.detail}.
+
+${list(en.services.offers.map((offer) => `**${offer.title}**: ${offer.body} (${offer.includes.join(", ")})`))}
+
+### ${en.services.processTitle}
+
+${en.services.steps.map((step, i) => `${i + 1}. **${step.title}**: ${step.body}`).join("\n")}
+
+### ${en.services.faqTitle}
+
+${en.services.faqs.map((faq) => `**${faq.q}** ${faq.a}`).join("\n\n")}
 
 ## ${en.projects.title}
 
@@ -73,6 +85,8 @@ ${list([
 > ${es.seo.description}
 
 ${es.about.statement}
+
+${es.services.seo.description} ${SITE_URL}${PAGE_PATH.services.es}
 `;
 
   return new Response(body, {

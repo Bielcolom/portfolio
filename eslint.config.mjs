@@ -5,10 +5,9 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Satori draws a plain <img>. The plugin exempts metadata image routes itself,
-  // but its path check fails on Windows, so the exemption is stated here.
+  // Satori draws a plain <img>: the link preview card is an image, not a page.
   {
-    files: ["src/app/**/opengraph-image.tsx"],
+    files: ["src/app/og/card.tsx"],
     rules: { "@next/next/no-img-element": "off" },
   },
   // Override default ignores of eslint-config-next.

@@ -1,5 +1,7 @@
 "use client";
+import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 import ArrowIcon from "@/components/ArrowIcon";
 import LocalTime from "@/components/LocalTime";
 import Magnetic from "@/components/Magnetic";
@@ -7,11 +9,19 @@ import Reveal from "@/components/Reveal";
 import { scrollToTarget } from "@/components/SmoothScroll";
 import TextRoll from "@/components/TextRoll";
 import { EMAIL, FINE_POINTER, PROFILE_LINKS, gmailCompose, mailto, outlookCompose } from "@/content/links";
+import { PAGE_PATH, PageKey } from "@/content/site";
 import { useLanguage } from "@/i18n/context";
 import { MailDraft, Translations } from "@/i18n/translations";
 import styles from "./contact.module.scss";
 
 type DraftKey = "role" | "project" | "generic";
+
+const DRAFT_EVENT = "contact:draft";
+
+/** Opens a draft's options in the contact block from elsewhere on the page.
+    Call it inside the page change that brings the block into view */
+export const openDraft = (key: DraftKey) =>
+  window.dispatchEvent(new CustomEvent<DraftKey>(DRAFT_EVENT, { detail: key }));
 
 const subscribePointer = (cb: () => void) => {
   const query = window.matchMedia(FINE_POINTER);
@@ -69,7 +79,7 @@ const Compose = ({ id, draft, words, copyLabel, onMailApp, onCopy }: {
  * nowhere (no mail app set up, or one since uninstalled), so the click
  * offers Gmail, Outlook, the mail app or the bare address instead.
  */
-const Contact = () => {
+const Contact = ({ page = "home" }: { page?: PageKey }) => {
   const { locale, t } = useLanguage();
   const ref = useRef<HTMLElement>(null);
   const [copied, setCopied] = useState(false);
@@ -91,6 +101,14 @@ const Contact = () => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [draft]);
+
+  /* Rendered at once, so a view transition that brings the block into view
+     captures it with the options already open */
+  useEffect(() => {
+    const onDraft = (e: Event) => flushSync(() => setDraft((e as CustomEvent<DraftKey>).detail));
+    window.addEventListener(DRAFT_EVENT, onDraft);
+    return () => window.removeEventListener(DRAFT_EVENT, onDraft);
+  }, []);
 
   const copyEmail = () => {
     navigator.clipboard?.writeText(EMAIL).then(() => setCopied(true), () => {});
@@ -166,6 +184,12 @@ const Contact = () => {
             {fine && (draft === "role" || draft === "project")
               ? compose("compose-intent", draft)
               : <p className={styles.intentsNote}>{t.contact.intentsNote}</p>}
+            {page === "home" && (
+              <Link href={PAGE_PATH.services[locale]} className={styles.services}>
+                {t.contact.services}
+                <ArrowIcon className={styles.servicesArrow} />
+              </Link>
+            )}
           </div>
 
           <div className={styles.grid}>

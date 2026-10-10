@@ -1,0 +1,168 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.process {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+  padding: 16svh map.get(vars.$size, xl) 12svh;
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, xl);
+    padding: 12svh map.get(vars.$size, md) 8svh;
+  }
+}
+
+.title {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, section);
+}
+
+/* The line runs through the steps' nodes: across their tops on wide screens,
+   down their left edge on phones */
+.track {
+  --node: 9px;
+  position: relative;
+
+  @include mx.tablet-down {
+    padding-left: map.get(vars.$size, lg);
+  }
+}
+
+.line {
+  position: absolute;
+  top: calc(var(--node) / 2);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bone);
+    transform-origin: 0 50%;
+  }
+
+  :global(.js) .track:not([data-visible]) &::after {
+    transform: scaleX(0);
+  }
+
+  :global(.js) &::after {
+    transition: transform 1.6s var(--ease-in-out);
+  }
+
+  @include mx.tablet-down {
+    top: calc(var(--node) / 2);
+    bottom: calc(var(--node) / 2);
+    right: auto;
+    left: calc(var(--node) / 2);
+    width: 1px;
+    height: auto;
+
+    &::after {
+      transform-origin: 50% 0;
+    }
+
+    :global(.js) .track:not([data-visible]) &::after {
+      transform: scaleY(0);
+    }
+  }
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: map.get(vars.$size, xl);
+
+  @include mx.tablet-down {
+    grid-template-columns: minmax(0, 1fr);
+    gap: map.get(vars.$size, xl);
+  }
+}
+
+.step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: map.get(vars.$size, sm);
+  padding-top: calc(var(--node) + #{map.get(vars.$size, lg)});
+
+  /* Each step arrives as the line reaches it */
+  :global(.js) .track:not([data-visible]) & {
+    opacity: 0;
+    transform: translate3d(0, map.get(vars.$size, md), 0);
+  }
+
+  :global(.js) & {
+    transition:
+      opacity 0.8s var(--ease-out),
+      transform 1s var(--ease-expo);
+  }
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      transition-delay: #{0.2 + ($i - 1) * 0.3}s;
+    }
+  }
+
+  @include mx.tablet-down {
+    padding-top: 0;
+  }
+}
+
+.node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--node);
+  height: var(--node);
+  border: 1px solid var(--bone);
+  border-radius: 50%;
+  background: var(--ink);
+
+  @include mx.tablet-down {
+    top: 0.3em;
+    left: calc(-1 * #{map.get(vars.$size, lg)});
+  }
+}
+
+.index {
+  @include mx.label;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, entry);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  text-wrap: balance;
+}
+
+.stepBody {
+  max-width: 34ch;
+  font-size: map.get(vars.$font-sizes, base);
+  line-height: 1.5;
+  color: var(--text-body);
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(.js) .track:not([data-visible]) .step {
+    transform: none;
+  }
+
+  :global(.js) .track:not([data-visible]) .line::after {
+    transform: none;
+    opacity: 0;
+  }
+
+  :global(.js) .line::after {
+    transition: opacity 0.6s ease;
+  }
+}

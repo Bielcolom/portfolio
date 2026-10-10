@@ -2,7 +2,7 @@
 
 # Portfolio — Biel Colom
 
-Personal portfolio landing page: one page in two languages, English at `/` and Spanish at `/es`. Deployed on Vercel at https://www.gcolom.com (gcolom.com redirects there).
+Personal portfolio: a home page and a services page for clients, each in English and Spanish (`/` and `/es`, `/services` and `/es/servicios`). Deployed on Vercel at https://www.gcolom.com (gcolom.com redirects there).
 
 ## Stack
 
@@ -23,17 +23,18 @@ Personal portfolio landing page: one page in two languages, English at `/` and S
 
 ```
 src/
-├── proxy.ts                    # Locale routing (Next 16's middleware): "/" serves English, Spanish browsers go to /es
+├── proxy.ts                    # Locale routing (Next 16's middleware): public addresses → [lang] routes, Spanish browsers → Spanish twin
 ├── app/                        # Next.js App Router
-│   ├── [lang]/                 # en | es, both prerendered; the root layout lives here
-│   │   ├── layout.tsx          # Fonts (Hubot Sans + Mona Sans), metadata per locale, viewport, js flag, providers, cursor
-│   │   ├── page.tsx            # The page: JSON-LD + SiteNav + Particles + Hero, About, Story, Panel(Projects, Stack, Education), Contact
-│   │   └── opengraph-image.tsx # Link preview card per locale (1200×630, next/og); twitter-image.tsx re-exports it
-│   ├── og/                     # Static Hubot Sans instances (OFL) for the card: Satori draws variable fonts at default axes only
+│   ├── [lang]/                 # en | es, all prerendered; the root layout lives here
+│   │   ├── layout.tsx          # Fonts (Hubot Sans + Mona Sans), site-wide metadata, viewport, js flag, providers, cursor
+│   │   ├── page.tsx            # Home: JSON-LD + SiteNav + Particles + Hero, About, Story, Panel(Projects, Stack, Education), Contact
+│   │   ├── services/page.tsx   # Services, for clients: JSON-LD + SiteNav + Services + Contact
+│   │   └── opengraph-image.tsx # Link preview per page and locale (also services/); twitter-image.tsx re-exports it
+│   ├── og/                     # card.tsx (the 1200×630 card, next/og) + static Hubot Sans instances (OFL): Satori draws variable fonts at default axes only
 │   ├── global-not-found.tsx    # 404 for unmatched addresses: its own document, since the root layout sits under [lang]
 │   ├── global-error.tsx        # Root error boundary (replaces layout on crash)
-│   ├── robots.ts, sitemap.ts   # Crawl rules; both languages with their alternates
-│   ├── llms.txt/route.ts       # Markdown digest of the page for AI assistants, built from translations
+│   ├── robots.ts, sitemap.ts   # Crawl rules; every page in both languages with its alternates
+│   ├── llms.txt/route.ts       # Markdown digest of the site for AI assistants, built from translations
 │   └── styles/                 # Global SCSS: abstracts (variables, themes, mixins), base, globals
 ├── components/
 │   ├── Hero/                   # First viewport: kinetic name (cursor pressure), portrait clip, pitch, CTAs
@@ -42,18 +43,20 @@ src/
 │   ├── Story/                  # "What I do" (#experience): pinned, four skill chapters; chapters.ts is shared with Particles
 │   ├── Panel/                  # Raised sheet that opens to full bleed (clip-path) over the story
 │   ├── Projects/ Stack/ Education/ Contact/
-│   ├── SiteNav/                # Fixed bar + full-screen menu (circle reveal, view-transition navigation)
+│   ├── Services/               # The services page: intro (offer, quote, portrait), Offers, Process, proof, Faq
+│   ├── SiteNav/                # Fixed bar + full-screen menu (circle reveal, view-transition navigation); `page` prop
 │   ├── SmoothScroll/           # Lenis; exports scrollToTarget() and lockScroll()
 │   ├── Cursor/                 # Dot + ring; states from data-cursor / data-cursor-label
 │   ├── Reveal/ TextRoll/ Magnetic/ LocalTime/ Availability/ CvLink/ LangToggle/ ArrowIcon/
 ├── content/
 │   ├── sections.ts             # Page order (ids only); ids are section anchors and menu entries
 │   ├── links.ts                # Email, ready-written drafts (mailto, Gmail, Outlook) + profile links
-│   ├── site.ts                 # SITE_URL, locales and their addresses (LOCALE_PATH), the locale cookie
-│   └── structuredData.ts       # JSON-LD: ProfilePage + WebSite + Person
+│   ├── site.ts                 # SITE_URL, locales, pages and their addresses (PAGE_PATH, PAGE_ROUTE), the locale cookie
+│   ├── metadata.ts             # pageMetadata(): a page's title, description, canonical, hreflang and Open Graph
+│   └── structuredData.ts       # JSON-LD: home (ProfilePage, WebSite, Person, Services), services (FAQPage, breadcrumb, Services)
 └── i18n/
     ├── context.tsx             # LanguageProvider (locale from the route) + useLanguage hook
-    └── translations.ts         # EN + ES strings for every section, plus `seo` (title, description, h1, services)
+    └── translations.ts         # EN + ES strings for every section and page, plus `seo` (title, description, h1, job title)
 ```
 
 `PRODUCT.md` (audience, positioning, confirmed facts) and `DESIGN.md` (the visual system and its named rules) sit at the repo root. Read both before UI work. The design skills in `.claude/skills/` (Impeccable, Emil Kowalski's motion skills) read them too.
@@ -79,13 +82,15 @@ Facts about Gabriel come from the sibling repo `../ai-job-search-master` (`.clau
 
 **CVs are one PDF per locale in `/public/cv/`**, linked from `cv.href` in `translations.ts` (bar `CvLink`, the hero's "View CV" button and a row in the contact links). The EN file is the Ireland-targeted version (no birth date or photo; it states EU citizenship instead). To update a CV, overwrite the PDF and keep the filename.
 
-**Page transitions:** the language toggle and the menu's links use `document.startViewTransition` with a WAAPI clip-path on `::view-transition-new(root)` (circle from the toggle; wipe up for navigation). Without support, or under reduced motion, they swap in place.
+**Page transitions:** the language toggle and the menu's links use `document.startViewTransition` with a WAAPI clip-path on `::view-transition-new(root)` (circle from the toggle; wipe up for navigation). Without support, or under reduced motion, they swap in place. Links that change page (between home and services) are plain `next/link` navigations, with the hash when they land on a home section.
 
 **Custom hooks live next to the component that owns them**, not in a shared `/hooks` folder.
 
-**Language lives in the URL.** English is `/` and Spanish `/es`, both prerendered by `app/[lang]` (`generateStaticParams`, `dynamicParams = false`), so each language is indexed at its own address and the server HTML is already in the right language: no client detection, no hydration mismatch. `proxy.ts` rewrites `/` to `/en` internally, redirects `/en` to `/` (308), and sends a visit to `/` from a Spanish or Catalan browser to `/es` (307). Once the visitor uses the toggle, the `locale` cookie overrules the browser. `LanguageProvider` starts from the route's locale; the toggle swaps the strings in place (inside the view transition), sets the cookie, `document.title` and `<html lang>`, and rewrites the address with `history.replaceState`, passing `history.state` through because the router keeps its own state there. This replaced the earlier `useSyncExternalStore` + localStorage detection on 2026-10-10 (owner's request: a Spanish page that search engines can index).
+**Language lives in the URL.** Every page has an English and a Spanish address (`PAGE_PATH` in `content/site.ts`: `/` and `/es`, `/services` and `/es/servicios`), all prerendered by `app/[lang]` (`generateStaticParams`, `dynamicParams = false`), so each language is indexed at its own address and the server HTML is already in the right language: no client detection, no hydration mismatch. `proxy.ts` maps public addresses onto their `[lang]` routes (`PAGE_ROUTE`): English through a rewrite to `/en/...`, the Spanish slug `/es/servicios` onto `/es/services`; the internal routes redirect to the public ones (308) so nothing is indexed twice. A visitor arriving at an English address from a Spanish or Catalan browser is sent to its Spanish twin (307); once they use the toggle, the `locale` cookie overrules the browser. Links inside the site never redirect (`Sec-Fetch-Site: same-origin`): the visitor keeps the language they are reading. `LanguageProvider` starts from the route's locale; the toggle swaps the strings in place (inside the view transition), moves the address to the same page's twin with `history.replaceState` (passing `history.state` through, where the router keeps its state) and sets the cookie, `document.title` and `<html lang>`. This replaced the earlier `useSyncExternalStore` + localStorage detection on 2026-10-10 (owner's request: a Spanish page that search engines can index). Adding a page: its key in `PageKey`, both addresses in `PAGE_PATH`, its folder in `PAGE_ROUTE` and under `app/[lang]`, both addresses in the proxy's `matcher`, its title and description in `translations.ts` (read by `pageSeo`), and an `opengraph-image.tsx` + `twitter-image.tsx` (a page that sets its own Open Graph stops inheriting the parent's card).
 
-**Search engines and AI assistants read the same facts as visitors.** `generateMetadata` in `[lang]/layout.tsx` builds title, description, canonical, hreflang (`en`, `es`, `x-default` → `/`) and Open Graph from `t.seo`; `[lang]/opengraph-image.tsx` draws the preview card (name, role, availability, `hero-last.jpg`) from the same strings, prerendered for both locales. `[lang]/page.tsx` embeds JSON-LD from `content/structuredData.ts`: a `ProfilePage` whose main entity is the `Person` (job title, skills, languages, education, profiles in `sameAs`, freelance services in `makesOffer`). `robots.ts` lets every crawler in, AI ones included; `sitemap.ts` lists both languages; `/llms.txt` is a Markdown digest. All of it reads `translations.ts` and `LOCALE_PATH`, so a fact or an address changes everywhere at once. The visible name is decorative (aria-hidden letters); the page's one `<h1>` is visually hidden and carries `t.seo.h1` (name, role, city).
+**Search engines and AI assistants read the same facts as visitors.** Each page's `generateMetadata` calls `pageMetadata()` (`content/metadata.ts`): title, description, canonical, hreflang (`en`, `es`, `x-default` → English) and Open Graph; the layout only holds what is site-wide. `app/og/card.tsx` draws the preview card (name, role, `hero-last.jpg`, and the availability for that page: roles on the home page, projects on the services page), prerendered for both locales. Each page embeds JSON-LD from `content/structuredData.ts`: the home a `ProfilePage` whose main entity is the `Person` (job title, skills, languages, education, profiles in `sameAs`, the four services in `makesOffer`); the services page a `FAQPage` with its breadcrumb and the same `Service` nodes. `robots.ts` lets every crawler in, AI ones included; `sitemap.ts` lists every page in both languages; `/llms.txt` is a Markdown digest. All of it reads `translations.ts` and `PAGE_PATH`, so a fact or an address changes everywhere at once. On the home page the visible name is decorative (aria-hidden letters) and the one `<h1>` is visually hidden, carrying `t.seo.h1` (name, role, city); on the services page the visible headline is the `<h1>`.
+
+**The services page is for clients.** It answers what a business owner asks: what he builds (`t.services.offers`, set as hairline rows like the projects), how a project runs (four steps on a drawn line), what is already built (claims the home page or the CV backs) and the usual questions (open answers, the same ones the JSON-LD gives). "Get a quote" opens the project draft: on phones through mailto, on computers by changing page to the contact block with that draft's options already open (`openDraft()` from Contact, inside `jumpTo`). The home page links to it from the menu and from under the contact answers.
 
 **The raw HTML has to read like the page.** AI crawlers mostly take the server HTML without CSS or script. `TextRoll` draws both faces of each letter with CSS from `data-glyph`, so a label is text once; pieces set on separate lines (title lines, marquee items, the hero name) keep a space between them, which never renders between block or flex items but stops words running together.
 
@@ -127,7 +132,7 @@ The story is the one authored sequence: the hero's load (letters rising, the por
 
 - `/public/hero-*.mp4|jpg` — main visual assets (see the clip note above)
 - `src/app/styles/abstracts/_variables.scss` — design tokens used everywhere
-- Locale routing: `proxy.ts`, `content/site.ts` and the `[lang]` segment move together; canonical, hreflang, the sitemap, `llms.txt` and the JSON-LD all derive from `LOCALE_PATH`
+- Locale routing: `proxy.ts`, `content/site.ts` and the `[lang]` segment move together; canonical, hreflang, the sitemap, `llms.txt` and the JSON-LD all derive from `PAGE_PATH`
 - `GROUP` and `TILT` in `Particles/shapes.ts` — the vertex shader matches them by number; change both sides together
 
 <!-- BEGIN:nextjs-agent-rules -->

@@ -97,6 +97,37 @@
   color: var(--text-muted);
 }
 
+/* For whoever came with a project: what he builds and how, on its own page */
+.services {
+  display: inline-flex;
+  align-items: center;
+  gap: map.get(vars.$size, sm);
+  font-size: map.get(vars.$font-sizes, base);
+  color: var(--bone);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color 300ms var(--ease-out);
+
+  @include mx.hover {
+    text-decoration-color: var(--bone);
+  }
+}
+
+.servicesArrow {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  transition: transform 300ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .services:hover .servicesArrow {
+    transform: translate3d(2px, -2px, 0);
+  }
+}
+
 /* The chosen answer stays filled while its options are open */
 .intent[data-chosen] {
   color: var(--ink);

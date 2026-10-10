@@ -53,6 +53,23 @@ export interface EducationEntry {
   note?: string;
 }
 
+/** One kind of freelance work. Its title doubles as the service's name in structured data */
+export interface ServiceOffer {
+  title: string;
+  body: string;
+  includes: string[];
+}
+
+export interface ProcessStep {
+  title: string;
+  body: string;
+}
+
+export interface Question {
+  q: string;
+  a: string;
+}
+
 export interface Translations {
   /** What search engines and AI read: the title, the snippet, the hidden h1 and the structured data */
   seo: {
@@ -60,8 +77,6 @@ export interface Translations {
     description: string;
     h1: string;
     jobTitle: string;
-    /** Freelance services, for structured data */
-    services: string[];
   };
   meta: {
     role: string;
@@ -71,6 +86,8 @@ export interface Translations {
     menu: string;
     close: string;
     home: string;
+    /** The monogram's name on other pages, where it leads to the home page */
+    homePage: string;
     /** Shown beside the live clock */
     localTime: string;
   };
@@ -153,6 +170,37 @@ export interface Translations {
     copied: string;
     built: string;
     top: string;
+    /** Points project visitors at the services page */
+    services: string;
+  };
+  /** The services page, for businesses that want something built */
+  services: {
+    seo: {
+      title: string;
+      description: string;
+    };
+    /** Its entry in the menu, and its name in breadcrumbs */
+    nav: string;
+    title: string;
+    lede: string;
+    cta: string;
+    ctaNote: string;
+    work: string;
+    portraitAlt: string;
+    /** The availability block, worded for clients */
+    availability: {
+      status: string;
+      where: string;
+      detail: string;
+    };
+    offersTitle: string;
+    offers: ServiceOffer[];
+    processTitle: string;
+    steps: ProcessStep[];
+    proofTitle: string;
+    proof: string[];
+    faqTitle: string;
+    faqs: Question[];
   };
 }
 
@@ -162,12 +210,6 @@ export const en: Translations = {
     description: "Full-stack developer in Palma de Mallorca building web and mobile products with React, Next.js, Node.js and AI. Open to new roles and to freelance projects.",
     h1: "Gabriel Colom Moll, full-stack developer in Palma de Mallorca",
     jobTitle: "Full-stack developer",
-    services: [
-      "Website development",
-      "Web application development",
-      "Mobile app development with React Native",
-      "AI features for web and mobile products",
-    ],
   },
   meta: {
     role: "Full-stack developer",
@@ -177,6 +219,7 @@ export const en: Translations = {
     menu: "Menu",
     close: "Close",
     home: "Back to top",
+    homePage: "Home",
     localTime: "Palma",
   },
   hero: {
@@ -351,6 +394,102 @@ export const en: Translations = {
     copied: "Copied",
     built: "Built with Next.js and three.js",
     top: "Back to top",
+    services: "What I build for businesses, and how I work",
+  },
+  services: {
+    seo: {
+      title: "Web and app development in Mallorca · Gabriel Colom Moll",
+      description: "Websites, custom web apps, mobile apps and AI for businesses, in Mallorca and remotely. Tell me about your project and I'll prepare a tailored quote.",
+    },
+    nav: "Services",
+    title: "Web and app development in Mallorca",
+    lede: "I design and build websites, web apps and mobile apps for businesses, end to end: from the first conversation until they're up and running. And where AI can genuinely save you work, I put it to work.",
+    cta: "Get a quote",
+    ctaNote: "A tailored quote, with no commitment.",
+    work: "See my work",
+    portraitAlt: "Gabriel Colom Moll, smiling with his arms crossed",
+    availability: {
+      status: "Available for projects",
+      where: "In person in Mallorca or remotely",
+      detail: "A few projects at a time",
+    },
+    offersTitle: "What I do",
+    offers: [
+      {
+        title: "Websites for businesses",
+        body: "A fast website that people find on Google and that explains clearly what you do: a company site, a landing page or an online shop. Designed for you, in the languages you need, and easy to maintain.",
+        includes: ["Custom design", "SEO", "Multilingual", "Online shop"],
+      },
+      {
+        title: "Custom web apps",
+        body: "The tools your business uses every day: dashboards, customer portals, bookings, internal tools or a full SaaS. With users and permissions, payments, single sign-on and your data kept safe.",
+        includes: ["Dashboards and portals", "Stripe payments", "Single sign-on", "E-invoicing"],
+      },
+      {
+        title: "Mobile apps",
+        body: "iOS and Android apps built with React Native and Expo, ready for the App Store and Google Play. They share logic and design with your website, so both move forward together.",
+        includes: ["iOS and Android", "React Native", "Expo", "Code shared with the web"],
+      },
+      {
+        title: "AI and automation",
+        body: "AI that does real work, not a chat bolted on: assistants that answer from your business data and carry out tasks, and reports that build themselves and land in your inbox.",
+        includes: ["Assistants on your data", "Automatic reports", "Automated tasks"],
+      },
+    ],
+    processTitle: "How we work",
+    steps: [
+      {
+        title: "You tell me your idea",
+        body: "We talk about what you need and what you want to achieve. I tell you what I'd do, what I wouldn't, and why.",
+      },
+      {
+        title: "I send you a proposal",
+        body: "What's included, the timeline and the price, so you can decide with everything clear.",
+      },
+      {
+        title: "Design and build",
+        body: "You see progress along the way and give feedback in time, not at the end.",
+      },
+      {
+        title: "Launch and beyond",
+        body: "I put it live, show you how to use it and, if you need it, take care of changes and maintenance.",
+      },
+    ],
+    proofTitle: "What I've already built",
+    proof: [
+      "Software used by tens of thousands of people, which I've worked on since its earliest stages.",
+      "AI assistants that answer from real data and carry out actions.",
+      "Stripe payments, single sign-on and multilingual products, in production.",
+      "React Native and Expo apps that share code with their web version.",
+      "This website: design, code and animation, end to end.",
+    ],
+    faqTitle: "Questions",
+    faqs: [
+      {
+        q: "How much does it cost?",
+        a: "It depends on what you need: a landing page is not an online shop or an app. Tell me about your project and I'll prepare a tailored quote, with no commitment.",
+      },
+      {
+        q: "How long does it take?",
+        a: "It depends on the scope, and the proposal includes a concrete timeline. I combine projects with my developer job and take on only a few at a time, so it's a timeline I can keep.",
+      },
+      {
+        q: "Do you only work in Mallorca?",
+        a: "I live in Palma: if you're in Mallorca, we can meet in person. If not, we work remotely without any problem, in English, Spanish or Catalan.",
+      },
+      {
+        q: "Will I be able to change texts and photos myself?",
+        a: "If you need to, yes. We plan for it from the start, so you can edit the content without touching code.",
+      },
+      {
+        q: "Do you take care of the domain, hosting and maintenance?",
+        a: "I help you get everything running, domain and hosting included, and if you like, I look after maintenance and improvements afterwards.",
+      },
+      {
+        q: "What do I need to get started?",
+        a: "Just an idea of what you want to achieve. If you already have a logo, texts or photos, great; if not, we'll work it out together.",
+      },
+    ],
   },
 };
 
@@ -360,12 +499,6 @@ export const es: Translations = {
     description: "Desarrollador web full stack en Palma de Mallorca: páginas web, aplicaciones web y apps móviles con React, Next.js e IA. Abierto a nuevos puestos y a proyectos freelance.",
     h1: "Gabriel Colom Moll, desarrollador web full stack en Palma de Mallorca",
     jobTitle: "Desarrollador web full stack",
-    services: [
-      "Desarrollo de páginas web",
-      "Desarrollo de aplicaciones web",
-      "Desarrollo de apps móviles con React Native",
-      "Funciones de IA para productos web y móviles",
-    ],
   },
   meta: {
     role: "Desarrollador full stack",
@@ -375,6 +508,7 @@ export const es: Translations = {
     menu: "Menú",
     close: "Cerrar",
     home: "Volver arriba",
+    homePage: "Inicio",
     localTime: "Palma",
   },
   hero: {
@@ -548,6 +682,103 @@ export const es: Translations = {
     copied: "Copiado",
     built: "Hecho con Next.js y three.js",
     top: "Volver arriba",
+    services: "Qué hago para negocios y cómo trabajo",
+  },
+  services: {
+    seo: {
+      title: "Desarrollo web y apps en Mallorca · Gabriel Colom Moll",
+      description: "Páginas web, aplicaciones a medida, apps móviles e IA para negocios, en Mallorca y en remoto. Cuéntame tu proyecto y te preparo un presupuesto a medida.",
+    },
+    nav: "Servicios",
+    // The hard space keeps "y" off the end of the first line
+    title: "Desarrollo web y apps en Mallorca",
+    lede: "Diseño y programo páginas web, aplicaciones y apps móviles para negocios, de principio a fin: desde la primera conversación hasta que funcionan. Y donde la IA puede ahorrarte trabajo de verdad, la pongo a trabajar.",
+    cta: "Pide presupuesto",
+    ctaNote: "Presupuesto a medida y sin compromiso.",
+    work: "Ver mi trabajo",
+    portraitAlt: "Gabriel Colom Moll, sonriendo con los brazos cruzados",
+    availability: {
+      status: "Disponible para proyectos",
+      where: "En persona en Mallorca o en remoto",
+      detail: "Pocos proyectos a la vez",
+    },
+    offersTitle: "Qué hago",
+    offers: [
+      {
+        title: "Webs para negocios",
+        body: "Una web rápida, que se encuentra en Google y explica bien lo que haces: corporativa, landing page o tienda online. Diseñada a medida, en los idiomas que necesites y fácil de mantener.",
+        includes: ["Diseño a medida", "SEO", "Varios idiomas", "Tienda online"],
+      },
+      {
+        title: "Aplicaciones web a medida",
+        body: "Las herramientas que tu negocio usa cada día: paneles, áreas de cliente, reservas, gestión interna o un SaaS completo. Con usuarios y permisos, pagos, inicio de sesión único y tus datos bien guardados.",
+        includes: ["Paneles y áreas de cliente", "Pagos con Stripe", "Inicio de sesión único", "Facturación electrónica"],
+      },
+      {
+        title: "Apps móviles",
+        body: "Apps para iOS y Android hechas con React Native y Expo, listas para publicar en App Store y Google Play. Comparten lógica y diseño con tu web, así que las dos avanzan a la vez.",
+        includes: ["iOS y Android", "React Native", "Expo", "Código compartido con la web"],
+      },
+      {
+        title: "IA y automatización",
+        body: "IA que hace trabajo de verdad, no un chat de adorno: asistentes que responden con los datos de tu negocio y ejecutan tareas, e informes que se generan solos y te llegan por email.",
+        includes: ["Asistentes con tus datos", "Informes automáticos", "Tareas automatizadas"],
+      },
+    ],
+    processTitle: "Cómo trabajamos",
+    steps: [
+      {
+        title: "Me cuentas tu idea",
+        body: "Hablamos de lo que necesitas y de lo que quieres conseguir. Te digo qué haría, qué no y por qué.",
+      },
+      {
+        title: "Te envío una propuesta",
+        body: "Con lo que incluye, los plazos y el precio, para que decidas con todo claro.",
+      },
+      {
+        title: "Diseño y desarrollo",
+        body: "Ves los avances durante el proyecto y opinas a tiempo, no al final.",
+      },
+      {
+        title: "Publicación y después",
+        body: "Lo pongo en marcha, te enseño a usarlo y, si lo necesitas, me ocupo de los cambios y del mantenimiento.",
+      },
+    ],
+    proofTitle: "Lo que ya he construido",
+    proof: [
+      "Software que usan decenas de miles de personas, en el que trabajo desde sus primeras fases.",
+      "Asistentes de IA que responden con datos reales y ejecutan acciones.",
+      "Pagos con Stripe, inicio de sesión único y productos en varios idiomas, en producción.",
+      "Apps con React Native y Expo que comparten código con su versión web.",
+      "Esta web: diseño, código y animaciones, de principio a fin.",
+    ],
+    faqTitle: "Preguntas frecuentes",
+    faqs: [
+      {
+        q: "¿Cuánto cuesta?",
+        a: "Depende de lo que necesites: no es lo mismo una landing page que una tienda online o una app. Cuéntame tu proyecto y te preparo un presupuesto a medida, sin compromiso.",
+      },
+      {
+        q: "¿Cuánto se tarda?",
+        a: "Depende del alcance, y en la propuesta te doy plazos concretos. Lo compagino con mi trabajo como desarrollador y acepto pocos proyectos a la vez, así que son plazos que puedo cumplir.",
+      },
+      {
+        q: "¿Trabajas solo en Mallorca?",
+        a: "Vivo en Palma: si estás en Mallorca, podemos vernos en persona. Si no, trabajamos en remoto sin problema, en español, catalán o inglés.",
+      },
+      {
+        q: "¿Podré cambiar los textos y las fotos yo mismo?",
+        a: "Si lo necesitas, sí. Lo tenemos en cuenta desde el principio para que puedas editar el contenido sin tocar código.",
+      },
+      {
+        q: "¿Te encargas del dominio, el hosting y el mantenimiento?",
+        a: "Te ayudo a ponerlo todo en marcha, dominio y hosting incluidos, y si quieres me ocupo después del mantenimiento y de las mejoras.",
+      },
+      {
+        q: "¿Qué necesito para empezar?",
+        a: "Solo una idea de lo que quieres conseguir. Si ya tienes logo, textos o fotos, perfecto; si no, lo vemos juntos.",
+      },
+    ],
   },
 };
 

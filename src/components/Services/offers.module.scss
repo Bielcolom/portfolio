@@ -1,0 +1,140 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.offers {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+  padding: 16svh map.get(vars.$size, xl) 12svh;
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, xl);
+    padding: 12svh map.get(vars.$size, md) 8svh;
+  }
+}
+
+.title {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, section);
+}
+
+.list {
+  display: grid;
+}
+
+/* Name on the left, what it covers on the right; stacked below tablet */
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  align-items: start;
+  gap: map.get(vars.$size, xl);
+  padding: map.get(vars.$size, xl) 0 map.get(vars.$size, xxl);
+
+  @include mx.tablet-down {
+    grid-template-columns: minmax(0, 1fr);
+    gap: map.get(vars.$size, md);
+    padding: map.get(vars.$size, lg) 0 map.get(vars.$size, xl);
+  }
+}
+
+/* The hairline above each row draws from the left as the row arrives */
+.rule {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: 0 50%;
+
+  :global(.js) .row:not([data-visible]) & {
+    transform: scaleX(0);
+  }
+
+  :global(.js) & {
+    transition: transform 1.2s var(--ease-in-out);
+  }
+}
+
+.name {
+  @include mx.display(700, 102%);
+  overflow: hidden;
+  font-size: map.get(vars.$display, project);
+  text-wrap: balance;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.nameInner {
+  display: inline-block;
+
+  :global(.js) .row:not([data-visible]) & {
+    transform: translate3d(0, 105%, 0);
+  }
+
+  :global(.js) & {
+    transition: transform 1.1s var(--ease-expo) 0.15s;
+  }
+}
+
+.body {
+  display: grid;
+  gap: map.get(vars.$size, lg);
+  padding-top: map.get(vars.$size, sm);
+
+  :global(.js) .row:not([data-visible]) & {
+    opacity: 0;
+    transform: translate3d(0, map.get(vars.$size, md), 0);
+  }
+
+  :global(.js) & {
+    transition:
+      opacity 0.8s var(--ease-out) 0.35s,
+      transform 0.8s var(--ease-expo) 0.35s;
+  }
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, md);
+    padding-top: 0;
+  }
+}
+
+.desc {
+  max-width: 52ch;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.5;
+  color: var(--text-body);
+  text-wrap: pretty;
+
+  @include mx.phone {
+    font-size: map.get(vars.$font-sizes, base);
+  }
+}
+
+.includes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(vars.$size, xs) map.get(vars.$size, md);
+
+  li {
+    @include mx.meta;
+    color: var(--text-muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(.js) .row:not([data-visible]) .nameInner,
+  :global(.js) .row:not([data-visible]) .body {
+    transform: none;
+  }
+
+  :global(.js) .row:not([data-visible]) .rule {
+    transform: none;
+    opacity: 0;
+  }
+
+  :global(.js) .rule {
+    transition: opacity 0.6s ease;
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
-import { LOCALE_COOKIE, LOCALE_PATH } from "@/content/site";
+import { createContext, useContext, useState } from "react";
+import { pageSeo } from "@/content/metadata";
+import { LOCALE_COOKIE, PAGE_PATH, pageAt } from "@/content/site";
 import { Locale, Translations, translations } from "./translations";
 
 interface LanguageContextValue {
@@ -18,10 +19,11 @@ const LanguageContext = createContext<LanguageContextValue>({
 export const useLanguage = () => useContext(LanguageContext);
 
 /**
- * The route decides the language: "/" renders English and "/es" Spanish, on
- * the server, so the first render already matches and nothing is detected on
- * the client. Switching swaps the strings in place, then keeps the address,
- * the title and the remembered choice in line with what is on screen.
+ * The route decides the language: every page has an English and a Spanish
+ * address, rendered on the server in that language, so the first render
+ * already matches and nothing is detected on the client. Switching swaps the
+ * strings in place, then moves the address to the same page's twin and keeps
+ * the title, <html lang> and the remembered choice in line with the screen.
  */
 export const LanguageProvider = ({ locale: initial, children }: {
   locale: Locale;
@@ -32,15 +34,13 @@ export const LanguageProvider = ({ locale: initial, children }: {
   const setLocale = (next: Locale) => {
     setLocaleState(next);
     document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    const page = pageAt(window.location.pathname);
     // The router keeps its state in history.state, so it is passed through
-    const url = LOCALE_PATH[next] + window.location.search + window.location.hash;
+    const url = PAGE_PATH[page][next] + window.location.search + window.location.hash;
     window.history.replaceState(window.history.state, "", url);
+    document.documentElement.lang = next;
+    document.title = pageSeo(page, translations[next]).title;
   };
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    document.title = translations[locale].seo.title;
-  }, [locale]);
 
   return (
     <LanguageContext.Provider value={{ locale, t: translations[locale], setLocale }}>
