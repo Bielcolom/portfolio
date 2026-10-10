@@ -19,7 +19,7 @@ const NameLine = ({ text, className }: { text: string; className: string }) => (
     <span className={styles.mask}>
       {[...text].map((ch, i) =>
         ch === " "
-          ? <span key={i} className={styles.space} />
+          ? <span key={i} className={styles.space}> </span>
           : <span key={i} className={styles.char} data-char>{ch}</span>,
       )}
     </span>
@@ -76,9 +76,7 @@ const Hero = () => {
       data-particles="hero"
       aria-labelledby="hero-name"
     >
-      <h1 id="hero-name" className={styles.srOnly}>
-        Gabriel Colom Moll, {t.meta.role.toLowerCase()}
-      </h1>
+      <h1 id="hero-name" className={styles.srOnly}>{t.seo.h1}</h1>
 
       <div ref={nameRef} className={styles.name} data-cursor="lens" aria-hidden>
         <motion.div className={styles.lineA} style={{ transform: reduce ? undefined : lineA }}>

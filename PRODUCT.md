@@ -26,12 +26,13 @@ Two things a neighbouring portfolio cannot truthfully copy:
 ## Operating Context
 
 - Visitors come from applications, LinkedIn and shared links; desktop at work and mobile in the LinkedIn app are both common.
+- Since 2026-10-10 the site is also meant to be found: by recruiters searching his name or a full-stack developer in Mallorca or Spain, by people looking for someone to build a website or an app (often in Spanish, such as "desarrollador web en Mallorca"), and by AI assistants answering those questions. Each language has its own indexable address.
 - One CV PDF per locale in `/public/cv/`. The English CV is the Ireland-targeted version: no birth date or photo, and it states EU citizenship.
 - Currently based in Palma de Mallorca, working full time at WOZZO while completing a Computer Engineering degree at UOC.
 
 ## Capabilities and Constraints
 
-- Single route (`/`), Next.js App Router, SCSS modules with design tokens, dark-only, deployed on Vercel.
+- One page in two languages, each at its own address: English at `/`, Spanish at `/es`, on https://www.gcolom.com (gcolom.com redirects there). Next.js App Router, SCSS modules with design tokens, dark-only, deployed on Vercel.
 - Every user-visible string lives in `src/i18n/translations.ts`, in both locales.
 - Availability (confirmed 2026-10-10): open to new roles in Ireland (happy to relocate), in Spain, or remote, and to freelance projects (websites, web apps, mobile apps). He is an EU citizen, which the English locale states because it removes the visa question for Irish employers; the Spanish locale omits it.
 

@@ -1,5 +1,6 @@
 "use client";
-import { createContext, useContext, useEffect, useSyncExternalStore } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { LOCALE_COOKIE, LOCALE_PATH } from "@/content/site";
 import { Locale, Translations, translations } from "./translations";
 
 interface LanguageContextValue {
@@ -16,60 +17,33 @@ const LanguageContext = createContext<LanguageContextValue>({
 
 export const useLanguage = () => useContext(LanguageContext);
 
-// --- Module-level locale store ---
+/**
+ * The route decides the language: "/" renders English and "/es" Spanish, on
+ * the server, so the first render already matches and nothing is detected on
+ * the client. Switching swaps the strings in place, then keeps the address,
+ * the title and the remembered choice in line with what is on screen.
+ */
+export const LanguageProvider = ({ locale: initial, children }: {
+  locale: Locale;
+  children: React.ReactNode;
+}) => {
+  const [locale, setLocaleState] = useState<Locale>(initial);
 
-const LOCALE_KEY = "locale";
-const listeners = new Set<() => void>();
-let storeLocale: Locale = "en";
-let initialized = false;
+  const setLocale = (next: Locale) => {
+    setLocaleState(next);
+    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    // The router keeps its state in history.state, so it is passed through
+    const url = LOCALE_PATH[next] + window.location.search + window.location.hash;
+    window.history.replaceState(window.history.state, "", url);
+  };
 
-function subscribe(cb: () => void): () => void {
-  listeners.add(cb);
-  return () => listeners.delete(cb);
-}
-
-// Called during render on the client. Reads localStorage once (lazily) and
-// caches the result so subsequent calls are pure.
-function getSnapshot(): Locale {
-  if (!initialized) {
-    initialized = true;
-    try {
-      const stored = localStorage.getItem(LOCALE_KEY) as Locale | null;
-      storeLocale = (stored === "en" || stored === "es")
-        ? stored
-        : navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
-    } catch {
-      // localStorage unavailable (e.g. private mode) — keep default "en"
-    }
-  }
-  return storeLocale;
-}
-
-// Called during SSR — must match the initial client render to avoid
-// hydration mismatches. React reconciles the server/client difference
-// internally after hydration.
-function getServerSnapshot(): Locale {
-  return "en";
-}
-
-function setLocaleInStore(next: Locale): void {
-  storeLocale = next;
-  try { localStorage.setItem(LOCALE_KEY, next); } catch { /* ignore */ }
-  listeners.forEach((cb) => cb());
-}
-
-// --- Provider ---
-
-export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const locale = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  // Only effect: keep <html lang> in sync with the active locale.
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.title = translations[locale].seo.title;
   }, [locale]);
 
   return (
-    <LanguageContext.Provider value={{ locale, t: translations[locale], setLocale: setLocaleInStore }}>
+    <LanguageContext.Provider value={{ locale, t: translations[locale], setLocale }}>
       {children}
     </LanguageContext.Provider>
   );

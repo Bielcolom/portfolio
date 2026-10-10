@@ -54,6 +54,15 @@ export interface EducationEntry {
 }
 
 export interface Translations {
+  /** What search engines and AI read: the title, the snippet, the hidden h1 and the structured data */
+  seo: {
+    title: string;
+    description: string;
+    h1: string;
+    jobTitle: string;
+    /** Freelance services, for structured data */
+    services: string[];
+  };
   meta: {
     role: string;
     location: string;
@@ -148,6 +157,18 @@ export interface Translations {
 }
 
 export const en: Translations = {
+  seo: {
+    title: "Gabriel Colom Moll · Full-stack developer in Mallorca, Spain",
+    description: "Full-stack developer in Palma de Mallorca building web and mobile products with React, Next.js, Node.js and AI. Open to new roles and to freelance projects.",
+    h1: "Gabriel Colom Moll, full-stack developer in Palma de Mallorca",
+    jobTitle: "Full-stack developer",
+    services: [
+      "Website development",
+      "Web application development",
+      "Mobile app development with React Native",
+      "AI features for web and mobile products",
+    ],
+  },
   meta: {
     role: "Full-stack developer",
     location: "Palma de Mallorca",
@@ -334,6 +355,18 @@ export const en: Translations = {
 };
 
 export const es: Translations = {
+  seo: {
+    title: "Gabriel Colom Moll · Desarrollador web full stack en Mallorca",
+    description: "Desarrollador web full stack en Palma de Mallorca: páginas web, aplicaciones web y apps móviles con React, Next.js e IA. Abierto a nuevos puestos y a proyectos freelance.",
+    h1: "Gabriel Colom Moll, desarrollador web full stack en Palma de Mallorca",
+    jobTitle: "Desarrollador web full stack",
+    services: [
+      "Desarrollo de páginas web",
+      "Desarrollo de aplicaciones web",
+      "Desarrollo de apps móviles con React Native",
+      "Funciones de IA para productos web y móviles",
+    ],
+  },
   meta: {
     role: "Desarrollador full stack",
     location: "Palma de Mallorca",
@@ -510,7 +543,7 @@ export const es: Translations = {
       app: "Tu app de correo",
       copy: "Copiar dirección",
     },
-    body: "Estoy abierto a puestos full stack en Irlanda, España o remoto, y a proyectos freelance: webs, aplicaciones web y apps móviles. Cuéntame qué necesitas.",
+    body: "Estoy abierto a puestos full stack en Irlanda, España o remoto, y a proyectos freelance: páginas web, aplicaciones web y apps móviles. Cuéntame qué necesitas.",
     copy: "Copiar email",
     copied: "Copiado",
     built: "Hecho con Next.js y three.js",

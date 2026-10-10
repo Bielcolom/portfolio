@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import ArrowIcon from "@/components/ArrowIcon";
 import LocalTime from "@/components/LocalTime";
 import Magnetic from "@/components/Magnetic";
@@ -133,8 +133,13 @@ const Contact = () => {
       <div className={styles.inner}>
         <section id="contact" className={styles.contact} aria-labelledby="contact-title">
           <h2 id="contact-title" className={styles.title}>
+            {/* The space never renders between block lines, but text-only
+                readers would otherwise run "role" into "or" */}
             {t.contact.titleLines.map((line, i) => (
-              <Reveal key={line} as="span" text={line} className={styles.titleLine} delay={i ? "short" : "none"} />
+              <Fragment key={line}>
+                {i > 0 && " "}
+                <Reveal as="span" text={line} className={styles.titleLine} delay={i ? "short" : "none"} />
+              </Fragment>
             ))}
           </h2>
 

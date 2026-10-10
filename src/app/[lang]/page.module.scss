@@ -1,5 +1,5 @@
 @use "sass:map";
-@use "./styles/abstracts/variables" as vars;
+@use "../styles/abstracts/variables" as vars;
 
 /* Above the fixed particle canvas; the hero, statement and story stay
    transparent so the particles show through them */
