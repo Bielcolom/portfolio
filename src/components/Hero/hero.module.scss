@@ -12,6 +12,9 @@ $z-content: map.get(vars.$z-indexes, content);
   z-index: $z-content;
   height: 100svh;
   min-height: 600px;
+  /* The name's lines part sideways on scroll; past the edge they are cut,
+     never allowed to widen the page */
+  overflow-x: clip;
 
   @include mx.tablet-down {
     display: flex;

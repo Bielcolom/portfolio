@@ -56,9 +56,11 @@
   grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
   gap: map.get(vars.$size, lg);
 
+  /* Rises rather than slides in from the side: an offset to the right
+     would widen the page on phones until the entry is revealed */
   :global(.js) &:not([data-visible]) {
     opacity: 0;
-    transform: translate3d(map.get(vars.$size, lg), 0, 0);
+    transform: translate3d(0, map.get(vars.$size, lg), 0);
   }
 
   :global(.js) & {

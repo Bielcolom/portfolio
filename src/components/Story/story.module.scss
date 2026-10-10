@@ -27,6 +27,8 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(140px, 1fr) auto auto;
     padding: 68px map.get(vars.$size, md) map.get(vars.$size, sm);
+    /* Nothing in the pinned view may widen the page on a phone */
+    overflow-x: clip;
   }
 }
 
@@ -232,15 +234,29 @@
 .railLabel {
   @include mx.meta;
 
-  /* Four labels do not fit a phone: only the current one shows, free to run long */
+  /* Four labels do not fit a phone: they stay for assistive tech, and the
+     current chapter is named once below the bars instead */
   @include mx.phone {
-    white-space: nowrap;
-    visibility: hidden;
-
-    .railItem[data-active] & {
-      visibility: visible;
-    }
+    @include mx.visually-hidden;
   }
+}
+
+.railCurrent {
+  display: none;
+
+  @include mx.phone {
+    @include mx.meta;
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    gap: map.get(vars.$size, md);
+    margin-top: -(map.get(vars.$size, xs));
+    color: var(--bone);
+  }
+}
+
+.railStep {
+  color: var(--text-subtle);
 }
 
 /* ---- Stage: where the particles form; also the drag surface ---- */

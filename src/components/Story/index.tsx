@@ -32,6 +32,9 @@ const Story = () => {
 
   useMotionValueEvent(scrollYProgress, "change", (p) => setActive(activeChapter(p)));
 
+  const step = (index: number) =>
+    xp.step.replace("{n}", String(index + 1)).replace("{total}", String(CHAPTER_COUNT));
+
   const jump = (index: number) => {
     const section = ref.current;
     if (!section) return;
@@ -96,11 +99,14 @@ const Story = () => {
                 <RailFill progress={scrollYProgress} index={i} />
               </span>
               <span className={styles.railLabel}>{chapter.title}</span>
-              <span className={styles.srOnly}>
-                {xp.step.replace("{n}", String(i + 1)).replace("{total}", String(CHAPTER_COUNT))}
-              </span>
+              <span className={styles.srOnly}>{step(i)}</span>
             </button>
           ))}
+          {/* Phones: one label for the current chapter, under all four bars */}
+          <p className={styles.railCurrent} aria-hidden>
+            <span>{xp.chapters[active].title}</span>
+            <span className={styles.railStep}>{step(active)}</span>
+          </p>
         </div>
 
         <div
