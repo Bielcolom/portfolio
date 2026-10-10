@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Hubot_Sans, Mona_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -72,6 +74,10 @@ export default async function RootLayout({ children, params }: Props) {
           {children}
           <Cursor />
         </LanguageProvider>
+        {/* Visits, where they come from, and real visitors' loading speed.
+            Cookieless, so no consent banner; both are switched on in the Vercel project */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ Personal portfolio: a home page and a services page for clients, each in English
 
 ## Stack
 
-- Next.js 16.3.1 — App Router only, no Pages Router
+- Next.js 16.3.8 — App Router only, no Pages Router
 - React 19.2.8 + TypeScript strict
 - SCSS modules — no Tailwind, no CSS-in-JS
 - React Compiler enabled (`reactCompiler: true`) — no manual `useMemo`/`useCallback`.
@@ -17,6 +17,7 @@ Personal portfolio: a home page and a services page for clients, each in English
 - three.js — the scroll-driven particle story (one `Points` draw call, custom shaders), loaded lazily
 - Lenis — inertia scroll for wheel and trackpad (off under reduced motion)
 - Framer Motion — scroll-linked values, springs, in-view reveals
+- Vercel Web Analytics + Speed Insights — visits, referrers and real-user loading speed, cookieless (no consent banner); mounted in `[lang]/layout.tsx`, switched on in the Vercel project; they record nothing in development
 - Dark-only design: `_themes.scss` defines a single palette, no light/dark pair
 
 ## Project structure
