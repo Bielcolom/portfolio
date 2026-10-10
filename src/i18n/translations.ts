@@ -56,6 +56,12 @@ export interface Translations {
     };
   };
   items: Record<SectionId, { label: string; desc: string }>;
+  cv: {
+    label: string;
+    open: string;
+    href: string;
+    handle: string;
+  };
   sections: {
     about: { title: string; body: string[] };
     experience: { title: string; entries: ExperienceEntry[] };
@@ -93,6 +99,12 @@ export const en: Translations = {
     stack: { label: "stack", desc: "Tools I use" },
     education: { label: "education", desc: "Where I studied" },
     contact: { label: "contact", desc: "Get in touch" },
+  },
+  cv: {
+    label: "CV",
+    open: "CV — PDF in English",
+    href: "/cv/Gabriel-Colom-Moll-CV-EN.pdf",
+    handle: "English · PDF",
   },
   sections: {
     about: {
@@ -210,6 +222,12 @@ export const es: Translations = {
     stack: { label: "stack", desc: "Herramientas que uso" },
     education: { label: "formación", desc: "Dónde he estudiado" },
     contact: { label: "contacto", desc: "Ponte en contacto" },
+  },
+  cv: {
+    label: "CV",
+    open: "CV — PDF en español",
+    href: "/cv/Gabriel-Colom-Moll-CV-ES.pdf",
+    handle: "Español · PDF",
   },
   sections: {
     about: {

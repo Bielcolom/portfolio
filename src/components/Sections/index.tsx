@@ -99,28 +99,35 @@ const Education = ({ s }: { s: Translations["sections"]["education"] }) => (
   </div>
 );
 
-const Contact = ({ s }: { s: Translations["sections"]["contact"] }) => (
-  <>
-    {s.body.map((p, i) => (
-      <p key={i} className={styles.paragraph}>{p}</p>
-    ))}
-    <div className={styles.links}>
-      {CONTACT_LINKS.map((link) => (
-        <a
-          key={link.name}
-          href={link.url}
-          target={link.url.startsWith("http") ? "_blank" : undefined}
-          rel={link.url.startsWith("http") ? "noopener noreferrer" : undefined}
-          className={styles.link}
-        >
-          <span className={styles.linkName}>{link.name}</span>
-          <span className={styles.linkHandle}>{link.handle}</span>
-          <span aria-hidden className={styles.linkArrow}>→</span>
-        </a>
+const Contact = ({ s, cv }: { s: Translations["sections"]["contact"]; cv: Translations["cv"] }) => {
+  const links = [...CONTACT_LINKS, { name: cv.label, handle: cv.handle, url: cv.href }];
+
+  return (
+    <>
+      {s.body.map((p, i) => (
+        <p key={i} className={styles.paragraph}>{p}</p>
       ))}
-    </div>
-  </>
-);
+      <div className={styles.links}>
+        {links.map((link) => {
+          const newTab = !link.url.startsWith("mailto:");
+          return (
+            <a
+              key={link.name}
+              href={link.url}
+              target={newTab ? "_blank" : undefined}
+              rel={newTab ? "noopener noreferrer" : undefined}
+              className={styles.link}
+            >
+              <span className={styles.linkName}>{link.name}</span>
+              <span className={styles.linkHandle}>{link.handle}</span>
+              <span aria-hidden className={styles.linkArrow}>→</span>
+            </a>
+          );
+        })}
+      </div>
+    </>
+  );
+};
 
 const Sections = () => {
   const { t } = useLanguage();
@@ -132,7 +139,7 @@ const Sections = () => {
       case "projects":   return <Projects s={t.sections.projects} />;
       case "stack":      return <Stack s={t.sections.stack} />;
       case "education":  return <Education s={t.sections.education} />;
-      case "contact":    return <Contact s={t.sections.contact} />;
+      case "contact":    return <Contact s={t.sections.contact} cv={t.cv} />;
     }
   };
 

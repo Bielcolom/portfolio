@@ -27,6 +27,7 @@ src/
 │   ├── global-error.tsx        # Root error boundary (replaces layout on crash)
 │   └── styles/                 # Global SCSS: abstracts, base, globals
 ├── components/
+│   ├── CvLink/                 # Navbar "CV" button — opens the PDF for the active locale
 │   ├── LangToggle/             # EN/ES toggle button
 │   ├── Sections/               # Docs-style content sections below the hero (anchor ids = menu ids)
 │   └── HeroFaceLanding/        # Main interactive hero component
@@ -53,6 +54,8 @@ src/
 **Mobile hero is a native layout, not a device mockup:** desktop shows the floating screen + keyboard; mobile renders face card + typed name + MenuList directly on the page. No phone frame — a phone inside a phone hurt credibility.
 
 **Face clips are per-breakpoint, sized to their display box.** Browsers downscale `<video>` with a cheap filter (unlike images), so an oversized clip renders visibly mushy: `face-lg.mp4` (558×720) for the desktop card, `face-sm.mp4` (224×224) for the 56px mobile avatar, with `face-poster.jpg` / `face-poster-sm.jpg` as poster + fallback for each. If the card size changes, re-encode to match — do not just reuse a bigger file. Both clips are cropped from the same portrait master (`assets/biel-presentation.mp4`, git-ignored): the desktop crop is the full frame width, the mobile crop is a tight square on the head, because at 56px only the face reads. Encode with `hqdn3d=4:3:6:4.5` before scaling and stay at CRF ≤ 24: the shirt is dark, low-contrast and grainy, and a leaner encode starves those blocks and collapses the chest gradient into a flat bright patch. The posters are the videos' own last frame (`select` on the final index), never a frame re-cut from the master — otherwise they don't match the clip.
+
+**CVs are one PDF per locale in `/public/cv/`**, linked from `cv.href` in `translations.ts` (navbar `CvLink` + a box in the contact section). The visitor only sees the CV for the active language. The EN file is the Ireland-targeted version (no birth date or photo; it states EU citizenship instead). To update a CV, overwrite the PDF and keep the filename, which is also the name people get when they download it.
 
 **Custom hooks live next to the component that owns them**, not in a shared `/hooks` folder.
 
