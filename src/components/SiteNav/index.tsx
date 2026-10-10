@@ -115,7 +115,9 @@ const SiteNav = () => {
             aria-controls="site-index"
             onClick={toggle}
           >
-            <TextRoll text={open ? t.nav.close : t.nav.menu} />
+            <span className={styles.menuLabel}>
+              <TextRoll text={open ? t.nav.close : t.nav.menu} />
+            </span>
             <span className={styles.burger} data-open={open || undefined} aria-hidden>
               <span />
               <span />

@@ -159,7 +159,7 @@ export const en: Translations = {
     localTime: "Palma",
   },
   hero: {
-    pitch: "I design and build web and mobile products end to end, from the interface to the database, including AI features that take real action. I've been a core developer, from its earliest stages, of software that tens of thousands of people use.",
+    pitch: "I design and build web and mobile products end to end, including AI features that take real action. I've been a core developer, from its earliest stages, of software that tens of thousands of people use.",
     cv: "View CV",
     email: "Email me",
     scroll: "Scroll",
@@ -345,7 +345,7 @@ export const es: Translations = {
     localTime: "Palma",
   },
   hero: {
-    pitch: "Diseño y construyo productos web y móviles de extremo a extremo, de la interfaz a la base de datos, incluidas funciones de IA que actúan de verdad. Soy desarrollador principal, desde sus primeras fases, de un software que usan decenas de miles de personas.",
+    pitch: "Diseño y construyo productos web y móviles de extremo a extremo, incluidas funciones de IA que actúan de verdad. Soy desarrollador principal, desde sus primeras fases, de un software que usan decenas de miles de personas.",
     cv: "Ver CV",
     email: "Escríbeme",
     scroll: "Desplázate",

@@ -140,7 +140,7 @@ The visual rejections stand from the owner's history: no device mockup inside a 
 
 ## Layout
 
-The hero is a fixed composition sized from the viewport (`--portrait-h: min(64svh, 38vw)`), with the first line clear of the portrait so the whole name reads. Below 900px it stacks: first line, portrait, second line overlapping the portrait's bottom, then pitch, buttons, availability.
+The hero is a fixed composition sized from the viewport (`--portrait-h: min(64svh, 38vw)`), with the first line clear of the portrait so the whole name reads. Below 900px it stacks: first line, portrait, second line overlapping the portrait's bottom, then role and place on two lines, pitch, buttons, availability. The stacked portrait follows the screen's height (`clamp(200px, 36svh, 78vw)`) so the buttons stay in the first view on short phones (iPhone SE included).
 
 The story is a pinned 100svh view: text left, stage right (stacked on phones, the stage taking whatever height the text leaves). The particles measure the stage's DOM box every frame, so the layout decides where the shapes stand.
 
@@ -150,7 +150,7 @@ Content after the story lives on one raised sheet; the close is full-height on i
 
 - **Buttons:** pills, 52px in the hero, 44px elsewhere. Primary is filled bone; secondary is outlined and fills bone from the bottom on hover. Labels roll to a second copy on hover. Hero buttons are magnetic. Press: scale 0.97.
 - **Availability:** the green light (two rings on load, then still) with status, places and eligibility; a compact status-only form sits in the bar on wide screens.
-- **Bar:** monogram, Palma's live clock, availability, CV, EN/ES, Menu. Blends with `difference`; hides on scroll down, returns on scroll up; a 2px progress line runs along the top.
+- **Bar:** monogram, Palma's live clock, availability, CV, EN/ES, Menu. On phones the clock goes and the menu is its icon alone, so the availability light always fits; between 601 and 1100px the light gives way to the centred clock. Blends with `difference`; hides on scroll down, returns on scroll up; a 2px progress line runs along the top.
 - **Menu:** full-screen on Ink Raised; huge links with rolling labels; email, profiles and availability beside them.
 - **Contact answers:** two large outlined pills under the contact question ("A new role", "A new project"), 64px, magnetic, arrow nudging on hover. Each opens a pre-written email; a quiet line beneath says so. On a computer the click keeps the pill filled and opens a row beneath it instead: Gmail, Outlook, the mail app, copy the address, as 40px outlined pills.
 

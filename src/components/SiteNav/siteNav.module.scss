@@ -90,11 +90,17 @@ $z-menu: map.get(vars.$z-indexes, menu);
   }
 }
 
+/* Hidden only where it would meet the centred clock; phones drop the clock
+   and keep the light, so availability is in view on every screen */
 .status {
   margin-right: map.get(vars.$size, sm);
 
-  @media (max-width: 1100px) {
+  @media (min-width: 601px) and (max-width: 1100px) {
     display: none;
+  }
+
+  @include mx.phone {
+    margin-right: 0;
   }
 }
 
@@ -102,7 +108,9 @@ $z-menu: map.get(vars.$z-indexes, menu);
   @include mx.label;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: map.get(vars.$size, sm);
+  min-width: 44px;
   min-height: 44px;
   padding: 0 map.get(vars.$size, xs);
   color: var(--bone);
@@ -110,6 +118,14 @@ $z-menu: map.get(vars.$z-indexes, menu);
 
   &:active {
     transform: scale(0.95);
+  }
+}
+
+/* Phones show the icon alone, to leave room for the availability light;
+   the word stays for assistive tech */
+.menuLabel {
+  @include mx.phone {
+    @include mx.visually-hidden;
   }
 }
 

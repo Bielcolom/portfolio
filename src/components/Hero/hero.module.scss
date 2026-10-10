@@ -138,7 +138,7 @@ $z-content: map.get(vars.$z-indexes, content);
     top: auto;
     right: auto;
     align-self: flex-end;
-    height: min(85vw, 46svh);
+    height: clamp(200px, 36svh, 78vw);
     margin-top: map.get(vars.$size, sm);
   }
 }
@@ -196,7 +196,7 @@ $z-content: map.get(vars.$z-indexes, content);
     bottom: auto;
     flex-direction: column;
     align-items: stretch;
-    gap: map.get(vars.$size, xl);
+    gap: map.get(vars.$size, lg);
     margin-top: map.get(vars.$size, lg);
   }
 }
@@ -237,6 +237,17 @@ $z-content: map.get(vars.$z-indexes, content);
   border-radius: 50%;
   vertical-align: middle;
   background: var(--text-subtle);
+
+  @include mx.phone {
+    display: none;
+  }
+}
+
+/* On a phone the line breaks at the seam, never inside "Palma de Mallorca" */
+.place {
+  @include mx.phone {
+    display: block;
+  }
 }
 
 .pitch {

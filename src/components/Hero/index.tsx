@@ -119,7 +119,9 @@ const Hero = () => {
       <motion.div className={styles.foot} style={{ opacity: footFade }}>
         <div className={styles.intro}>
           <p className={styles.role}>
-            {t.meta.role} <span className={styles.dot} aria-hidden /> {t.meta.location}
+            <span>{t.meta.role}</span>
+            <span className={styles.dot} aria-hidden />
+            <span className={styles.place}>{t.meta.location}</span>
           </p>
           <p className={styles.pitch}>{t.hero.pitch}</p>
           <div className={styles.actions}>
