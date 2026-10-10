@@ -1,0 +1,41 @@
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.roll {
+  display: inline-flex;
+}
+
+.srOnly {
+  @include mx.visually-hidden;
+}
+
+.track {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.char {
+  display: inline-flex;
+  flex-direction: column;
+  height: 1lh;
+  overflow: hidden;
+}
+
+.face {
+  display: block;
+  transition: transform 500ms var(--ease-expo);
+}
+
+@for $i from 1 through 32 {
+  .char:nth-child(#{$i}) .face {
+    transition-delay: #{($i - 1) * 14}ms;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  a:hover .face,
+  button:hover .face,
+  a:focus-visible .face,
+  button:focus-visible .face {
+    transform: translate3d(0, -100%, 0);
+  }
+}

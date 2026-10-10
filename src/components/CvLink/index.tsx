@@ -1,7 +1,9 @@
 "use client";
+import TextRoll from "@/components/TextRoll";
 import { useLanguage } from "@/i18n/context";
 import styles from "./cvLink.module.scss";
 
+/** Opens the CV for the active language; the other locale's PDF is never offered */
 const CvLink = () => {
   const { locale, t } = useLanguage();
 
@@ -12,10 +14,10 @@ const CvLink = () => {
       type="application/pdf"
       target="_blank"
       rel="noopener noreferrer"
-      className={styles.link}
       aria-label={t.cv.open}
+      className={styles.link}
     >
-      {t.cv.label}
+      <TextRoll text={t.cv.label} />
     </a>
   );
 };

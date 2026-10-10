@@ -5,6 +5,8 @@ interface Props {
   reset: () => void;
 }
 
+/* Replaces the root layout, so it cannot rely on the site's stylesheets or
+   fonts; inline styles keep it from preloading CSS on every page */
 const GlobalError = ({ reset }: Props) => (
   <html lang="en">
     <body
@@ -15,35 +17,31 @@ const GlobalError = ({ reset }: Props) => (
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0a0a0a",
-        color: "#fff",
+        background: "#0b0a09",
+        color: "#efebe4",
         fontFamily: "system-ui, sans-serif",
         gap: "24px",
         textAlign: "center",
         padding: "0 24px",
       }}
     >
-      <p style={{ fontSize: "13px", opacity: 0.4, letterSpacing: "0.1em", margin: 0 }}>
-        GABRIEL COLOM MOLL / PORTFOLIO
-      </p>
       <h1 style={{ fontSize: "clamp(32px, 8vw, 72px)", fontWeight: 700, margin: 0, letterSpacing: "-0.03em" }}>
         Something broke.
       </h1>
-      <p style={{ fontSize: "16px", opacity: 0.5, margin: 0, maxWidth: "360px", lineHeight: 1.6 }}>
+      <p style={{ fontSize: "16px", color: "#a6a197", margin: 0, maxWidth: "360px", lineHeight: 1.6 }}>
         An unexpected error occurred. You can try again or come back later.
       </p>
       <button
         onClick={reset}
         style={{
           marginTop: "8px",
-          padding: "10px 28px",
-          borderRadius: "128px",
-          border: "1px solid rgba(255,255,255,0.18)",
+          padding: "12px 28px",
+          borderRadius: "999px",
+          border: "1px solid rgba(239, 235, 228, 0.26)",
           background: "transparent",
-          color: "#fff",
+          color: "#efebe4",
           fontSize: "14px",
           cursor: "pointer",
-          letterSpacing: "0.04em",
         }}
       >
         Try again

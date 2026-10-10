@@ -1,0 +1,181 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.footer {
+  position: relative;
+  z-index: map.get(vars.$z-indexes, content);
+  overflow: hidden;
+  background: var(--ink);
+}
+
+.inner {
+  display: grid;
+  align-content: space-between;
+  gap: map.get(vars.$size, xxl);
+  min-height: 100svh;
+  padding: 18svh map.get(vars.$size, xl) map.get(vars.$size, lg);
+
+  @include mx.tablet-down {
+    padding: 14svh map.get(vars.$size, md) map.get(vars.$size, lg);
+  }
+}
+
+.srOnly {
+  @include mx.visually-hidden;
+}
+
+.contact {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+}
+
+.title {
+  display: grid;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, contact);
+  font-weight: 700;
+  font-stretch: 110%;
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  color: var(--bone);
+}
+
+.titleLine {
+  display: block;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: map.get(vars.$size, xxl);
+  align-items: end;
+
+  @include mx.tablet-down {
+    grid-template-columns: minmax(0, 1fr);
+    gap: map.get(vars.$size, xl);
+  }
+}
+
+.reach {
+  display: grid;
+  gap: map.get(vars.$size, lg);
+}
+
+.body {
+  max-width: 44ch;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.emailRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: map.get(vars.$size, md) map.get(vars.$size, lg);
+}
+
+.email {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, email);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--bone);
+  overflow-wrap: anywhere;
+
+  @include mx.phone {
+    font-size: 6.4vw;
+  }
+}
+
+.copy {
+  @include mx.button-secondary(44px);
+  display: inline-grid;
+  padding: 0 map.get(vars.$size, md);
+
+  > span {
+    grid-area: 1 / 1;
+    transition:
+      opacity 200ms var(--ease-out),
+      transform 200ms var(--ease-out);
+  }
+}
+
+.copyDone {
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+}
+
+.copy[data-copied] .copyIdle {
+  opacity: 0;
+  transform: translate3d(0, -6px, 0);
+}
+
+.copy[data-copied] .copyDone {
+  opacity: 1;
+  transform: none;
+}
+
+.aside {
+  display: grid;
+  gap: map.get(vars.$size, xl);
+}
+
+.links {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: map.get(vars.$size, md);
+  min-height: 56px;
+  border-bottom: 1px solid var(--line);
+  color: var(--bone);
+}
+
+.linkName {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$font-sizes, lg);
+  font-weight: 600;
+}
+
+.linkHandle {
+  @include mx.label;
+  color: var(--text-subtle);
+
+  @include mx.phone {
+    display: none;
+  }
+}
+
+.arrow {
+  transition: transform 300ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover .arrow {
+    transform: translate3d(2px, -2px, 0);
+  }
+}
+
+.bottom {
+  @include mx.label;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: map.get(vars.$size, sm) map.get(vars.$size, lg);
+  padding-top: map.get(vars.$size, lg);
+  border-top: 1px solid var(--line);
+  color: var(--text-subtle);
+}
+
+.top {
+  @include mx.label;
+  min-height: 44px;
+  color: var(--bone);
+}

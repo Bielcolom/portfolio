@@ -1,32 +1,12 @@
 @use "sass:map";
 @use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
 
-/* Accent-tinted at rest, unlike the dimmed icons beside it — it's the navbar's main call to action */
 .link {
-  display: flex;
+  @include mx.label;
+  display: inline-flex;
   align-items: center;
-  height: 28px;
-  padding: 0 map.get(vars.$size, sm);
-  border: 1px solid color-mix(in oklch, var(--accent) 35%, transparent);
-  border-radius: 6px;
-  font-family: var(--font-geist-mono);
-  font-size: map.get(vars.$font-sizes, xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: color-mix(in oklch, var(--accent) 75%, #fff);
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-  flex-shrink: 0;
-
-  /* Suppress the global animated underline — this is a button-styled link */
-  &::after {
-    content: none;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      color: #fff;
-      background: color-mix(in oklch, var(--accent) 12%, transparent);
-      border-color: color-mix(in oklch, var(--accent) 60%, transparent);
-    }
-  }
+  min-height: 44px;
+  padding: 0 map.get(vars.$size, xs);
+  color: var(--bone);
 }

@@ -1,0 +1,171 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.education {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+  padding: 14svh map.get(vars.$size, xl) 22svh;
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, xl);
+    padding: 10svh map.get(vars.$size, md) 16svh;
+  }
+}
+
+.title {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, section);
+}
+
+/* ---- Timeline ---- */
+
+.timeline {
+  position: relative;
+  padding-left: map.get(vars.$size, xl);
+
+  @include mx.phone {
+    padding-left: map.get(vars.$size, lg);
+  }
+}
+
+.track {
+  position: absolute;
+  top: map.get(vars.$size, sm);
+  bottom: map.get(vars.$size, sm);
+  left: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--bone);
+  transform-origin: 50% 0;
+}
+
+.entries {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+  gap: map.get(vars.$size, lg);
+
+  :global(.js) &:not([data-visible]) {
+    opacity: 0;
+    transform: translate3d(map.get(vars.$size, lg), 0, 0);
+  }
+
+  :global(.js) & {
+    transition:
+      opacity 0.8s var(--ease-out),
+      transform 1s var(--ease-expo);
+  }
+
+  @include mx.phone {
+    grid-template-columns: minmax(0, 1fr);
+    gap: map.get(vars.$size, sm);
+  }
+}
+
+.node {
+  position: absolute;
+  top: 0.45em;
+  left: calc(-1 * map.get(vars.$size, xl) - 4px);
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--bone);
+  border-radius: 50%;
+  background: var(--ink-raised);
+
+  @include mx.phone {
+    left: calc(-1 * map.get(vars.$size, lg) - 4px);
+  }
+}
+
+.period {
+  @include mx.label;
+  padding-top: 0.3em;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.info {
+  display: grid;
+  gap: map.get(vars.$size, sm);
+  max-width: 60ch;
+}
+
+.entryTitle {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, entry);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  text-wrap: balance;
+}
+
+.school {
+  font-size: map.get(vars.$font-sizes, base);
+  color: var(--text-body);
+}
+
+.note {
+  font-size: map.get(vars.$font-sizes, base);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---- Award and further training ---- */
+
+.extras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: map.get(vars.$size, xl);
+  padding-top: map.get(vars.$size, xl);
+  border-top: 1px solid var(--line);
+
+  @include mx.tablet-down {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.extra {
+  display: grid;
+  align-content: start;
+  gap: map.get(vars.$size, md);
+}
+
+.extraTitle {
+  @include mx.label;
+  color: var(--text-subtle);
+}
+
+.extraText {
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.45;
+  color: var(--bone);
+}
+
+.training {
+  display: grid;
+  gap: map.get(vars.$size, sm);
+
+  li {
+    font-size: map.get(vars.$font-sizes, base);
+    line-height: 1.5;
+    color: var(--text-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(.js) .entry:not([data-visible]) {
+    transform: none;
+  }
+}

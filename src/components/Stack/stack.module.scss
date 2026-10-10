@@ -1,0 +1,119 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.stack {
+  display: grid;
+  gap: map.get(vars.$size, xxl);
+  padding: 14svh 0;
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, xl);
+    padding: 10svh 0;
+  }
+}
+
+.title {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, section);
+  padding: 0 map.get(vars.$size, xl);
+
+  @include mx.tablet-down {
+    padding: 0 map.get(vars.$size, md);
+  }
+}
+
+/* ---- Marquees ---- */
+
+.marquees {
+  display: grid;
+  gap: map.get(vars.$size, xs);
+  overflow: hidden;
+}
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.track {
+  display: inline-flex;
+  will-change: transform;
+}
+
+.copy {
+  display: inline-flex;
+  flex: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding-right: 0.35em;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, marquee);
+  font-weight: 700;
+  font-stretch: 110%;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--bone);
+
+  .marquee[data-outline] & {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-muted);
+    font-weight: 600;
+  }
+}
+
+.star {
+  width: 0.36em;
+  height: 0.36em;
+  flex: none;
+  fill: none;
+  stroke: var(--text-subtle);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ---- Ledger ---- */
+
+.ledger {
+  display: grid;
+  margin: 0 map.get(vars.$size, xl);
+  border-top: 1px solid var(--line);
+
+  @include mx.tablet-down {
+    margin: 0 map.get(vars.$size, md);
+  }
+}
+
+.ledgerRow {
+  display: grid;
+  grid-template-columns: minmax(160px, 260px) minmax(0, 1fr);
+  gap: map.get(vars.$size, lg);
+  padding: map.get(vars.$size, md) 0;
+  border-bottom: 1px solid var(--line);
+
+  @include mx.phone {
+    grid-template-columns: minmax(0, 1fr);
+    gap: map.get(vars.$size, xs);
+  }
+}
+
+.ledgerKey {
+  @include mx.label;
+  padding-top: 0.2em;
+  color: var(--text-subtle);
+}
+
+.ledgerValue {
+  margin: 0;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.5;
+  color: var(--text-body);
+
+  @include mx.phone {
+    font-size: map.get(vars.$font-sizes, base);
+  }
+}

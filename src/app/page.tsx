@@ -1,22 +1,31 @@
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import Education from "@/components/Education";
+import Hero from "@/components/Hero";
+import Panel from "@/components/Panel";
+import Particles from "@/components/Particles";
+import Projects from "@/components/Projects";
+import SiteNav from "@/components/SiteNav";
+import Stack from "@/components/Stack";
+import Story from "@/components/Story";
 import styles from "./page.module.scss";
-import HeroFaceLanding from "@/components/HeroFaceLanding";
-import Sections from "@/components/Sections";
-import LangToggle from "@/components/LangToggle";
-import Socials from "@/components/Socials";
-import CvLink from "@/components/CvLink";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <div className={styles.navbar}>
-        <Socials />
-        <CvLink />
-        <LangToggle />
-      </div>
-      <main className={styles.main}>
-        <HeroFaceLanding />
-        <Sections />
+    <>
+      <SiteNav />
+      <Particles />
+      <main id="main" className={styles.main}>
+        <Hero />
+        <About />
+        <Story />
+        <Panel>
+          <Projects />
+          <Stack />
+          <Education />
+        </Panel>
       </main>
-    </div>
+      <Contact />
+    </>
   );
 }

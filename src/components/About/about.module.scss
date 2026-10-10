@@ -1,0 +1,72 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.about {
+  position: relative;
+  display: grid;
+  gap: 18svh;
+  padding: 34svh map.get(vars.$size, xl) 30svh;
+
+  @include mx.tablet-down {
+    gap: 12svh;
+    padding: 24svh map.get(vars.$size, md) 22svh;
+  }
+}
+
+.srOnly {
+  @include mx.visually-hidden;
+}
+
+.statement {
+  max-width: 26ch;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, statement);
+  font-weight: 600;
+  font-stretch: 100%;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--bone);
+  text-wrap: pretty;
+
+  @media (min-width: 1200px) {
+    max-width: 30ch;
+  }
+}
+
+.word {
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1 !important;
+  }
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: map.get(vars.$size, xl);
+  border-top: 1px solid var(--line);
+  padding-top: map.get(vars.$size, lg);
+
+  @include mx.tablet-down {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: map.get(vars.$size, lg) map.get(vars.$size, md);
+  }
+}
+
+.fact {
+  display: grid;
+  align-content: start;
+  gap: map.get(vars.$size, sm);
+}
+
+.label {
+  @include mx.label;
+  color: var(--text-subtle);
+}
+
+.value {
+  margin: 0;
+  font-size: map.get(vars.$font-sizes, base);
+  line-height: 1.45;
+  color: var(--text-body);
+}

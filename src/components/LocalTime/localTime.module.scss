@@ -1,0 +1,15 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+.root {
+  @include mx.label;
+  display: inline-flex;
+  gap: map.get(vars.$size, sm);
+  color: var(--text-muted);
+}
+
+.digits {
+  color: var(--bone);
+  font-variant-numeric: tabular-nums;
+}

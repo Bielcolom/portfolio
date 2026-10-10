@@ -1,0 +1,279 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+$z-header: map.get(vars.$z-indexes, header);
+$z-menu: map.get(vars.$z-indexes, menu);
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-header + 1;
+  height: 2px;
+  background: var(--bone);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-header;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: map.get(vars.$size, sm) map.get(vars.$size, xl);
+  /* Bone stays bone over ink and turns dark over the light portrait */
+  mix-blend-mode: difference;
+  transition: transform 600ms var(--ease-expo);
+  /* backwards, not both: once in, the hide/show transition owns the transform */
+  animation: bar-in 900ms var(--ease-expo) 0.9s backwards;
+
+  &[data-hidden] {
+    transform: translate3d(0, -110%, 0);
+  }
+
+  @include mx.phone {
+    grid-template-columns: auto 1fr;
+    padding: map.get(vars.$size, xs) map.get(vars.$size, md);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-name: bar-fade;
+  }
+}
+
+@keyframes bar-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes bar-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.mark {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$font-sizes, base);
+  font-weight: 800;
+  font-stretch: 115%;
+  letter-spacing: 0.02em;
+  color: var(--bone);
+}
+
+.time {
+  @include mx.phone {
+    display: none;
+  }
+}
+
+.actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: map.get(vars.$size, md);
+
+  @include mx.phone {
+    gap: map.get(vars.$size, sm);
+  }
+}
+
+.status {
+  margin-right: map.get(vars.$size, sm);
+
+  @media (max-width: 1100px) {
+    display: none;
+  }
+}
+
+.menuButton {
+  @include mx.label;
+  display: inline-flex;
+  align-items: center;
+  gap: map.get(vars.$size, sm);
+  min-height: 44px;
+  padding: 0 map.get(vars.$size, xs);
+  color: var(--bone);
+  transition: transform 160ms var(--ease-out);
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.burger {
+  position: relative;
+  width: 18px;
+  height: 8px;
+
+  span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 500ms var(--ease-expo);
+  }
+
+  span:first-child {
+    top: 0;
+  }
+
+  span:last-child {
+    bottom: 0;
+  }
+
+  &[data-open] span:first-child {
+    transform: translate3d(0, 3.25px, 0) rotate(45deg);
+  }
+
+  &[data-open] span:last-child {
+    transform: translate3d(0, -3.25px, 0) rotate(-45deg);
+  }
+}
+
+/* ---- The full-screen index ---- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-menu;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: end;
+  gap: map.get(vars.$size, xxl);
+  padding: 120px map.get(vars.$size, xl) map.get(vars.$size, xl);
+  background: var(--ink-raised);
+  clip-path: circle(0px at var(--origin-x, 100%) var(--origin-y, 0%));
+  visibility: hidden;
+  transition:
+    clip-path 700ms var(--ease-in-out),
+    visibility 0s linear 700ms;
+
+  &[data-open] {
+    clip-path: circle(150vmax at var(--origin-x, 100%) var(--origin-y, 0%));
+    visibility: visible;
+    transition:
+      clip-path 900ms var(--ease-in-out),
+      visibility 0s;
+  }
+
+  /* Leaving through a link: the page transition draws the exit instead */
+  &[data-instant] {
+    transition: none;
+  }
+
+  @include mx.tablet-down {
+    grid-template-columns: 1fr;
+    align-content: space-between;
+    padding: 96px map.get(vars.$size, md) map.get(vars.$size, lg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    clip-path: none;
+    opacity: 0;
+    transition:
+      opacity 250ms ease,
+      visibility 0s linear 250ms;
+
+    &[data-open] {
+      clip-path: none;
+      opacity: 1;
+      transition:
+        opacity 250ms ease,
+        visibility 0s;
+    }
+  }
+}
+
+.links {
+  display: grid;
+}
+
+.item {
+  overflow: hidden;
+}
+
+.link {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, section);
+  font-weight: 700;
+  font-stretch: 110%;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--bone);
+  transition: color 300ms var(--ease-out);
+}
+
+.linkInner {
+  display: inline-block;
+  transform: translate3d(0, 105%, 0);
+  transition: transform 500ms var(--ease-in-out);
+
+  .overlay[data-open] & {
+    transform: none;
+    transition: transform 1000ms var(--ease-expo);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+  }
+}
+
+@for $i from 1 through 6 {
+  .overlay[data-open] .item:nth-child(#{$i}) .linkInner {
+    transition-delay: #{250 + ($i - 1) * 60}ms;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .links:hover .link:not(:hover) {
+    color: var(--text-subtle);
+  }
+}
+
+.aside {
+  display: grid;
+  justify-items: start;
+  gap: map.get(vars.$size, lg);
+  padding-bottom: map.get(vars.$size, sm);
+  opacity: 0;
+  transform: translate3d(0, map.get(vars.$size, md), 0);
+  transition:
+    opacity 400ms var(--ease-out),
+    transform 400ms var(--ease-out);
+
+  .overlay[data-open] & {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 800ms var(--ease-out) 600ms,
+      transform 800ms var(--ease-expo) 600ms;
+  }
+}
+
+.asideLink {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$font-sizes, lg);
+  font-weight: 500;
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+
+.profiles {
+  display: flex;
+  gap: map.get(vars.$size, lg);
+}

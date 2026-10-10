@@ -10,20 +10,62 @@ $size: (
 );
 
 $font-sizes: (
-  xs:   11px,
+  xs:   12px,
   sm:   14px,
   base: 16px,
-  lg:   18px,
+  lg:   20px,
   xl:   40px,
 );
 
-$colors: (
-  text-primary: #ffffff,
-  primary: #0b8a96,
-  primary-hover: #1fb6c7,
+// Fluid display sizes. The name and the contact line are the world's
+// signature and may exceed 6rem; section-level headings stay under it
+$display: (
+  name:      clamp(64px, 12vw, 232px),
+  contact:   clamp(48px, 8.2vw, 156px),
+  statement: clamp(28px, 3.5vw, 58px),
+  section:   clamp(44px, 6.4vw, 96px),
+  chapter:   clamp(36px, 4.6vw, 76px),
+  project:   clamp(30px, 4.4vw, 72px),
+  marquee:   clamp(44px, 8vw, 136px),
+  entry:     clamp(22px, 2.2vw, 32px),
+  email:     clamp(26px, 3.4vw, 54px),
 );
 
-// z-index scale — above the hero's 3D perspective stacking context
+$colors: (
+  // Warm monochrome: the portrait carries the only real colour on the page
+  ink: #0b0a09,
+  ink-raised: #141311,
+  bone: #efebe4,
+  // Text ramp; text-subtle is the darkest that still clears 4.5:1 on ink and ink-raised
+  text-body: #c8c3ba,
+  text-muted: #a6a197,
+  text-subtle: #8a857c,
+  // Availability only: the "clocked in" light
+  signal: #5fe08f,
+  line-soft: rgba(239, 235, 228, 0.07),
+  line: rgba(239, 235, 228, 0.13),
+  line-strong: rgba(239, 235, 228, 0.26),
+);
+
+// Strong ease-out for UI and presses, a longer exponential tail for authored
+// entrances, and a symmetric curve for masks and things that travel on screen
+$easings: (
+  out: cubic-bezier(0.23, 1, 0.32, 1),
+  expo: cubic-bezier(0.16, 1, 0.3, 1),
+  in-out: cubic-bezier(0.77, 0, 0.175, 1),
+);
+
+// The bar sits above the open index so its menu button can close it
 $z-indexes: (
-  navbar: 120
+  canvas: 0,
+  content: 1,
+  panel: 2,
+  menu: 50,
+  header: 60,
+  cursor: 100,
+);
+
+$breakpoints: (
+  phone: 600px,
+  tablet: 900px,
 );

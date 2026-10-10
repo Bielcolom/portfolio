@@ -1,23 +1,42 @@
 @use "sass:map";
 @use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
 
 .btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border-radius: 6px;
-  padding: 3px 10px;
-  font-size: map.get(vars.$font-sizes, xs);
-  font-family: var(--font-geist-mono);
-  cursor: pointer;
-  letter-spacing: 0.08em;
-  opacity: 0.55;
-  transition: opacity 0.15s;
-  flex-shrink: 0;
+  @include mx.label;
+  display: inline-flex;
+  align-items: center;
+  gap: map.get(vars.$size, xs);
+  min-height: 44px;
+  padding: 0 map.get(vars.$size, xs);
+  transition: transform 160ms var(--ease-out);
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.code {
+  color: var(--text-subtle);
+  transition: color 200ms ease;
+
+  &[data-active] {
+    color: var(--bone);
+  }
+
+  & + &::before {
+    content: "/";
+    margin-right: map.get(vars.$size, xs);
+    color: var(--text-subtle);
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .btn:hover {
-    opacity: 0.9;
+  .btn:hover .code:not([data-active]) {
+    color: var(--text-body);
   }
+}
+
+.srOnly {
+  @include mx.visually-hidden;
 }

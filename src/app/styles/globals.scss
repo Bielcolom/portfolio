@@ -1,54 +1,100 @@
+@use "sass:map";
+@use "./abstracts/variables" as vars;
 @use "./abstracts/themes";
 @use "./base/reset";
 
 html {
-  background-color: #0d0d0f;
+  /* framer-motion measures scroll targets against a positioned root */
+  position: relative;
+  background-color: map.get(vars.$colors, ink);
   color-scheme: dark;
+  /* The browser's own tap flash fights the press states each control draws */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
 }
 
 body {
-  color: var(--text-primary);
-  /* Viewport-fixed gradients so the glow doesn't stretch as the page grows */
-  background:
-    radial-gradient(120% 90% at 50% 12%, rgba(61, 220, 255, 0.045), transparent 55%),
-    radial-gradient(140% 100% at 50% 110%, #12131a, transparent 65%),
-    #0d0d0f;
-  background-attachment: fixed;
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  color: var(--bone);
+  background: var(--ink);
+  font-family: var(--font-text), Arial, Helvetica, sans-serif;
+  font-size: map.get(vars.$font-sizes, base);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-a {
-  font-weight: 500;
-  color: var(--primary);
-  position: relative;
-  transition: color .25s;
+::selection {
+  background: var(--bone);
+  color: var(--ink);
 }
 
-a:hover {
-  color: var(--primary-hover);
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-a:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 3px solid var(--ink);
+  border-radius: 999px;
 }
 
-a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  height: 2px;
-  width: 100%;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
+/* No double-tap zoom wait on controls; long-press doesn't select a button's label */
+a,
+button {
+  touch-action: manipulation;
 }
 
-a:hover::after,
-a:focus-visible::after {
-  transform: scaleX(1);
+button {
+  user-select: none;
+  -webkit-user-select: none;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--bone);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* The custom cursor draws its own pointer; set only once it has mounted and
+   seen the mouse, so a failed script never leaves the page without one */
+html[data-cursor="custom"],
+html[data-cursor="custom"] a,
+html[data-cursor="custom"] button {
+  cursor: none;
+}
+
+/* Lenis owns the scroll; these are its required rules */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* The language switch draws its own circular reveal over the whole root */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }

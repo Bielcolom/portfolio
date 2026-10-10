@@ -1,0 +1,54 @@
+.root {
+  --reveal-delay: 0s;
+
+  &[data-delay="short"] {
+    --reveal-delay: 0.15s;
+  }
+
+  &[data-delay="long"] {
+    --reveal-delay: 0.35s;
+  }
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Room for descenders inside the mask */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.inner {
+  display: inline-block;
+}
+
+/* Hidden only once the client has flagged itself; see the layout's inline script */
+:global(.js) .root:not([data-visible]) .inner {
+  transform: translate3d(0, 110%, 0);
+}
+
+:global(.js) .inner {
+  transition: transform 1s var(--ease-expo);
+}
+
+@for $i from 1 through 24 {
+  .word:nth-of-type(#{$i}) .inner {
+    transition-delay: calc(var(--reveal-delay) + #{($i - 1) * 40}ms);
+  }
+}
+
+.word:nth-of-type(n + 25) .inner {
+  transition-delay: calc(var(--reveal-delay) + 960ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(.js) .root:not([data-visible]) .inner {
+    transform: none;
+    opacity: 0;
+  }
+
+  :global(.js) .inner {
+    transition: opacity 0.6s ease;
+  }
+}

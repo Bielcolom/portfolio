@@ -1,0 +1,336 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+/* Four chapters, each held for 80svh of scroll while the view stays pinned */
+.story {
+  position: relative;
+  height: calc(100svh + 4 * 80svh);
+}
+
+.srOnly {
+  @include mx.visually-hidden;
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: map.get(vars.$size, xxl);
+  height: 100svh;
+  padding: 104px map.get(vars.$size, xl) map.get(vars.$size, xl);
+
+  /* The stage takes whatever height the text leaves; the particles measure it */
+  @include mx.tablet-down {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(140px, 1fr) auto auto;
+    padding: 68px map.get(vars.$size, md) map.get(vars.$size, sm);
+  }
+}
+
+/* ---- Heading ---- */
+
+.head {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  gap: map.get(vars.$size, md);
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, xs);
+  }
+}
+
+.title {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, section);
+
+  @include mx.tablet-down {
+    font-size: map.get(vars.$font-sizes, xl);
+  }
+}
+
+.lede {
+  max-width: 40ch;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.4;
+  color: var(--text-muted);
+
+  @include mx.tablet-down {
+    font-size: map.get(vars.$font-sizes, base);
+  }
+}
+
+/* ---- Chapters: stacked in one cell, one visible at a time ---- */
+
+.chapters {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  display: grid;
+
+  @include mx.tablet-down {
+    grid-row: 3;
+    align-self: start;
+    padding-top: map.get(vars.$size, md);
+  }
+}
+
+.chapter {
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: start;
+  gap: map.get(vars.$size, lg);
+  max-width: 560px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, -12px, 0);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out),
+    visibility 0s linear 300ms;
+
+  &[data-active] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 500ms var(--ease-out) 150ms,
+      transform 700ms var(--ease-expo) 150ms,
+      visibility 0s;
+  }
+
+  @include mx.tablet-down {
+    gap: map.get(vars.$size, md);
+  }
+}
+
+.chapterTitle {
+  @include mx.display(700, 105%);
+  font-size: map.get(vars.$display, chapter);
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.wordInner {
+  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  transition: transform 300ms var(--ease-out);
+
+  .chapter[data-active] & {
+    transform: none;
+    transition: transform 1000ms var(--ease-expo) 150ms;
+  }
+
+  .chapter[data-active] .word:nth-child(2) & {
+    transition-delay: 210ms;
+  }
+
+  .chapter[data-active] .word:nth-child(3) & {
+    transition-delay: 270ms;
+  }
+}
+
+.body {
+  max-width: 46ch;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.5;
+  color: var(--text-body);
+  text-wrap: pretty;
+
+  @include mx.tablet-down {
+    font-size: map.get(vars.$font-sizes, base);
+  }
+}
+
+.also {
+  max-width: 46ch;
+  font-size: map.get(vars.$font-sizes, base);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(vars.$size, xs) map.get(vars.$size, md);
+
+  li {
+    @include mx.meta;
+    color: var(--text-muted);
+  }
+
+  li + li::before {
+    content: "/";
+    margin-right: map.get(vars.$size, md);
+    color: var(--text-subtle);
+  }
+
+  /* The stack section lists the same names; a phone needs the room */
+  @include mx.phone {
+    display: none;
+  }
+}
+
+/* ---- Rail ---- */
+
+.rail {
+  grid-column: 1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: map.get(vars.$size, md);
+  max-width: 720px;
+
+  @include mx.tablet-down {
+    grid-row: 4;
+    gap: map.get(vars.$size, sm);
+  }
+}
+
+.railItem {
+  display: grid;
+  gap: map.get(vars.$size, sm);
+  min-height: 44px;
+  align-content: center;
+  text-align: left;
+  color: var(--text-subtle);
+  transition: color 300ms var(--ease-out);
+
+  &[data-active] {
+    color: var(--bone);
+  }
+
+  @include mx.hover {
+    color: var(--text-body);
+  }
+}
+
+.railTrack {
+  position: relative;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.railFill {
+  position: absolute;
+  inset: 0;
+  background: var(--bone);
+  transform-origin: 0 50%;
+}
+
+.railLabel {
+  @include mx.meta;
+
+  /* Four labels do not fit a phone: only the current one shows, free to run long */
+  @include mx.phone {
+    white-space: nowrap;
+    visibility: hidden;
+
+    .railItem[data-active] & {
+      visibility: visible;
+    }
+  }
+}
+
+/* ---- Stage: where the particles form; also the drag surface ---- */
+
+.stage {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1 / -1;
+  margin: -104px (-(map.get(vars.$size, xl))) (-(map.get(vars.$size, xl))) 0;
+  /* Vertical swipes still scroll the page on touch; horizontal ones turn the shape */
+  touch-action: pan-y;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  @include mx.tablet-down {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0 (-(map.get(vars.$size, md)));
+  }
+}
+
+.hint {
+  @include mx.label;
+  position: absolute;
+  right: map.get(vars.$size, xl);
+  bottom: map.get(vars.$size, xl);
+  color: var(--text-subtle);
+
+  :global(html:not([data-particles="on"])) & {
+    display: none;
+  }
+
+  @include mx.tablet-down {
+    right: map.get(vars.$size, md);
+    bottom: 0;
+  }
+}
+
+/* ---- Line drawings when WebGL is unavailable ---- */
+
+.art {
+  display: none;
+  position: absolute;
+  inset: 12%;
+
+  :global(html[data-particles="off"]) & {
+    display: grid;
+  }
+}
+
+.artItem {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--bone);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out);
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.artFaint {
+  stroke: var(--line-strong);
+}
+
+.artBold {
+  stroke-width: 4;
+}
+
+.artFill {
+  fill: var(--bone);
+  stroke: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter,
+  .chapter[data-active] {
+    transform: none;
+  }
+
+  .wordInner {
+    transform: none;
+    transition: none;
+  }
+}

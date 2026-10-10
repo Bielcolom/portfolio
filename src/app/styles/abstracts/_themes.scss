@@ -1,12 +1,14 @@
 @use "sass:map";
 @use "./variables" as vars;
 
-/* The site is dark-only by design — every surface is a hardcoded dark tone,
-   so there is a single palette rather than a light/dark pair. */
+/* Dark-only by design: one palette, no light/dark pair.
+   Each $colors entry becomes --<name>, each easing --ease-<name>. */
 :root {
-    --text-primary: #{map.get(vars.$colors, text-primary)};
-    --primary: #{map.get(vars.$colors, primary)};
-    --primary-hover: #{map.get(vars.$colors, primary-hover)};
-    /* Site accent — the hero overrides it locally via its `accent` prop */
-    --accent: #3ddcff;
+  @each $name, $value in vars.$colors {
+    --#{$name}: #{$value};
+  }
+
+  @each $name, $value in vars.$easings {
+    --ease-#{$name}: #{$value};
+  }
 }

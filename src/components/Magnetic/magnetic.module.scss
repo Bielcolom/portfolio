@@ -1,0 +1,9 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+
+.magnetic {
+  display: inline-flex;
+  /* The pull reaches a little past the control's own edge */
+  padding: map.get(vars.$size, sm);
+  margin: -(map.get(vars.$size, sm));
+}

@@ -1,0 +1,129 @@
+@use "sass:map";
+@use "./variables" as vars;
+
+/* Text for assistive tech only — the visible version is decorative or split into spans */
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+@mixin phone {
+  @media (max-width: map.get(vars.$breakpoints, phone)) {
+    @content;
+  }
+}
+
+@mixin tablet-down {
+  @media (max-width: map.get(vars.$breakpoints, tablet)) {
+    @content;
+  }
+}
+
+/* Small uppercase chrome: meta lines, status, footer rows */
+@mixin label {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$font-sizes, xs);
+  font-weight: 500;
+  font-stretch: 105%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* Small, case-preserving: tags and tech lists, where JornAda, FacturAda and
+   i18n must keep their spelling */
+@mixin meta {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$font-sizes, sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* Every heading on the page shares the display face; size comes from the caller */
+@mixin display($weight: 700, $stretch: 100%) {
+  font-family: var(--font-display);
+  font-weight: $weight;
+  font-stretch: $stretch;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+@mixin button($height) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: map.get(vars.$size, sm);
+  height: $height;
+  padding: 0 map.get(vars.$size, lg);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: map.get(vars.$font-sizes, sm);
+  font-weight: 600;
+  font-stretch: 105%;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  isolation: isolate;
+  transition:
+    transform 160ms var(--ease-out),
+    color 300ms var(--ease-out),
+    border-color 300ms var(--ease-out);
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* The one filled control in its context — the action that matters most */
+@mixin button-primary($height: 52px) {
+  @include button($height);
+  border: 1px solid var(--bone);
+  color: var(--ink);
+  background: var(--bone);
+}
+
+/* Outlined; on hover a bone fill rises from the bottom edge and the label inverts */
+@mixin button-secondary($height: 52px) {
+  @include button($height);
+  border: 1px solid var(--line-strong);
+  color: var(--bone);
+  background: transparent;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--bone);
+    border-radius: inherit;
+    transform: translate3d(0, 101%, 0);
+    transition: transform 450ms var(--ease-expo);
+  }
+
+  @include hover {
+    color: var(--ink);
+    border-color: var(--bone);
+
+    &::before {
+      transform: none;
+    }
+  }
+}

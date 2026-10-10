@@ -1,0 +1,356 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+@use "../../app/styles/abstracts/mixins" as mx;
+
+$z-content: map.get(vars.$z-indexes, content);
+
+.hero {
+  /* The portrait sets the vertical rhythm: the name's lines are placed against it */
+  --top: max(88px, 12svh);
+  --portrait-h: min(64svh, 38vw);
+  position: relative;
+  z-index: $z-content;
+  height: 100svh;
+  min-height: 600px;
+
+  @include mx.tablet-down {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100svh;
+    padding: 76px map.get(vars.$size, md) map.get(vars.$size, lg);
+  }
+}
+
+.srOnly {
+  @include mx.visually-hidden;
+}
+
+/* ---- The name ---- */
+
+.name {
+  font-family: var(--font-display);
+  font-size: map.get(vars.$display, name);
+  font-weight: 700;
+  font-stretch: 100%;
+  line-height: 0.8;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--bone);
+
+  @include mx.tablet-down {
+    display: contents;
+  }
+}
+
+.lineA,
+.lineB {
+  position: absolute;
+  left: map.get(vars.$size, xl);
+
+  @include mx.tablet-down {
+    position: relative;
+    left: auto;
+  }
+}
+
+.lineA {
+  top: var(--top);
+  z-index: 1;
+
+  @include mx.tablet-down {
+    order: 1;
+    top: auto;
+    font-size: 19vw;
+  }
+}
+
+/* Crosses in front of the portrait: over the light wall the letters invert */
+.lineB {
+  top: calc(var(--top) + var(--portrait-h) * 0.5);
+  z-index: 3;
+  mix-blend-mode: difference;
+
+  @include mx.tablet-down {
+    order: 3;
+    top: auto;
+    margin-top: -11vw;
+    font-size: 13vw;
+  }
+}
+
+.line {
+  display: block;
+}
+
+.mask {
+  display: inline-flex;
+  overflow: hidden;
+  /* A little air so the swelling letters never touch the mask */
+  padding: 0.06em 0.04em;
+  margin: -0.06em -0.04em;
+}
+
+.char {
+  display: inline-block;
+  animation: char-rise 1.2s var(--ease-expo) both;
+}
+
+.space {
+  display: inline-block;
+  width: 0.28em;
+}
+
+@for $i from 1 through 12 {
+  .lineA .char:nth-child(#{$i}) {
+    animation-delay: #{0.15 + ($i - 1) * 0.045}s;
+  }
+
+  .lineB .char:nth-child(#{$i}) {
+    animation-delay: #{0.32 + ($i - 1) * 0.045}s;
+  }
+}
+
+@keyframes char-rise {
+  from {
+    transform: translate3d(0, 108%, 0);
+  }
+}
+
+/* ---- Portrait ---- */
+
+.portrait {
+  position: absolute;
+  top: calc(var(--top) - 1svh);
+  /* Clear of the first line, so the whole name reads; only the second crosses it */
+  right: 5vw;
+  z-index: 2;
+  height: var(--portrait-h);
+  aspect-ratio: 3 / 4;
+
+  @include mx.tablet-down {
+    order: 2;
+    position: relative;
+    top: auto;
+    right: auto;
+    align-self: flex-end;
+    height: min(85vw, 46svh);
+    margin-top: map.get(vars.$size, sm);
+  }
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink-raised);
+  animation: portrait-reveal 1.5s var(--ease-in-out) 0.35s both;
+}
+
+@keyframes portrait-reveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: portrait-settle 2s var(--ease-expo) 0.35s both;
+}
+
+@keyframes portrait-settle {
+  from {
+    transform: scale(1.25);
+  }
+}
+
+/* ---- Pitch, actions, availability ---- */
+
+.foot {
+  position: absolute;
+  left: map.get(vars.$size, xl);
+  right: map.get(vars.$size, xl);
+  bottom: map.get(vars.$size, lg);
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: map.get(vars.$size, xxl);
+
+  @include mx.tablet-down {
+    order: 4;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: map.get(vars.$size, xl);
+    margin-top: map.get(vars.$size, lg);
+  }
+}
+
+.intro {
+  display: grid;
+  justify-items: start;
+  gap: map.get(vars.$size, md);
+  max-width: 560px;
+
+  > * {
+    animation: rise-in 1s var(--ease-expo) both;
+  }
+
+  > :nth-child(1) {
+    animation-delay: 0.8s;
+  }
+
+  > :nth-child(2) {
+    animation-delay: 0.9s;
+  }
+
+  > :nth-child(3) {
+    animation-delay: 1s;
+  }
+}
+
+.role {
+  @include mx.label;
+  color: var(--text-muted);
+}
+
+.dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin: 0 map.get(vars.$size, sm);
+  border-radius: 50%;
+  vertical-align: middle;
+  background: var(--text-subtle);
+}
+
+.pitch {
+  max-width: 42ch;
+  font-size: map.get(vars.$font-sizes, lg);
+  line-height: 1.45;
+  color: var(--text-body);
+  text-wrap: pretty;
+
+  @include mx.phone {
+    font-size: map.get(vars.$font-sizes, base);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(vars.$size, sm);
+  margin-top: map.get(vars.$size, xs);
+}
+
+.primary {
+  @include mx.button-primary;
+}
+
+.secondary {
+  @include mx.button-secondary;
+}
+
+.side {
+  display: grid;
+  justify-items: end;
+  gap: map.get(vars.$size, xl);
+  animation: rise-in 1s var(--ease-expo) 1.1s both;
+
+  @include mx.tablet-down {
+    justify-items: start;
+  }
+}
+
+.cue {
+  @include mx.label;
+  display: inline-flex;
+  align-items: center;
+  gap: map.get(vars.$size, sm);
+  color: var(--text-muted);
+
+  @include mx.tablet-down {
+    display: none;
+  }
+}
+
+.cueLine {
+  position: relative;
+  width: 40px;
+  height: 1px;
+  overflow: hidden;
+  background: var(--line);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bone);
+    transform-origin: left;
+    /* Three sweeps, then still */
+    animation: cue 1.6s var(--ease-in-out) 2s 3 both;
+  }
+}
+
+@keyframes cue {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  50% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  50.1% {
+    transform-origin: right;
+  }
+
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, map.get(vars.$size, lg), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .char,
+  .intro > *,
+  .side {
+    animation-name: fade-in;
+  }
+
+  .frame {
+    animation: fade-in 1s ease both;
+  }
+
+  .video,
+  .cueLine::after {
+    animation: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}

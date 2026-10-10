@@ -1,0 +1,8 @@
+@use "sass:map";
+@use "../../app/styles/abstracts/variables" as vars;
+
+.panel {
+  position: relative;
+  z-index: map.get(vars.$z-indexes, panel);
+  background: var(--ink-raised);
+}
