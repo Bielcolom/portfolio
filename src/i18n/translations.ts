@@ -36,6 +36,16 @@ export interface StackGroup {
   items: string[];
 }
 
+/** A ready-written email: the visitor only fills the bracketed gaps */
+export interface MailDraft {
+  subject: string;
+  body: string;
+}
+
+export interface MailIntent extends MailDraft {
+  label: string;
+}
+
 export interface EducationEntry {
   period: string;
   title: string;
@@ -61,6 +71,8 @@ export interface Translations {
     email: string;
     scroll: string;
   };
+  /** The generic email behind "Email me" in the hero and the menu */
+  mail: MailDraft;
   availability: {
     /** The bar's version, next to the light: one word */
     short: string;
@@ -116,6 +128,11 @@ export interface Translations {
   };
   contact: {
     titleLines: string[];
+    /** The two answers to the title's question: a role, then a project */
+    intents: [MailIntent, MailIntent];
+    intentsNote: string;
+    /** Shown once a draft has been opened, for browsers with no mail app */
+    fallback: string;
     body: string;
     copy: string;
     copied: string;
@@ -140,6 +157,10 @@ export const en: Translations = {
     cv: "View CV",
     email: "Email me",
     scroll: "Scroll",
+  },
+  mail: {
+    subject: "Hello from your portfolio",
+    body: "Hi Gabriel,\n\n",
   },
   availability: {
     short: "Available",
@@ -279,6 +300,20 @@ export const en: Translations = {
   },
   contact: {
     titleLines: ["New role", "or new project?"],
+    intents: [
+      {
+        label: "A new role",
+        subject: "Full-stack role: [position] at [company]",
+        body: "Hi Gabriel,\n\nI'm [your name], [your role] at [company]. We're hiring for [position], [on-site in … / remote].\n\nJob description: [link]\n\nWould you be open to a call?\n\n[your name]",
+      },
+      {
+        label: "A new project",
+        subject: "Project: [website / web app / mobile app]",
+        body: "Hi Gabriel,\n\nI'm [your name] from [company]. I need [a website / a web app / a mobile app] to [what it should do].\n\nWhen I need it: [date]\nRough budget: [range]\n\n[your name]",
+      },
+    ],
+    intentsNote: "Each one opens an email that's already written: you only fill in the gaps.",
+    fallback: "Nothing opened? Copy the address and write from your usual inbox.",
     body: "I'm open to full-stack roles in Ireland, Spain or remote, and to freelance projects: websites, web apps and mobile apps. Tell me what you need.",
     copy: "Copy email",
     copied: "Copied",
@@ -303,6 +338,10 @@ export const es: Translations = {
     cv: "Ver CV",
     email: "Escríbeme",
     scroll: "Desplázate",
+  },
+  mail: {
+    subject: "Hola desde tu portfolio",
+    body: "Hola Gabriel:\n\n",
   },
   availability: {
     short: "Disponible",
@@ -441,6 +480,20 @@ export const es: Translations = {
   },
   contact: {
     titleLines: ["¿Nuevo puesto", "o nuevo proyecto?"],
+    intents: [
+      {
+        label: "Un puesto",
+        subject: "Puesto full stack: [puesto] en [empresa]",
+        body: "Hola Gabriel:\n\nSoy [tu nombre], [tu cargo] en [empresa]. Buscamos [puesto], [presencial en … / en remoto].\n\nDescripción de la oferta: [enlace]\n\n¿Te encaja que hablemos?\n\n[tu nombre]",
+      },
+      {
+        label: "Un proyecto",
+        subject: "Proyecto: [web / aplicación web / app móvil]",
+        body: "Hola Gabriel:\n\nSoy [tu nombre], de [empresa]. Necesito [una web / una aplicación web / una app móvil] para [qué debe hacer].\n\nPara cuándo: [fecha]\nPresupuesto aproximado: [rango]\n\n[tu nombre]",
+      },
+    ],
+    intentsNote: "Cada uno abre un email ya redactado: solo tienes que completar los huecos.",
+    fallback: "¿No se ha abierto nada? Copia la dirección y escríbeme desde tu correo de siempre.",
     body: "Estoy abierto a puestos full stack en Irlanda, España o remoto, y a proyectos freelance: webs, aplicaciones web y apps móviles. Cuéntame qué necesitas.",
     copy: "Copiar email",
     copied: "Copiado",

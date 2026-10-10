@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Availability from "@/components/Availability";
 import Magnetic from "@/components/Magnetic";
 import TextRoll from "@/components/TextRoll";
-import { EMAIL } from "@/content/links";
+import { mailto } from "@/content/links";
 import { useLanguage } from "@/i18n/context";
 import styles from "./hero.module.scss";
 import { useTextPressure } from "./useTextPressure";
@@ -126,7 +126,7 @@ const Hero = () => {
               </a>
             </Magnetic>
             <Magnetic>
-              <a href={`mailto:${EMAIL}`} className={styles.secondary}>
+              <a href={mailto(t.mail)} className={styles.secondary}>
                 <TextRoll text={t.hero.email} />
               </a>
             </Magnetic>

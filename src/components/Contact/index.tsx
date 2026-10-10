@@ -7,20 +7,24 @@ import Magnetic from "@/components/Magnetic";
 import Reveal from "@/components/Reveal";
 import { scrollToTarget } from "@/components/SmoothScroll";
 import TextRoll from "@/components/TextRoll";
-import { EMAIL, PROFILE_LINKS } from "@/content/links";
+import { EMAIL, PROFILE_LINKS, mailto } from "@/content/links";
 import { useLanguage } from "@/i18n/context";
 import styles from "./contact.module.scss";
 
 /**
- * The close. It rises out from under the record above it, restates the
- * availability at display size and puts the email first: copy works where
- * mailto does not (LinkedIn's in-app browser, most work laptops).
+ * The close. It rises out from under the record above it and asks the two
+ * questions the site answers. Each answer opens an email already written for
+ * that visitor, so writing takes a click and a few blanks. Copy stays beside
+ * it: mailto does nothing where there is no mail app (LinkedIn's in-app
+ * browser, many work laptops), and once a draft has been opened the page
+ * says so.
  */
 const Contact = () => {
   const { locale, t } = useLanguage();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const [copied, setCopied] = useState(false);
+  const [opened, setOpened] = useState(false);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
   const rise = useTransform(scrollYProgress, (p) => `translate3d(0, ${(1 - p) * -28}%, 0)`);
 
@@ -46,11 +50,25 @@ const Contact = () => {
             ))}
           </h2>
 
+          <div className={styles.intents}>
+            <div className={styles.intentButtons}>
+              {t.contact.intents.map((intent) => (
+                <Magnetic key={intent.label}>
+                  <a href={mailto(intent)} className={styles.intent} onClick={() => setOpened(true)}>
+                    <TextRoll text={intent.label} />
+                    <ArrowIcon className={styles.intentArrow} />
+                  </a>
+                </Magnetic>
+              ))}
+            </div>
+            <p className={styles.intentsNote}>{t.contact.intentsNote}</p>
+          </div>
+
           <div className={styles.grid}>
             <div className={styles.reach}>
               <p className={styles.body}>{t.contact.body}</p>
               <div className={styles.emailRow}>
-                <a href={`mailto:${EMAIL}`} className={styles.email}>
+                <a href={mailto(t.mail)} className={styles.email} onClick={() => setOpened(true)}>
                   <TextRoll text={EMAIL} />
                 </a>
                 <Magnetic>
@@ -61,6 +79,9 @@ const Contact = () => {
                 </Magnetic>
                 <span className={styles.srOnly} role="status">{copied ? t.contact.copied : ""}</span>
               </div>
+              <p className={styles.fallback} aria-live="polite">
+                {opened && <span className={styles.fallbackText}>{t.contact.fallback}</span>}
+              </p>
             </div>
 
             <div className={styles.aside}>

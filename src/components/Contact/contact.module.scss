@@ -45,6 +45,88 @@
   display: block;
 }
 
+/* ---- The two answers: each opens a ready-written email ---- */
+
+.intents {
+  display: grid;
+  justify-items: start;
+  gap: map.get(vars.$size, md);
+}
+
+.intentButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(vars.$size, md);
+
+  @include mx.phone {
+    display: grid;
+    justify-self: stretch;
+
+    > * {
+      display: flex;
+    }
+  }
+}
+
+.intent {
+  @include mx.button-secondary(64px);
+  gap: map.get(vars.$size, md);
+  padding: 0 map.get(vars.$size, xl);
+  font-size: map.get(vars.$font-sizes, lg);
+
+  @include mx.phone {
+    flex: 1;
+    justify-content: space-between;
+  }
+}
+
+.intentArrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 300ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .intent:hover .intentArrow {
+    transform: translate3d(3px, -3px, 0);
+  }
+}
+
+.intentsNote {
+  font-size: map.get(vars.$font-sizes, sm);
+  color: var(--text-muted);
+}
+
+.fallback {
+  min-height: 1.5em;
+  font-size: map.get(vars.$font-sizes, sm);
+  color: var(--text-muted);
+}
+
+.fallbackText {
+  display: inline-block;
+  animation: fallback-in 500ms var(--ease-out) both;
+}
+
+@keyframes fallback-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, map.get(vars.$size, xs), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fallbackText {
+    animation-name: fallback-fade;
+  }
+}
+
+@keyframes fallback-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);

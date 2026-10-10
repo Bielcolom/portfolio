@@ -152,6 +152,7 @@ Content after the story lives on one raised sheet; the close is full-height on i
 - **Availability:** the green light (two rings on load, then still) with status, places and eligibility; a compact status-only form sits in the bar on wide screens.
 - **Bar:** monogram, Palma's live clock, availability, CV, EN/ES, Menu. Blends with `difference`; hides on scroll down, returns on scroll up; a 2px progress line runs along the top.
 - **Menu:** full-screen on Ink Raised; huge links with rolling labels; email, profiles and availability beside them.
+- **Contact answers:** two large outlined pills under the contact question ("A new role", "A new project"), 64px, magnetic, arrow nudging on hover. Each opens a pre-written email; a quiet line beneath says so, and another appears after a click pointing to Copy email.
 
 ## Do's and Don'ts
 

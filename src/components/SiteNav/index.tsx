@@ -8,7 +8,7 @@ import LangToggle from "@/components/LangToggle";
 import LocalTime from "@/components/LocalTime";
 import { lockScroll, scrollToTarget } from "@/components/SmoothScroll";
 import TextRoll from "@/components/TextRoll";
-import { EMAIL, PROFILE_LINKS } from "@/content/links";
+import { EMAIL, PROFILE_LINKS, mailto } from "@/content/links";
 import { SECTIONS } from "@/content/sections";
 import { useLanguage } from "@/i18n/context";
 import { SectionId } from "@/i18n/translations";
@@ -174,7 +174,7 @@ const SiteNav = () => {
 
         <div className={styles.aside}>
           <Availability />
-          <a href={`mailto:${EMAIL}`} className={styles.asideLink}>{EMAIL}</a>
+          <a href={mailto(t.mail)} className={styles.asideLink}>{EMAIL}</a>
           <ul className={styles.profiles}>
             {PROFILE_LINKS.map((link) => (
               <li key={link.name}>
