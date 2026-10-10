@@ -6,17 +6,13 @@ import Availability from "@/components/Availability";
 import CvLink from "@/components/CvLink";
 import LangToggle from "@/components/LangToggle";
 import LocalTime from "@/components/LocalTime";
-import { lockScroll, scrollToTarget } from "@/components/SmoothScroll";
+import { jumpTo, lockScroll, scrollToTarget } from "@/components/SmoothScroll";
 import TextRoll from "@/components/TextRoll";
-import { EMAIL, PROFILE_LINKS, mailto } from "@/content/links";
+import { EMAIL, FINE_POINTER, PROFILE_LINKS, mailto } from "@/content/links";
 import { SECTIONS } from "@/content/sections";
 import { useLanguage } from "@/i18n/context";
 import { SectionId } from "@/i18n/translations";
 import styles from "./siteNav.module.scss";
-
-const EASE = "cubic-bezier(0.77, 0, 0.175, 1)";
-
-const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
  * The fixed bar and the full-screen index it opens. The index grows out of
@@ -76,32 +72,18 @@ const SiteNav = () => {
     e.preventDefault();
     const target = document.getElementById(id);
     if (!target) return;
-
-    const swap = () => {
+    jumpTo(target, () =>
       flushSync(() => {
         setInstant(true);
         setOpen(false);
-      });
-      scrollToTarget(target, true);
-    };
+      }),
+    );
+  };
 
-    if (reducedMotion() || typeof document.startViewTransition !== "function") {
-      swap();
-      return;
-    }
-
-    const transition = document.startViewTransition(swap);
-    transition.ready.then(() => {
-      const root = document.documentElement;
-      root.animate(
-        { clipPath: ["inset(100% 0 0 0)", "inset(0 0 0 0)"] },
-        { duration: 900, easing: EASE, pseudoElement: "::view-transition-new(root)" },
-      );
-      root.animate(
-        { transform: ["none", "translate3d(0, -8%, 0)"], opacity: [1, 0.3] },
-        { duration: 900, easing: EASE, pseudoElement: "::view-transition-old(root)" },
-      );
-    }, () => {});
+  /* On a computer the email leads to the contact block, where the visitor
+     picks Gmail, Outlook or a mail app; on a phone mailto just works */
+  const writeTo = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.matchMedia(FINE_POINTER).matches) go("contact")(e);
   };
 
   const toTop = (e: React.MouseEvent) => {
@@ -174,7 +156,7 @@ const SiteNav = () => {
 
         <div className={styles.aside}>
           <Availability />
-          <a href={mailto(t.mail)} className={styles.asideLink}>{EMAIL}</a>
+          <a href={mailto(t.mail)} className={styles.asideLink} onClick={writeTo}>{EMAIL}</a>
           <ul className={styles.profiles}>
             {PROFILE_LINKS.map((link) => (
               <li key={link.name}>

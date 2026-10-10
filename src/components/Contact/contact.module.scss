@@ -97,6 +97,61 @@
   color: var(--text-muted);
 }
 
+/* The chosen answer stays filled while its options are open */
+.intent[data-chosen] {
+  color: var(--ink);
+  border-color: var(--bone);
+
+  &::before {
+    transform: none;
+  }
+}
+
+/* ---- Where to write it (computers) ---- */
+
+.compose {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: map.get(vars.$size, sm) map.get(vars.$size, md);
+  animation: compose-in 450ms var(--ease-expo) both;
+}
+
+@keyframes compose-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, map.get(vars.$size, sm), 0);
+  }
+}
+
+.composeLabel {
+  @include mx.label;
+  color: var(--text-subtle);
+}
+
+.composeOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: map.get(vars.$size, sm);
+}
+
+.composeOption {
+  @include mx.button-secondary(40px);
+  gap: map.get(vars.$size, xs);
+  padding: 0 map.get(vars.$size, md);
+}
+
+.composeArrow {
+  width: 14px;
+  height: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compose {
+    animation-name: fallback-fade;
+  }
+}
+
 .fallback {
   min-height: 1.5em;
   font-size: map.get(vars.$font-sizes, sm);
@@ -158,6 +213,7 @@
   gap: map.get(vars.$size, md) map.get(vars.$size, lg);
 }
 
+/* At this size a letter-by-letter roll is a wave; a line drawn beneath it is enough */
 .email {
   font-family: var(--font-display);
   font-size: map.get(vars.$display, email);
@@ -165,6 +221,20 @@
   letter-spacing: -0.02em;
   color: var(--bone);
   overflow-wrap: anywhere;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 600ms var(--ease-expo);
+
+  &:focus-visible,
+  &[aria-expanded="true"] {
+    background-size: 100% 2px;
+  }
+
+  @include mx.hover {
+    background-size: 100% 2px;
+  }
 
   @include mx.phone {
     font-size: 6.4vw;

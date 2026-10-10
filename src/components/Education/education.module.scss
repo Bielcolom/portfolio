@@ -5,11 +5,11 @@
 .education {
   display: grid;
   gap: map.get(vars.$size, xxl);
-  padding: 14svh map.get(vars.$size, xl) 22svh;
+  padding: 14svh map.get(vars.$size, xl) 12svh;
 
   @include mx.tablet-down {
     gap: map.get(vars.$size, xl);
-    padding: 10svh map.get(vars.$size, md) 16svh;
+    padding: 10svh map.get(vars.$size, md) 10svh;
   }
 }
 

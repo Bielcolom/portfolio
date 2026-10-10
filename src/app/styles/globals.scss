@@ -13,6 +13,9 @@ html {
   -webkit-text-size-adjust: 100%;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
+  /* The scrollbar's room stays reserved while the menu locks the scroll,
+     so the page does not widen and shift under it */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -80,8 +83,9 @@ html.lenis body {
   height: auto;
 }
 
+/* hidden rather than Lenis's clip: the reserved gutter only holds for a scroll container */
 .lenis:not(.lenis-autoToggle).lenis-stopped {
-  overflow: clip;
+  overflow: hidden;
 }
 
 .lenis [data-lenis-prevent] {

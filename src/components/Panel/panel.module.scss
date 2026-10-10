@@ -1,8 +1,15 @@
 @use "sass:map";
 @use "../../app/styles/abstracts/variables" as vars;
 
+/* The sheet enters with rounded top corners (clip-path, in index.tsx) and
+   ends with rounded bottom ones, so its last edge reads as the end of a sheet */
 .panel {
   position: relative;
   z-index: map.get(vars.$z-indexes, panel);
   background: var(--ink-raised);
+  border-radius: 0 0 40px 40px;
+
+  @media (max-width: map.get(vars.$breakpoints, phone)) {
+    border-radius: 0 0 map.get(vars.$size, lg) map.get(vars.$size, lg);
+  }
 }

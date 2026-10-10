@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import Availability from "@/components/Availability";
 import Magnetic from "@/components/Magnetic";
 import TextRoll from "@/components/TextRoll";
-import { mailto } from "@/content/links";
+import { jumpTo } from "@/components/SmoothScroll";
+import { FINE_POINTER, mailto } from "@/content/links";
 import { useLanguage } from "@/i18n/context";
 import styles from "./hero.module.scss";
 import { useTextPressure } from "./useTextPressure";
@@ -51,6 +52,15 @@ const Hero = () => {
   }, [reduce]);
 
   const still = reduce === true || blocked;
+
+  /* On a computer, mailto often leads nowhere: "Email me" changes page to the
+     contact block instead, where Gmail, Outlook and the mail app are offered */
+  const writeTo = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const contact = document.getElementById("contact");
+    if (!contact || !window.matchMedia(FINE_POINTER).matches) return;
+    e.preventDefault();
+    jumpTo(contact);
+  };
 
   /* Leaving the hero, the two lines of the name part ways */
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
@@ -126,7 +136,7 @@ const Hero = () => {
               </a>
             </Magnetic>
             <Magnetic>
-              <a href={mailto(t.mail)} className={styles.secondary}>
+              <a href={mailto(t.mail)} className={styles.secondary} onClick={writeTo}>
                 <TextRoll text={t.hero.email} />
               </a>
             </Magnetic>

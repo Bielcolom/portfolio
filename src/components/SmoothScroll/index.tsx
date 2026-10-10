@@ -19,6 +19,39 @@ export function scrollToTarget(target: HTMLElement | number, immediate = false) 
   window.scrollTo({ top, behavior: immediate || reducedMotion() ? "auto" : "smooth" });
 }
 
+const EASE = "cubic-bezier(0.77, 0, 0.175, 1)";
+
+/**
+ * Jumps to an element as a page change: the destination wipes up over the
+ * current view. `before` runs inside the transition's update, for state the
+ * new snapshot must already show (a closed menu). Without view transitions,
+ * or under reduced motion, it simply jumps.
+ */
+export function jumpTo(target: HTMLElement, before?: () => void) {
+  const swap = () => {
+    before?.();
+    scrollToTarget(target, true);
+  };
+
+  if (reducedMotion() || typeof document.startViewTransition !== "function") {
+    swap();
+    return;
+  }
+
+  const transition = document.startViewTransition(swap);
+  transition.ready.then(() => {
+    const root = document.documentElement;
+    root.animate(
+      { clipPath: ["inset(100% 0 0 0)", "inset(0 0 0 0)"] },
+      { duration: 900, easing: EASE, pseudoElement: "::view-transition-new(root)" },
+    );
+    root.animate(
+      { transform: ["none", "translate3d(0, -8%, 0)"], opacity: [1, 0.3] },
+      { duration: 900, easing: EASE, pseudoElement: "::view-transition-old(root)" },
+    );
+  }, () => {});
+}
+
 /** Pauses the page scroll while an overlay owns the screen. */
 export function lockScroll(locked: boolean) {
   if (locked) lenis?.stop();

@@ -79,7 +79,7 @@ components:
 
 The first viewport is a poster: his name set across the page in two lines, the portrait standing between them. The first line sits behind the portrait, the second crosses in front and inverts over the light wall. The clip plays once: he steps forward, crosses his arms and smiles.
 
-Scroll, and the portrait comes apart into about twenty thousand particles. They drift as a cloud behind a statement that lights up word by word, then form, one chapter at a time, what he can do: a three-layer stack (interface, API, data) with traffic running between the plates, the assistant mid-reply with its sparkle, a phone and a browser with data running between them, a payment card with the padlock of a secure sign-in. A raised sheet then slides over the stage and opens to full bleed for the record: projects, stack, education. The close rises out from under it and asks the two questions the site answers: a new role, or a new project.
+Scroll, and the portrait comes apart into about twenty thousand particles. They drift as a cloud behind a statement that lights up word by word, then form, one chapter at a time, what he can do: a three-layer stack (interface, API, data) with traffic running between the plates, the assistant mid-reply with its sparkle, a phone and a browser with data running between them, a payment card with the padlock of a secure sign-in. A raised sheet then slides over the stage and opens to full bleed for the record: projects, stack, education. It ends as it began, on rounded corners, and the close follows on ink, asking the two questions the site answers: a new role, or a new project.
 
 Warm monochrome. The portrait is the only real colour on the page, and the particles carry that colour only while they are still him.
 
@@ -134,7 +134,7 @@ The visual rejections stand from the owner's history: no device mockup inside a 
 - **The story (scroll-driven):** portrait → cloud (as the hero scrolls away) → stack → assistant → devices → card (pinned, four chapters of 80svh) → scatter (as the sheet arrives). Particles leave on staggered beats with a swirl in flight. Drag the stage to turn the shape; the cursor pushes particles aside; touch pushes where the finger lands.
 - **Statement:** each word's opacity follows the scroll.
 - **Reveals:** headings rise word by word from masks; project rows draw their hairline then raise the name; education entries slide in beside a line that draws itself; the marquees drift and lean with scroll speed.
-- **Transitions:** the menu grows from its button as a circle; choosing an entry wipes the destination up over the menu (View Transitions); switching language grows the other language out of the toggle as a circle; the projects sheet opens from an inset rounded rectangle to full bleed.
+- **Transitions:** the menu grows from its button as a circle; choosing an entry wipes the destination up over the menu (View Transitions); switching language grows the other language out of the toggle as a circle; the projects sheet opens from an inset rounded rectangle to full bleed and closes on rounded bottom corners (40px, 24px on phones). Nothing slides under its edge: content that hides behind a sheet reads as a cut mid-scroll.
 - **Cursor:** a dot plus a trailing ring. The ring fills over controls, becomes a 168px inverting lens over the name, and carries a label over the stage ("Drag") and the source link ("Open"). Mouse only.
 - **Reduced motion:** no smooth scroll, no custom cursor, no cursor pressure, no letter or clip movement (opacity only); particles cross-fade between shapes without flight; marquees stand still; the hero shows the clip's last frame.
 
@@ -152,7 +152,7 @@ Content after the story lives on one raised sheet; the close is full-height on i
 - **Availability:** the green light (two rings on load, then still) with status, places and eligibility; a compact status-only form sits in the bar on wide screens.
 - **Bar:** monogram, Palma's live clock, availability, CV, EN/ES, Menu. Blends with `difference`; hides on scroll down, returns on scroll up; a 2px progress line runs along the top.
 - **Menu:** full-screen on Ink Raised; huge links with rolling labels; email, profiles and availability beside them.
-- **Contact answers:** two large outlined pills under the contact question ("A new role", "A new project"), 64px, magnetic, arrow nudging on hover. Each opens a pre-written email; a quiet line beneath says so, and another appears after a click pointing to Copy email.
+- **Contact answers:** two large outlined pills under the contact question ("A new role", "A new project"), 64px, magnetic, arrow nudging on hover. Each opens a pre-written email; a quiet line beneath says so. On a computer the click keeps the pill filled and opens a row beneath it instead: Gmail, Outlook, the mail app, copy the address, as 40px outlined pills.
 
 ## Do's and Don'ts
 

@@ -133,6 +133,12 @@ export interface Translations {
     intentsNote: string;
     /** Shown once a draft has been opened, for browsers with no mail app */
     fallback: string;
+    /** Computers: where to write the draft. Gmail and Outlook keep their names */
+    compose: {
+      label: string;
+      app: string;
+      copy: string;
+    };
     body: string;
     copy: string;
     copied: string;
@@ -314,6 +320,11 @@ export const en: Translations = {
     ],
     intentsNote: "Each one opens an email that's already written: you only fill in the gaps.",
     fallback: "Nothing opened? Copy the address and write from your usual inbox.",
+    compose: {
+      label: "Write it in",
+      app: "Your mail app",
+      copy: "Copy address",
+    },
     body: "I'm open to full-stack roles in Ireland, Spain or remote, and to freelance projects: websites, web apps and mobile apps. Tell me what you need.",
     copy: "Copy email",
     copied: "Copied",
@@ -494,6 +505,11 @@ export const es: Translations = {
     ],
     intentsNote: "Cada uno abre un email ya redactado: solo tienes que completar los huecos.",
     fallback: "¿No se ha abierto nada? Copia la dirección y escríbeme desde tu correo de siempre.",
+    compose: {
+      label: "Escríbelo en",
+      app: "Tu app de correo",
+      copy: "Copiar dirección",
+    },
     body: "Estoy abierto a puestos full stack en Irlanda, España o remoto, y a proyectos freelance: webs, aplicaciones web y apps móviles. Cuéntame qué necesitas.",
     copy: "Copiar email",
     copied: "Copiado",
